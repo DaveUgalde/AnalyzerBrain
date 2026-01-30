@@ -1,0 +1,204 @@
+# ============================================
+# CONFIGURACIÓN DE BASES DE DATOS - PROJECT BRAIN
+# ============================================
+
+databases:
+
+  # ============================================
+  # PostgreSQL - Datos relacionales
+  # ============================================
+
+  postgresql:
+    enabled: true
+    host: "localhost"
+    port: 5432
+    database: "project_brain"
+    username: "brain_user"
+    password: "${POSTGRES_PASSWORD}"
+    ssl_mode: "prefer"
+    connect_timeout: 30
+    command_timeout: 300
+    echo: false
+
+    pool:
+      size: 20
+      max_overflow: 10
+      recycle: 3600
+      pre_ping: true
+      use_lifo: true
+
+    advanced:
+      statement_cache_size: 100
+      max_identifier_length: 63
+      application_name: "project_brain"
+
+    replica:
+      enabled: false
+      hosts:
+        - "primary-db:5432"
+        - "replica-1:5432"
+        - "replica-2:5432"
+      load_balance: true
+
+  # ============================================
+  # Neo4j - Grafo de conocimiento
+  # ============================================
+
+  neo4j:
+    enabled: true
+    uri: "bolt://localhost:7687"
+    username: "neo4j"
+    password: "${NEO4J_PASSWORD}"
+    database: "project_brain"
+
+    connection:
+      max_lifetime: 3600
+      pool_size: 50
+      acquisition_timeout: 60
+      encrypted: false
+
+    query:
+      timeout: 300
+      max_depth: 10
+      include_stats: true
+
+    indexes:
+      auto_create: true
+      create:
+        - "CREATE INDEX IF NOT EXISTS FOR (p:Project) ON (p.id)"
+        - "CREATE INDEX IF NOT EXISTS FOR (f:File) ON (f.path)"
+        - "CREATE INDEX IF NOT EXISTS FOR (c:Class) ON (c.name)"
+        - "CREATE INDEX IF NOT EXISTS FOR (e:Entity) ON (e.type)"
+
+    constraints:
+      auto_create: true
+      create:
+        - "CREATE CONSTRAINT IF NOT EXISTS FOR (p:Project) REQUIRE p.id IS UNIQUE"
+        - "CREATE CONSTRAINT IF NOT EXISTS FOR (f:File) REQUIRE f.path IS UNIQUE"
+        - "CREATE CONSTRAINT IF NOT EXISTS FOR (fn:Function) REQUIRE fn.id IS UNIQUE"
+
+    apoc:
+      enabled: true
+      allowed_procedures:
+        - "apoc.periodic.iterate"
+        - "apoc.export.json"
+        - "apoc.import.json"
+        - "apoc.meta.graph"
+        - "apoc.path.subgraphAll"
+
+  # ============================================
+  # Redis - Caché y mensajería
+  # ============================================
+
+  redis:
+    enabled: true
+    host: "localhost"
+    port: 6379
+    password: "${REDIS_PASSWORD}"
+    db: 0
+
+    connection:
+      max_connections: 100
+      socket_timeout: 5
+      socket_connect_timeout: 5
+      retry_on_timeout: true
+
+    cache:
+      default_ttl: 3600
+      key_prefix: "brain:"
+      serialization: json
+
+    pubsub:
+      enabled: true
+      channels:
+        - system_events
+        - analysis_progress
+        - agent_messages
+        - change_notifications
+
+    cluster:
+      enabled: false
+      nodes:
+        - "redis-node-1:6379"
+        - "redis-node-2:6379"
+        - "redis-node-3:6379"
+      read_from_replicas: true
+
+    server_notes:
+      persistence_managed_by_server: true
+
+  # ============================================
+  # ChromaDB - Almacenamiento vectorial
+  # ============================================
+
+  chromadb:
+    enabled: true
+    persist_directory: "./data/embeddings"
+    anonymized_telemetry: false
+
+    collections:
+      default:
+        name: "project_knowledge"
+        metadata:
+          hnsw:space: cosine
+
+      code_embeddings:
+        name: "code_embeddings"
+        metadata:
+          hnsw:space: cosine
+          description: "Embeddings de código"
+
+      text_embeddings:
+        name: "text_embeddings"
+        metadata:
+          hnsw:space: cosine
+          description: "Embeddings de texto"
+
+    hnsw:
+      M: 16
+      ef_construction: 200
+      ef_search: 50
+      max_elements: 500000  # ⚠️ ajustar según RAM
+
+    persistence:
+      backend: duckdb
+      persist_interval: 300
+      backup_enabled: true
+      backup_interval: 86400
+
+  # ============================================
+  # SQLite - Desarrollo
+  # ============================================
+
+  sqlite:
+    enabled: false
+    database_path: "./data/project_brain.db"
+
+    pragmas:
+      journal_mode: WAL
+      synchronous: NORMAL
+      cache_size: -2000
+      temp_store: MEMORY
+
+    connection:
+      timeout: 30
+      check_same_thread: false
+
+  # ============================================
+  # Migraciones
+  # ============================================
+
+  migrations:
+    alembic:
+      enabled: true
+      script_location: "./migrations"
+      sqlalchemy_url: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
+
+    custom:
+      neo4j:
+        scripts: "./migrations/neo4j"
+        auto_apply: true
+
+      chromadb:
+        scripts: "./migrations/chromadb"
+        auto_apply: true

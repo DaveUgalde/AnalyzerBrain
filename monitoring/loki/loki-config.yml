@@ -1,0 +1,262 @@
+# monitoring/loki/loki-config.yml
+# Configuración de Loki para logging distribuido
+# Basado en las especificaciones de ArquiUnificado.txt
+
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+common:
+  path_prefix: /loki
+  storage:
+    filesystem:
+      chunks_directory: /loki/chunks
+      rules_directory: /loki/rules
+  replication_factor: 1
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 100
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h
+
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /loki/index
+    cache_location: /loki/index_cache
+    shared_store: filesystem
+  filesystem:
+    directory: /loki/chunks
+
+limits_config:
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+  ingestion_rate_mb: 16
+  ingestion_burst_size_mb: 32
+  max_query_length: 721h
+  max_query_parallelism: 32
+  max_streams_per_user: 10000
+  max_line_size: 256000
+  max_entries_limit_per_query: 5000
+  max_cache_freshness_per_query: 10m
+  split_queries_by_interval: 30m
+  retention_period: 720h
+  per_stream_rate_limit: 3MB
+  per_stream_rate_limit_burst: 15MB
+
+chunk_store_config:
+  max_look_back_period: 0s
+
+table_manager:
+  retention_deletes_enabled: true
+  retention_period: 720h
+
+compactor:
+  working_directory: /loki/compactor
+  shared_store: filesystem
+  retention_enabled: true
+  retention_delete_delay: 2h
+  retention_delete_worker_count: 150
+
+ruler:
+  alertmanager_url: http://alertmanager:9093
+  enable_alertmanager_v2: true
+  enable_api: true
+  rule_path: /loki/rules-temp
+  storage:
+    type: local
+    local:
+      directory: /loki/rules
+  ring:
+    kvstore:
+      store: inmemory
+  rule_wal_dir: /loki/wal
+
+analytics:
+  reporting_enabled: false
+
+frontend:
+  max_outstanding_per_tenant: 4096
+  compress_responses: true
+
+frontend_worker:
+  frontend_address: loki:9095
+  parallelism: 2
+
+ingester:
+  lifecycler:
+    ring:
+      kvstore:
+        store: inmemory
+      replication_factor: 1
+    final_sleep: 0s
+  chunk_idle_period: 3m
+  max_chunk_age: 1h
+  chunk_target_size: 1536000
+  chunk_retain_period: 30s
+  max_transfer_retries: 0
+  wal:
+    enabled: true
+    dir: /loki/wal
+
+querier:
+  max_concurrent: 2048
+  timeout: 3m
+  iterators: 256
+  ingester_max_query_lookback: 0s
+
+query_scheduler:
+  max_outstanding_requests_per_tenant: 4096
+
+# Configuración de logs específicos de Project Brain
+logging:
+  level: info
+  format: json
+
+# Configuración de etiquetas para los logs
+# Estas etiquetas serán extraídas de los logs para indexación
+label_keys:
+  - "job"
+  - "instance"
+  - "level"
+  - "component"
+  - "module"
+  - "function"
+  - "project_id"
+  - "analysis_id"
+  - "agent_id"
+  - "request_id"
+  - "session_id"
+  - "user_id"
+  - "trace_id"
+  - "span_id"
+
+# Configuración de extracción de campos
+field_extraction:
+  - name: "duration"
+    pattern: 'duration=([0-9.]+)'
+    type: "float"
+  
+  - name: "size"
+    pattern: 'size=([0-9]+)'
+    type: "int"
+  
+  - name: "status"
+    pattern: 'status=([0-9]{3})'
+    type: "int"
+  
+  - name: "confidence"
+    pattern: 'confidence=([0-9.]+)'
+    type: "float"
+  
+  - name: "processing_time"
+    pattern: 'processing_time=([0-9.]+)'
+    type: "float"
+
+# Configuración de alertas de logs
+alerting:
+  rules:
+    - name: "HighErrorLogRate"
+      query: 'sum(rate({job="project_brain_api"} |= "ERROR" [5m])) by (component, module)'
+      condition: "> 10"
+      for: "5m"
+      labels:
+        severity: "warning"
+        team: "devops"
+      annotations:
+        summary: "Alta tasa de logs de error"
+        description: "Componente {{ $labels.component }} tiene {{ $value }} errores por minuto"
+    
+    - name: "CriticalErrors"
+      query: '{job="project_brain_api"} |= "CRITICAL"'
+      condition: "> 0"
+      for: "0m"
+      labels:
+        severity: "critical"
+        team: "devops"
+      annotations:
+        summary: "Error crítico detectado"
+        description: "Se detectó un error crítico en los logs"
+    
+    - name: "FailedAnalysis"
+      query: '{job="project_brain_api"} |= "analysis failed"'
+      condition: "> 0"
+      for: "0m"
+      labels:
+        severity: "warning"
+        team: "devops"
+      annotations:
+        summary: "Análisis fallido detectado"
+        description: "Se detectó un análisis fallido en los logs"
+
+# Configuración de métricas de logs
+metrics:
+  - name: "log_entries_total"
+    type: "counter"
+    description: "Total de entradas de log por nivel"
+    config:
+      match: '{job="project_brain_api"}'
+      action: "inc"
+      labels:
+        level: "{{.level}}"
+        component: "{{.component}}"
+  
+  - name: "log_bytes_total"
+    type: "counter"
+    description: "Total de bytes de logs"
+    config:
+      match: '{job="project_brain_api"}'
+      action: "add"
+      value: "{{.length}}"
+      labels:
+        component: "{{.component}}"
+  
+  - name: "error_log_rate"
+    type: "gauge"
+    description: "Tasa de logs de error por minuto"
+    config:
+      match: '{job="project_brain_api"} |= "ERROR"'
+      action: "rate"
+      period: "1m"
+      labels:
+        component: "{{.component}}"
+        module: "{{.module}}"
+
+# Configuración de retención de logs
+retention:
+  - selector: '{job="project_brain_api", level="DEBUG"}'
+    priority: 10
+    period: 24h
+  
+  - selector: '{job="project_brain_api", level="INFO"}'
+    priority: 20
+    period: 7d
+  
+  - selector: '{job="project_brain_api", level="WARNING"}'
+    priority: 30
+    period: 30d
+  
+  - selector: '{job="project_brain_api", level="ERROR"}'
+    priority: 40
+    period: 90d
+  
+  - selector: '{job="project_brain_api", level="CRITICAL"}'
+    priority: 50
+    period: 365d

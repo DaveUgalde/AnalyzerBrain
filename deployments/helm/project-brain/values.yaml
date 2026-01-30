@@ -1,0 +1,273 @@
+# Default values for Project Brain Helm chart
+
+# ---------------------------------------------------------------------
+# Global configuration
+# ---------------------------------------------------------------------
+global:
+  environment: production
+
+  imageRegistry: ""
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+
+  storageClass: standard
+  domain: projectbrain.dev
+
+  tls:
+    enabled: true
+    secretName: project-brain-tls
+
+# ---------------------------------------------------------------------
+# API configuration
+# ---------------------------------------------------------------------
+api:
+  enabled: true
+  replicaCount: 3
+
+  image:
+    repository: projectbrain/api
+    tag: "1.0.0"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 8000
+    webSocketPort: 8001
+    annotations: {}
+
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: api.projectbrain.dev
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - hosts:
+          - api.projectbrain.dev
+        secretName: project-brain-tls
+
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+
+  env:
+    LOG_LEVEL: INFO
+    DATA_DIR: /app/data
+    LOG_DIR: /app/logs
+
+  extraEnv: []
+
+  secrets:
+    jwtSecret: ""
+    apiKeyAdmin: ""
+    apiKeyService: ""
+
+  config:
+    system:
+      yaml: |
+        system:
+          name: Project Brain
+          version: "1.0.0"
+          environment: production
+        api:
+          rest:
+            host: 0.0.0.0
+            port: 8000
+          websocket:
+            host: 0.0.0.0
+            port: 8001
+
+# ---------------------------------------------------------------------
+# PostgreSQL (Bitnami)
+# ---------------------------------------------------------------------
+postgresql:
+  enabled: true
+
+  global:
+    postgresql:
+      auth:
+        database: project_brain
+        username: brain_user
+        password: ""
+        postgresPassword: ""
+
+  architecture: replication
+
+  primary:
+    persistence:
+      enabled: true
+      size: 50Gi
+      storageClass: standard
+
+  readReplicas:
+    replicaCount: 2
+    persistence:
+      enabled: true
+      size: 50Gi
+      storageClass: standard
+
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+
+# ---------------------------------------------------------------------
+# Neo4j
+# ---------------------------------------------------------------------
+neo4j:
+  enabled: true
+  acceptLicenseAgreement: "yes"
+  edition: enterprise
+  password: ""
+
+  resources:
+    requests:
+      cpu: 2000m
+      memory: 4Gi
+    limits:
+      cpu: 4000m
+      memory: 8Gi
+
+  persistence:
+    enabled: true
+    size: 100Gi
+    storageClass: standard
+
+  plugins:
+    - apoc
+    - graph-data-science
+
+  config:
+    dbms.memory.heap.initial_size: 4G
+    dbms.memory.heap.max_size: 8G
+    dbms.memory.pagecache.size: 4G
+
+# ---------------------------------------------------------------------
+# Redis (Bitnami)
+# ---------------------------------------------------------------------
+redis:
+  enabled: true
+  architecture: replication
+
+  auth:
+    password: ""
+
+  master:
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: standard
+
+  replica:
+    replicaCount: 2
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: standard
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
+# ---------------------------------------------------------------------
+# Monitoring
+# ---------------------------------------------------------------------
+monitoring:
+  prometheus:
+    enabled: true
+
+  grafana:
+    enabled: true
+    adminPassword: ""
+
+  loki:
+    enabled: false
+
+  promtail:
+    enabled: false
+
+# ---------------------------------------------------------------------
+# Ingress Controller (dependency)
+# ---------------------------------------------------------------------
+ingress:
+  enabled: true
+
+# ---------------------------------------------------------------------
+# Cert Manager (dependency)
+# IMPORTANT: no hyphens in values paths
+# ---------------------------------------------------------------------
+certManager:
+  enabled: true
+  installCRDs: true
+  issuer:
+    email: admin@projectbrain.dev
+    server: https://acme-v02.api.letsencrypt.org/directory
+
+# ---------------------------------------------------------------------
+# Security
+# ---------------------------------------------------------------------
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  privileged: false
+  capabilities:
+    drop:
+      - ALL
+
+# ---------------------------------------------------------------------
+# Service Account & RBAC
+# ---------------------------------------------------------------------
+serviceAccount:
+  create: true
+  name: project-brain
+  annotations: {}
+
+# ---------------------------------------------------------------------
+# Scheduling
+# ---------------------------------------------------------------------
+affinity: {}
+tolerations: []
+nodeSelector: {}
+
+# ---------------------------------------------------------------------
+# Extras
+# ---------------------------------------------------------------------
+extraVolumes: []
+extraVolumeMounts: []
+commonAnnotations: {}
+commonLabels: {}
+
+nameOverride: ""
+fullnameOverride: ""

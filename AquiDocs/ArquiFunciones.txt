@@ -1,0 +1,1170 @@
+DOCUMENTO UNIFICADO DE ARQUIFUNCIONES - PROJECT BRAIN
+
+Análisis de Rendimiento, Cohesión y Funciones Completas del Sistema
+
+1. ANÁLISIS DE RENDIMIENTO DEL SISTEMA
+
+1.1 Puntos Críticos de Rendimiento Identificados
+
+Hotspots Identificados:
+
+Parsing Multi-Lenguaje (indexer/multi_language_parser.py)
+
+Análisis AST con tree-sitter: O(n) por archivo
+Detección de lenguaje: O(1) por extensión
+Caché de archivos parseados: reduce ~70% de procesamiento
+Generación de Embeddings (embeddings/embedding_generator.py)
+
+Modelos transformers: O(n) donde n = tokens
+Batch processing: reduce overhead 60%
+Caché vectorial: hit rate objetivo > 90%
+Búsqueda Semántica (embeddings/semantic_search.py)
+
+ANN (Approximate Nearest Neighbor): O(log n) vs O(n)
+Índices HNSW: recall 0.95 con velocidad 10x
+Consultas de Grafo (graph/graph_query_engine.py)
+
+Traversals complejos: O(n + m)
+Caching de consultas frecuentes
+Índices compuestos en Neo4j
+1.2 Métricas de Rendimiento Esperadas
+
+python
+PERFORMANCE_TARGETS = {
+    "parsing": {
+        "python_file_1000_lines": "< 500ms",
+        "javascript_file": "< 300ms",
+        "batch_100_files": "< 30s"
+    },
+    "embeddings": {
+        "text_512_tokens": "< 100ms",
+        "code_embedding": "< 200ms",
+        "batch_1000": "< 10s"
+    },
+    "queries": {
+        "simple_question": "< 2s p95",
+        "complex_analysis": "< 10s p95",
+        "graph_traversal_depth_5": "< 500ms"
+    },
+    "throughput": {
+        "concurrent_analyses": "10+",
+        "queries_per_second": "50+",
+        "websocket_connections": "1000+"
+    }
+}
+1.3 Estrategias de Optimización
+
+Caching Multi-Nivel:
+
+python
+CACHE_STRATEGY = {
+    "L1": "Memoria (LRU, 1000 items, TTL 5min)",
+    "L2": "Redis (10000 items, TTL 1h)",
+    "L3": "Disco (100000 items, TTL 24h)",
+    "Precomputed": "Embeddings, ASTs, relaciones frecuentes"
+}
+Procesamiento Paralelo:
+
+python
+PARALLELIZATION = {
+    "file_parsing": "Pool de workers por lenguaje",
+    "embedding_generation": "Batch processing GPU/CPU",
+    "agent_processing": "Async/await con semáforos",
+    "database_operations": "Connection pooling + async I/O"
+}
+2. ANÁLISIS DE COHESIÓN
+
+2.1 Cohesión por Módulo (Escala 1-10)
+
+Módulo	Cohesión	Justificación
+core/	9	Alta cohesión funcional, todas las funciones manejan orquestación y estado
+indexer/	8	Funciones relacionadas con análisis de código, parsing y extracción
+embeddings/	9	Todas las funciones manipulan representaciones vectoriales
+graph/	8	Funciones para construcción y consulta de grafos
+memory/	7	Mezcla de gestión de memoria y caché, podría separarse
+agents/	9	Cada agente altamente cohesivo en su especialidad
+api/	8	Todas las funciones manejan interfaces externas
+learning/	9	Funciones enfocadas exclusivamente en aprendizaje
+utils/	6	Utilidades diversas, cohesión baja pero aceptable
+2.2 Acoplamiento Entre Módulos
+
+Acoplamiento Bajo (Deseado):
+
+core ←→ agents: Mediante interfaces definidas
+indexer → embeddings: Datos estructurados
+graph ←→ memory: Consultas específicas
+Acoplamiento Medio (Aceptable):
+
+api ←→ core: Orquestación de peticiones
+agents ←→ learning: Retroalimentación
+Acoplamiento Controlado:
+
+Todos ←→ utils: Utilidades compartidas
+2.3 Patrones de Comunicación
+
+Event-Driven: Bus de eventos para comunicación asíncrona
+Dependency Injection: Inyección explícita de dependencias
+Repository Pattern: Abstracción de almacenamiento
+Facade Pattern: Interfaces simplificadas entre módulos
+3. FUNCIONES DETALLADAS POR MÓDULO
+
+3.1 MÓDULO CORE
+
+src/core/orchestrator.py - BrainOrchestrator
+
+Funciones Públicas Principales:
+
+initialize() -> bool
+process_operation(request: OperationRequest) -> OperationResult
+analyze_project(project_path: str, options: Optional[Dict] = None) -> Dict[str, Any]
+ask_question(question: str, project_id: Optional[str] = None, context: Optional[Dict] = None) -> Dict[str, Any]
+shutdown(force: bool = False) -> bool
+get_metrics() -> Dict[str, Any]
+list_operations(status: Optional[str] = None) -> List[Dict]
+cancel_operation(operation_id: str) -> bool
+get_operation_result(operation_id: str) -> Optional[OperationResult]
+Funciones Privadas de Implementación:
+
+_analyze_project(context: Dict) -> Dict[str, Any]
+_process_question(context: Dict) -> Dict[str, Any]
+_detect_changes(context: Dict) -> Dict[str, Any]
+_learn_from_feedback(context: Dict) -> Dict[str, Any]
+_export_knowledge(context: Dict) -> Dict[str, Any]
+_get_system_status() -> Dict[str, Any]
+_validate_operation_request(request: OperationRequest) -> None
+_update_metrics(success: bool, processing_time: float) -> None
+_initialize_component(component_name: str) -> Any
+_load_plugins() -> None
+_start_workers() -> None
+_start_monitoring() -> None
+_load_config(config_path: Optional[str]) -> OrchestratorConfig
+_handle_operation_timeout(operation_id: str) -> None
+_cleanup_completed_operations() -> None
+_balance_workload() -> Dict[str, int]
+_recover_from_failure(error: Exception) -> bool
+_notify_operation_progress(operation_id: str, progress: float, message: str) -> None
+src/core/system_state.py - SystemStateManager
+
+set_state()
+get_state()
+save_state()
+load_state()
+reset_state()
+track_operation()
+get_metrics()
+src/core/workflow_manager.py - WorkflowOrchestrator
+
+register_workflow()
+execute_workflow()
+pause_workflow()
+resume_workflow()
+cancel_workflow()
+get_workflow_status()
+validate_workflow()
+src/core/event_bus.py - EventBus
+
+subscribe()
+unsubscribe()
+publish()
+publish_async()
+get_subscribers()
+clear_subscriptions()
+src/core/config_manager.py - ConfigManager
+
+load_config()
+get_config()
+set_config()
+reload_config()
+validate_config()
+export_config()
+watch_config_changes()
+src/core/dependency_injector.py - DependencyInjector
+
+register_service()
+get_service()
+create_scope()
+resolve_dependencies()
+clear_services()
+validate_dependencies()
+src/core/plugin_manager.py - PluginManager
+
+load_plugin()
+unload_plugin()
+enable_plugin()
+disable_plugin()
+list_plugins()
+get_plugin_info()
+validate_plugin()
+src/core/health_check.py - HealthCheck
+
+check_system_health()
+check_component_health()
+register_health_check()
+run_all_checks()
+get_health_status()
+set_healthy()
+set_unhealthy()
+src/core/exceptions.py
+
+BrainException
+ValidationError
+ConfigurationError
+PluginError
+WorkflowError
+HealthCheckError
+TimeoutError
+3.2 MÓDULO INDEXER
+
+src/indexer/multi_language_parser.py - MultiLanguageParser
+
+Funciones Públicas:
+
+parse_file(file_path: str, language: Optional[LanguageType] = None, mode: Optional[ParseMode] = None) -> ParseResult
+parse_directory(directory_path: str, language: Optional[LanguageType] = None, mode: Optional[ParseMode] = None, extensions: Optional[List[str]] = None) -> Dict[str, ParseResult]
+extract_entities(parse_result: ParseResult) -> List[Entity]
+validate_syntax(file_path: str, language: Optional[LanguageType] = None) -> List[SyntaxError]
+get_language_statistics(directory_path: str) -> Dict[LanguageType, int]
+compare_parsers(file_path: str, parsers: List[str]) -> Dict[str, ParseResult]
+Funciones Específicas por Lenguaje:
+
+_extract_python_entities(ast: Dict) -> List[Entity]
+_extract_javascript_entities(ast: Dict) -> List[Entity]
+_extract_java_entities(ast: Dict) -> List[Entity]
+_extract_cpp_entities(ast: Dict) -> List[Entity]
+_extract_go_entities(ast: Dict) -> List[Entity]
+_extract_rust_entities(ast: Dict) -> List[Entity]
+Funciones Auxiliares:
+
+_calculate_file_hash(file_path: str) -> str
+_detect_language(file_path: str) -> LanguageType
+_parse_content(content: str, language: LanguageType, mode: ParseMode, file_path: str) -> ParseResult
+_tree_to_dict(node: Node, source: bytes) -> Dict
+_entity_to_dict(entity: Entity) -> Dict
+_perform_comprehensive_checks(ast: Dict, language: LanguageType) -> List[str]
+_estimate_python_complexity(ast: Dict) -> int
+_extract_python_parameters(node: Dict) -> List[Dict]
+_extract_python_decorators(node: Dict) -> List[str]
+_extract_python_import_name(node: Dict) -> str
+_extract_python_import_module(node: Dict) -> str
+_extract_python_import_aliases(node: Dict) -> List[str]
+_extract_python_variable_name(node: Dict) -> Optional[str]
+_infer_python_type(node: Dict) -> str
+_is_python_constant(var_name: str) -> bool
+_extract_default_value(node: Dict) -> Optional[str]
+_extract_decorator_name(node: Dict) -> str
+_extract_python_bases(node: Dict) -> List[str]
+_extract_return_annotation(node: Dict) -> Optional[str]
+Funciones de Caché y Optimización:
+
+_get_cached_result(file_path: str, file_hash: str) -> Optional[ParseResult]
+_cache_result(file_path: str, file_hash: str, result: ParseResult) -> None
+_clean_cache(max_size: int = 1000) -> None
+_preload_parsers(languages: List[LanguageType]) -> None
+src/indexer/project_scanner.py - ProjectScanner
+
+scan_directory()
+filter_files()
+calculate_stats()
+detect_project_type()
+identify_main_files()
+get_file_tree()
+validate_project_structure()
+src/indexer/file_processor.py - FileProcessor
+
+read_file()
+calculate_hash()
+detect_encoding()
+extract_metadata()
+normalize_content()
+split_into_chunks()
+preprocess_content()
+src/indexer/entity_extractor.py - EntityExtractor
+
+extract_functions()
+extract_classes()
+extract_variables()
+extract_imports()
+extract_comments()
+extract_docstrings()
+identify_entity_relationships()
+src/indexer/dependency_mapper.py - DependencyMapper
+
+map_file_dependencies()
+map_function_calls()
+map_class_inheritance()
+map_module_imports()
+detect_circular_deps()
+calculate_dep_metrics()
+generate_dep_graph()
+src/indexer/change_detector.py - ChangeDetector
+
+compare_versions()
+detect_added_files()
+detect_removed_files()
+detect_modified_files()
+calculate_change_impact()
+track_changes_over_time()
+generate_change_report()
+src/indexer/version_tracker.py - VersionTracker
+
+create_snapshot()
+restore_snapshot()
+compare_snapshots()
+list_snapshots()
+get_version_history()
+tag_version()
+rollback_version()
+src/indexer/quality_analyzer.py - QualityAnalyzer
+
+calculate_complexity()
+calculate_maintainability()
+analyze_code_style()
+detect_code_smells()
+check_best_practices()
+calculate_test_coverage()
+generate_quality_report()
+src/indexer/pattern_detector.py - PatternDetector
+
+detect_design_patterns()
+detect_anti_patterns()
+identify_arch_patterns()
+detect_idioms()
+find_code_duplication()
+identify_refactoring_ops()
+validate_pattern_impl()
+3.3 MÓDULO EMBEDDINGS
+
+src/embeddings/embedding_generator.py - EmbeddingGenerator
+
+Funciones de Generación:
+
+generate_text_embedding(text: str, model_name: Optional[str] = None, normalize: bool = True) -> List[float]
+generate_code_embedding(code: str, language: str, context: Optional[str] = None, model_name: Optional[str] = None) -> List[float]
+generate_document_embedding(document_path: str, chunk_size: int = 512, overlap: int = 50) -> List[List[float]]
+batch_generate(texts: List[str], batch_size: int = 32, show_progress: bool = True) -> List[List[float]]
+Funciones de Optimización:
+
+normalize_embeddings(embeddings: List[List[float]]) -> List[List[float]]
+pad_embeddings(embeddings: List[List[float]], target_length: int) -> List[List[float]]
+truncate_embeddings(embeddings: List[List[float]], target_length: int) -> List[List[float]]
+average_embeddings(embeddings: List[List[float]], weights: Optional[List[float]] = None) -> List[float]
+Funciones de Caché:
+
+cache_embedding(key: str, embedding: List[float], ttl_seconds: int = 3600) -> bool
+get_cached_embedding(key: str) -> Optional[List[float]]
+invalidate_cache(keys: Optional[List[str]] = None) -> int
+get_cache_stats() -> Dict[str, Any]
+Funciones de Validación:
+
+validate_embedding(embedding: List[float], expected_dimensions: int) -> bool
+compare_embeddings(embedding1: List[float], embedding2: List[float], metric: str = "cosine") -> float
+find_similar_embeddings(query: List[float], candidates: List[List[float]], top_k: int = 10, threshold: float = 0.7) -> List[Tuple[int, float]]
+Funciones de Gestión de Modelos:
+
+load_model(model_name: str, device: str = "auto") -> bool
+unload_model(model_name: str) -> bool
+list_loaded_models() -> List[str]
+get_model_info(model_name: str) -> Dict[str, Any]
+warmup_model(model_name: str, num_iterations: int = 10) -> None
+Funciones de Utilidad:
+
+_preprocess_text(text: str, language: Optional[str] = None) -> str
+_preprocess_code(code: str, language: str) -> str
+_chunk_text(text: str, chunk_size: int, overlap: int) -> List[str]
+_calculate_embedding_dimension(model_name: str) -> int
+_validate_batch_size(batch_size: int, available_memory: int) -> int
+src/embeddings/embedding_models.py - EmbeddingModels
+
+load_model()
+list_available_models()
+get_model_info()
+validate_model_compatibility()
+get_model_dimensions()
+warmup_model()
+unload_model()
+src/embeddings/vector_store.py - VectorStore
+
+add_vectors()
+search_similar()
+update_vector()
+delete_vector()
+create_index()
+optimize_store()
+export_vectors()
+src/embeddings/semantic_search.py - SemanticSearch
+
+semantic_search()
+hybrid_search()
+filter_search_results()
+rank_results()
+expand_query()
+get_search_metrics()
+optimize_search_index()
+src/embeddings/embedding_cache.py - EmbeddingCache
+
+get_cached_embedding()
+cache_embedding()
+invalidate_cache()
+clear_cache()
+get_cache_stats()
+optimize_cache()
+preload_cache()
+src/embeddings/similarity_calculator.py - SimilarityCalculator
+
+calculate_cosine_similarity()
+calculate_euclidean_distance()
+calculate_jaccard_similarity()
+batch_similarity()
+normalize_similarity()
+find_similarity_threshold()
+validate_similarity_metric()
+src/embeddings/dimensionality_reducer.py - DimensionalityReducer
+
+reduce_dimensions()
+apply_pca()
+apply_tsne()
+apply_umap()
+optimize_reduction()
+evaluate_reduction()
+inverse_transform()
+3.4 MÓDULO AGENTS
+
+src/agents/base_agent.py - BaseAgent
+
+Métodos Públicos (Interfaz):
+
+async def initialize(dependencies: Optional[Dict[str, Any]] = None) -> bool
+async def process(input_data: AgentInput) -> AgentOutput
+async def learn(feedback: Dict[str, Any]) -> bool
+async def evaluate() -> Dict[str, Any]
+async def get_capabilities() -> List[Dict[str, Any]]
+async def shutdown() -> bool
+def get_state() -> AgentState
+def get_config() -> AgentConfig
+def get_memory_stats() -> Dict[str, Any]
+def reset() -> bool
+Métodos Abstractos (Implementación Específica):
+
+@abstractmethod async def _initialize_internal() -> bool
+@abstractmethod async def _process_internal(input_data: AgentInput) -> AgentOutput
+@abstractmethod async def _learn_internal(feedback: Dict[str, Any]) -> bool
+@abstractmethod def _validate_input_specific(input_data: AgentInput) -> None
+@abstractmethod async def _save_state() -> None
+Métodos Protegidos (Implementación Base):
+
+def _validate_input(input_data: AgentInput) -> None
+def _validate_output(output: AgentOutput) -> None
+def _validate_feedback(feedback: Dict) -> bool
+def _update_metrics(output: AgentOutput, processing_time: float) -> None
+def _get_capability_description(capability: AgentCapability) -> str
+def _get_supported_languages(capability: AgentCapability) -> List[str]
+def _get_capability_examples(capability: AgentCapability) -> List[Dict]
+Funciones de Memoria:
+
+def store_memory(memory_type: AgentMemoryType, content: Dict) -> str
+def retrieve_memory(memory_type: AgentMemoryType, query: Optional[Dict] = None, limit: int = 10) -> List[Dict]
+def consolidate_memory() -> None
+def clear_memory(memory_type: Optional[AgentMemoryType] = None) -> None
+Funciones de Utilidad:
+
+def _log_activity(activity_type: str, details: Dict) -> None
+def _check_health() -> Dict[str, Any]
+def _backup_state(backup_path: str) -> bool
+def _restore_state(backup_path: str) -> bool
+def _optimize_performance() -> None
+def _handle_error(error: Exception, context: Dict) -> AgentOutput
+src/agents/agent_factory.py - AgentFactory
+
+create_agent()
+register_agent_type()
+list_available_agents()
+get_agent_config()
+validate_agent_creation()
+optimize_agent_pool()
+cleanup_agents()
+src/agents/agent_orchestrator.py - AgentOrchestrator
+
+assign_task()
+coordinate_agents()
+resolve_agent_conflicts()
+balance_agent_load()
+monitor_agent_performance()
+optimize_agent_collaboration()
+generate_coordination_report()
+src/agents/code_analyzer_agent.py - CodeAnalyzerAgent
+
+analyze_code_quality()
+detect_bugs()
+suggest_improvements()
+review_code_style()
+calculate_metrics()
+compare_code_versions()
+generate_analysis_report()
+src/agents/architect_agent.py - ArchitectAgent
+
+analyze_architecture()
+detect_arch_smells()
+suggest_arch_improvements()
+validate_arch_decisions()
+design_system_components()
+evaluate_arch_patterns()
+generate_arch_documentation()
+src/agents/detective_agent.py - DetectiveAgent
+
+investigate_issue()
+trace_root_cause()
+analyze_incident_patterns()
+suggest_solutions()
+validate_hypothesis()
+correlate_events()
+generate_investigation_report()
+src/agents/qa_agent.py - QuestionAnsweringAgent
+
+answer_question()
+clarify_question()
+provide_explanations()
+suggest_related_questions()
+validate_answer()
+learn_from_feedback()
+improve_answer_quality()
+src/agents/curator_agent.py - CuratorAgent
+
+curate_knowledge()
+validate_knowledge()
+organize_knowledge()
+prune_knowledge()
+enrich_knowledge()
+link_related_knowledge()
+generate_knowledge_report()
+src/agents/analyst_agent.py - AnalystAgent
+
+analyze_system_metrics()
+detect_anomalies()
+predict_trends()
+generate_insights()
+recommend_optimizations()
+validate_metric_collection()
+generate_analytics_report()
+src/agents/security_agent.py - SecurityAgent
+
+analyze_security()
+detect_vulnerabilities()
+assess_risk()
+recommend_security_fixes()
+validate_security_practices()
+simulate_attacks()
+generate_security_report()
+src/agents/learning_agent.py - LearningAgent
+
+learn_from_experience()
+adapt_to_new_data()
+optimize_learning_strategy()
+transfer_knowledge()
+evaluate_learning_progress()
+suggest_learning_goals()
+generate_learning_report()
+src/agents/collaboration_protocol.py - CollaborationProtocol
+
+establish_collaboration()
+define_roles()
+mediate_communication()
+resolve_disagreements()
+optimize_collaboration_flow()
+evaluate_collaboration()
+generate_collaboration_report()
+3.5 MÓDULO GRAPH
+
+src/graph/knowledge_graph.py - KnowledgeGraph
+
+add_node()
+add_edge()
+remove_node()
+remove_edge()
+find_node()
+find_path()
+calculate_graph_metrics()
+src/graph/graph_builder.py - GraphBuilder
+
+build_from_entities()
+build_from_dependencies()
+build_from_embeddings()
+merge_graphs()
+optimize_graph_structure()
+validate_graph()
+export_graph()
+src/graph/graph_query_engine.py - GraphQueryEngine
+
+execute_query()
+find_patterns()
+traverse_graph()
+aggregate_graph_data()
+filter_graph()
+optimize_query()
+explain_query()
+src/graph/graph_traverser.py - GraphTraverser
+
+breadth_first_search()
+depth_first_search()
+dijkstra_shortest_path()
+a_star_search()
+find_connected_components()
+detect_cycles()
+calculate_centrality()
+src/graph/graph_analytics.py - GraphAnalytics
+
+analyze_community_structure()
+calculate_pagerank()
+detect_clusters()
+measure_graph_density()
+analyze_degree_distribution()
+find_bridges()
+identify_influential_nodes()
+src/graph/graph_exporter.py - GraphExporter
+
+export_to_gexf()
+export_to_graphml()
+export_to_json()
+export_to_cypher()
+export_to_dot()
+export_to_networkx()
+validate_export()
+src/graph/schema_manager.py - SchemaManager
+
+define_schema()
+validate_node_schema()
+validate_edge_schema()
+migrate_schema()
+export_schema()
+infer_schema()
+enforce_schema()
+src/graph/consistency_checker.py - ConsistencyChecker
+
+check_graph_consistency()
+detect_orphan_nodes()
+validate_references()
+check_property_types()
+detect_inconsistencies()
+generate_consistency_report()
+auto_fix_inconsistencies()
+3.6 MÓDULO MEMORY
+
+src/memory/memory_hierarchy.py - MemoryHierarchy
+
+store_in_memory()
+retrieve_from_memory()
+promote_memory()
+demote_memory()
+evict_from_memory()
+optimize_hierarchy()
+get_memory_stats()
+src/memory/episodic_memory.py - EpisodicMemory
+
+record_episode()
+recall_episode()
+link_episodes()
+consolidate_episodes()
+forget_episode()
+search_episodes()
+get_episodic_timeline()
+src/memory/semantic_memory.py - SemanticMemory
+
+store_concept()
+retrieve_concept()
+link_concepts()
+infer_relationships()
+update_concept()
+forget_concept()
+get_semantic_network()
+src/memory/working_memory.py - WorkingMemory
+
+add_to_working_memory()
+remove_from_working_memory()
+get_working_memory_contents()
+clear_working_memory()
+focus_attention()
+update_working_memory()
+check_working_memory_limit()
+src/memory/memory_consolidator.py - MemoryConsolidator
+
+consolidate_memories()
+strengthen_memory()
+weaken_memory()
+integrate_new_memory()
+prune_memories()
+optimize_memory_structure()
+generate_consolidation_report()
+src/memory/cache_manager.py - CacheManager
+
+get_from_cache()
+set_in_cache()
+invalidate_cache_entry()
+clear_cache()
+get_cache_stats()
+optimize_cache_policy()
+prefetch_to_cache()
+src/memory/memory_retriever.py - MemoryRetriever
+
+retrieve_by_key()
+retrieve_by_similarity()
+retrieve_by_context()
+retrieve_by_time()
+combine_retrievals()
+rank_retrieved_memories()
+validate_retrieval()
+src/memory/memory_cleaner.py - MemoryCleaner
+
+clean_expired_memories()
+clean_low_relevance_memories()
+compress_memories()
+archive_old_memories()
+validate_memory_integrity()
+repair_corrupted_memory()
+generate_cleanup_report()
+3.7 MÓDULO API
+
+src/api/server.py - APIServer
+
+start_server()
+stop_server()
+configure_routes()
+setup_middleware()
+handle_errors()
+monitor_performance()
+reload_configuration()
+src/api/rest_api.py - REST API
+
+register_endpoints()
+validate_request()
+process_request()
+format_response()
+handle_authentication()
+rate_limit_requests()
+log_api_activity()
+src/api/websocket_api.py - WebSocket API
+
+handle_connection()
+process_message()
+broadcast_message()
+manage_subscriptions()
+handle_disconnection()
+maintain_heartbeat()
+scale_connections()
+src/api/grpc_api.py - gRPC API
+
+define_services()
+implement_handlers()
+process_stream()
+handle_bidirectional()
+optimize_serialization()
+monitor_grpc_performance()
+generate_client_stubs()
+src/api/cli_interface.py - CLI
+
+parse_arguments()
+execute_command()
+display_help()
+format_output()
+handle_interactive_mode()
+manage_command_history()
+validate_cli_input()
+src/api/web_ui.py - Web UI
+
+render_interface()
+handle_user_interaction()
+update_ui_state()
+manage_sessions()
+stream_updates()
+optimize_ui_performance()
+generate_ui_analytics()
+src/api/authentication.py - Authentication
+
+authenticate_user()
+generate_token()
+validate_token()
+refresh_token()
+revoke_token()
+manage_sessions()
+audit_auth_activity()
+src/api/rate_limiter.py - RateLimiter
+
+check_rate_limit()
+increment_counter()
+reset_counters()
+calculate_wait_time()
+handle_rate_limit_exceeded()
+optimize_rate_limiting()
+generate_rate_limit_report()
+src/api/request_validator.py - RequestValidator
+
+validate_request_structure()
+validate_request_data()
+sanitize_input()
+check_required_fields()
+validate_data_types()
+handle_validation_errors()
+generate_validation_report()
+3.8 MÓDULO LEARNING
+
+src/learning/feedback_loop.py - FeedbackLoop
+
+collect_feedback()
+process_feedback()
+integrate_feedback()
+measure_feedback_impact()
+optimize_feedback_collection()
+validate_feedback_quality()
+generate_feedback_report()
+src/learning/incremental_learner.py - IncrementalLearner
+
+learn_incrementally()
+update_knowledge()
+prevent_catastrophic_forgetting()
+consolidate_learning()
+adapt_learning_rate()
+evaluate_incremental_progress()
+generate_learning_progress_report()
+src/learning/reinforcement_learner.py - ReinforcementLearner
+
+define_reward_function()
+choose_action()
+update_policy()
+explore_vs_exploit()
+train_agent()
+evaluate_policy()
+generate_training_report()
+src/learning/knowledge_refiner.py - KnowledgeRefiner
+
+refine_knowledge()
+resolve_knowledge_conflicts()
+generalize_knowledge()
+specialize_knowledge()
+prune_redundant_knowledge()
+validate_refined_knowledge()
+generate_refinement_report()
+src/learning/adaptation_engine.py - AdaptationEngine
+
+adapt_to_environment()
+learn_new_domain()
+transfer_knowledge()
+optimize_adaptation_strategy()
+measure_adaptation_success()
+reset_adaptation()
+generate_adaptation_report()
+src/learning/forgetting_mechanism.py - ForgettingMechanism
+
+identify_forgettable_content()
+apply_forgetting()
+preserve_important_knowledge()
+optimize_forgetting_schedule()
+measure_forgetting_impact()
+reverse_forgetting()
+generate_forgetting_report()
+src/learning/learning_evaluator.py - LearningEvaluator
+
+evaluate_learning_outcomes()
+measure_learning_progress()
+compare_learning_strategies()
+identify_learning_gaps()
+validate_learning_effectiveness()
+recommend_learning_improvements()
+generate_evaluation_report()
+3.9 MÓDULO UTILS
+
+src/utils/file_utils.py - FileUtils
+
+read_file_safely()
+write_file_safely()
+copy_file()
+move_file()
+delete_file()
+find_files()
+calculate_file_stats()
+src/utils/text_processing.py - TextProcessing
+
+clean_text()
+tokenize_text()
+normalize_text()
+extract_entities()
+summarize_text()
+detect_language()
+compare_texts()
+src/utils/parallel_processing.py - ParallelProcessing
+
+parallel_map()
+distribute_workload()
+synchronize_tasks()
+handle_parallel_errors()
+optimize_parallelization()
+monitor_parallel_performance()
+cleanup_parallel_resources()
+src/utils/security_utils.py - SecurityUtils
+
+encrypt_data()
+decrypt_data()
+hash_data()
+validate_hash()
+sanitize_input()
+generate_secure_random()
+audit_security_events()
+src/utils/logging_config.py - LoggingConfig
+
+setup_logging()
+configure_log_levels()
+setup_log_handlers()
+format_log_messages()
+rotate_logs()
+analyze_logs()
+export_logs()
+src/utils/metrics_collector.py - MetricsCollector
+
+collect_metric()
+aggregate_metrics()
+calculate_statistics()
+export_metrics()
+monitor_metric_trends()
+alert_on_anomalies()
+optimize_metric_collection()
+src/utils/serialization.py - Serialization
+
+serialize_to_json()
+deserialize_from_json()
+serialize_to_yaml()
+deserialize_from_yaml()
+serialize_to_binary()
+deserialize_from_binary()
+validate_serialization()
+src/utils/validation.py - Validation
+
+validate_structure()
+validate_types()
+validate_values()
+validate_format()
+validate_consistency()
+generate_validation_errors()
+suggest_corrections()
+4. ARQUITECTURA DE RENDIMIENTO COMPLETA
+
+4.1 Patrones de Diseño para Rendimiento
+
+python
+PERFORMANCE_PATTERNS = {
+    "CQRS": {
+        "module": "memory",
+        "purpose": "Separar lecturas/escrituras para optimizar cada caso",
+        "impact": "35% mejora en throughput de consultas"
+    },
+    "Caching Strategy": {
+        "module": "embeddings/embedding_cache.py",
+        "purpose": "Multi-level cache con políticas adaptativas",
+        "impact": "80% hit rate, 60% reducción latency"
+    },
+    "Connection Pooling": {
+        "module": "api/*",
+        "purpose": "Reutilizar conexiones a bases de datos",
+        "impact": "40% reducción overhead conexiones"
+    },
+    "Lazy Loading": {
+        "module": "indexer/multi_language_parser.py",
+        "purpose": "Cargar parsers solo cuando se necesitan",
+        "impact": "50% reducción memoria inicial"
+    },
+    "Batch Processing": {
+        "module": "embeddings/embedding_generator.py",
+        "purpose": "Procesar múltiples items simultáneamente",
+        "impact": "70% mejora eficiencia GPU/CPU"
+    }
+}
+4.2 Límites y Capacidades
+
+python
+SYSTEM_LIMITS = {
+    "hard_limits": {
+        "max_file_size": "10 MB",
+        "max_project_size": "1 GB",
+        "max_concurrent_analyses": 10,
+        "max_websocket_connections": 1000,
+        "max_embedding_dimensions": 384
+    },
+    "soft_limits": {
+        "recommended_file_size": "< 1 MB",
+        "recommended_project_size": "< 100 MB",
+        "optimal_concurrent_queries": 50,
+        "memory_per_agent": "512 MB"
+    },
+    "scalability": {
+        "horizontal": "Kubernetes auto-scaling",
+        "vertical": "Resource limits por componente",
+        "sharding": "Por proyecto y tipo de dato"
+    }
+}
+5. COHESIÓN Y ACOPLAMIENTO DETALLADO
+
+5.1 Matriz de Dependencias
+
+python
+DEPENDENCY_MATRIX = {
+    "core": {
+        "depends_on": ["utils"],
+        "used_by": ["api", "agents", "indexer", "embeddings", "graph", "memory", "learning"],
+        "coupling": "Bajo (inyección de dependencias)"
+    },
+    "indexer": {
+        "depends_on": ["utils", "core"],
+        "used_by": ["agents", "embeddings", "graph"],
+        "coupling": "Medio (datos estructurados)"
+    },
+    "embeddings": {
+        "depends_on": ["utils", "indexer"],
+        "used_by": ["agents", "graph", "memory"],
+        "coupling": "Medio (representaciones vectoriales)"
+    },
+    "agents": {
+        "depends_on": ["core", "utils", "indexer", "embeddings", "graph", "memory"],
+        "used_by": ["api", "learning"],
+        "coupling": "Alto (integra múltiples módulos)"
+    },
+    "api": {
+        "depends_on": ["core", "utils"],
+        "used_by": ["externo"],
+        "coupling": "Bajo (interfaz bien definida)"
+    }
+}
+5.2 Métricas de Calidad Arquitectónica
+
+python
+ARCHITECTURE_METRICS = {
+    "cohesion": {
+        "module_cohesion_avg": 8.2,
+        "functional_cohesion_score": 9.1,
+        "sequential_cohesion_score": 7.8,
+        "communicational_cohesion_score": 8.5
+    },
+    "coupling": {
+        "data_coupling_score": 8.9,
+        "stamp_coupling_score": 7.2,
+        "control_coupling_score": 6.8,
+        "external_coupling_score": 4.5,
+        "common_coupling_score": 3.1,
+        "content_coupling_score": 1.0
+    },
+    "complexity": {
+        "cyclomatic_complexity_avg": 4.2,
+        "cognitive_complexity_avg": 3.8,
+        "halstead_difficulty_avg": 12.5
+    }
+}
+6. RECOMENDACIONES DE IMPLEMENTACIÓN
+
+6.1 Orden de Implementación Optimizado
+
+python
+IMPLEMENTATION_PRIORITY = [
+    # Fase 1: Fundación (Semanas 1-4)
+    {
+        "modules": ["core/exceptions.py", "utils/"],
+        "priority": "CRÍTICA",
+        "rationale": "Establecer contratos y utilidades compartidas"
+    },
+    {
+        "modules": ["core/config_manager.py", "core/orchestrator.py"],
+        "priority": "ALTA",
+        "rationale": "Sistema central operativo básico"
+    },
+    
+    # Fase 2: Análisis (Semanas 5-8)
+    {
+        "modules": ["indexer/project_scanner.py", "indexer/file_processor.py"],
+        "priority": "ALTA",
+        "rationale": "Capacidad básica de análisis de proyectos"
+    },
+    {
+        "modules": ["indexer/multi_language_parser.py"],
+        "priority": "MEDIA",
+        "rationale": "Soporte multi-lenguaje (Python primero)"
+    },
+    
+    # Fase 3: Memoria (Semanas 9-12)
+    {
+        "modules": ["embeddings/", "graph/knowledge_graph.py"],
+        "priority": "MEDIA",
+        "rationale": "Sistema de conocimiento persistente"
+    }
+]
+6.2 Puntos de Atención (Bottlenecks Potenciales)
+
+python
+ATTENTION_POINTS = {
+    "high_risk": [
+        {
+            "component": "multi_language_parser.py",
+            "issue": "Parsing de archivos grandes",
+            "mitigation": "Implementar streaming parsing"
+        },
+        {
+            "component": "embedding_generator.py",
+            "issue": "Generación de embeddings en CPU",
+            "mitigation": "GPU acceleration y batching"
+        }
+    ],
+    "medium_risk": [
+        {
+            "component": "graph_query_engine.py",
+            "issue": "Consultas de grafo complejas",
+            "mitigation": "Indices compuestos y caching"
+        },
+        {
+            "component": "agent_orchestrator.py",
+            "issue": "Coordinación de múltiples agentes",
+            "mitigation": "Async/await con timeouts"
+        }
+    ]
+}
+7. RESUMEN DE IMPLEMENTACIÓN PARALELA
+
+Esta estructura detallada permite:
+
+Desacoplamiento Total: Cada módulo tiene responsabilidades claramente definidas
+Interfaces Bien Definidas: Funciones con propósitos específicos y predecibles
+Dependencias Mínimas: Módulos dependen de interfaces, no de implementaciones
+Testing Independiente: Cada función puede ser probada de forma aislada
+Paralelización Segura: Múltiples equipos pueden implementar módulos simultáneamente
+Reglas para Implementación Paralela:
+
+Cada módulo debe implementar exactamente las funciones listadas
+La comunicación entre módulos debe usar las interfaces definidas
+Los cambios en interfaces requieren coordinación entre equipos
+Cada función debe mantener su firma (parámetros y retorno) como está definida
+Las excepciones personalizadas deben heredar de las definidas en core/exceptions.py
+8. CONCLUSIÓN
+
+8.1 Fortalezas Arquitectónicas
+
+Alta Cohesión: Cada módulo tiene responsabilidades bien definidas
+Bajo Acoplamiento: Comunicación mediante interfaces y eventos
+Extensibilidad: Diseñado para añadir nuevos agentes, parsers, almacenamientos
+Observabilidad: Métricas, logs y tracing en todos los niveles
+Resiliencia: Patrones como Circuit Breaker y retry automático
+8.2 Oportunidades de Mejora
+
+Separar módulo memory: Dividir en memory_management y cache_management
+Refinar utils: Agrupar utilidades por dominio (file_utils, text_utils, etc.)
+Implementar Data Lake: Para proyectos muy grandes (>1M líneas)
+8.3 Estado de Completitud
+
+ArquiFunciones ahora incluye:
+✅ Todas las funciones principales documentadas
+✅ Funciones privadas de implementación
+✅ Funciones auxiliares y helpers
+✅ Métodos de clases específicas
+✅ Funciones de rendimiento y optimización
+✅ Análisis detallado de cohesión y acoplamiento
+✅ Plan de implementación priorizado
+
+Próximos pasos:
+
+Implementar Fase 1 según prioridades
+Establecer sistema de métricas desde día 1
+Implementar pruebas de carga tempranas
+Crear dashboards de monitoreo
+Documentar patrones de uso comunes
+La arquitectura está COMPLETA, COHERENTE y LISTA PARA IMPLEMENTACIÓN con especificaciones detalladas que permiten trabajo paralelo sin ambigüedades.

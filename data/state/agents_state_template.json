@@ -1,0 +1,248 @@
+{
+  "agent_template": {
+    "agent_id": "{{AGENT_ID}}",
+    "agent_type": "{{AGENT_TYPE}}",
+    "agent_name": "{{AGENT_NAME}}",
+    "version": "1.0.0",
+
+    "state": {
+      "current_state": "ready",
+      "previous_state": "initializing",
+      "last_state_change": "{{TIMESTAMP}}",
+      "state_changes": [
+        {
+          "timestamp": "{{TIMESTAMP}}",
+          "from": "initializing",
+          "to": "ready",
+          "reason": "initialization_completed"
+        }
+      ]
+    },
+
+    "initialization": {
+      "initialized_at": "{{TIMESTAMP}}",
+      "initialization_duration_ms": 1250.5,
+      "dependencies_loaded": ["{{DEP1}}", "{{DEP2}}"],
+      "configuration_loaded": true,
+      "resources_allocated": true
+    },
+
+    "configuration": {
+      "general": {
+        "enabled": true,
+        "confidence_threshold": 0.7,
+        "max_processing_time_seconds": 30,
+        "learning_rate": 0.1
+      },
+      "capabilities": [
+        {
+          "name": "{{CAPABILITY_NAME}}",
+          "enabled": true,
+          "confidence_threshold": 0.7,
+          "max_processing_time_seconds": 30
+        }
+      ],
+      "memory_settings": {
+        "short_term_max_size": 100,
+        "long_term_max_size": 1000,
+        "episodic_max_size": 500,
+        "semantic_max_size": 10000,
+        "consolidation_interval_requests": 10
+      },
+      "learning_settings": {
+        "reinforcement_factor": 0.1,
+        "forgetting_factor": 0.01,
+        "adaptation_rate": 0.3,
+        "feedback_integration": true
+      }
+    },
+
+    "memory": {
+      "short_term": {
+        "max_size": 100,
+        "current_size": 25,
+        "items": [
+          {
+            "id": "{{ITEM_ID}}",
+            "type": "{{ITEM_TYPE}}",
+            "content": "{{ITEM_CONTENT}}",
+            "timestamp": "{{TIMESTAMP}}",
+            "access_count": 1
+          }
+        ]
+      },
+      "long_term": {
+        "max_size": 1000,
+        "current_size": 125,
+        "items": [
+          {
+            "id": "{{ITEM_ID}}",
+            "type": "{{ITEM_TYPE}}",
+            "content": "{{ITEM_CONTENT}}",
+            "timestamp": "{{TIMESTAMP}}",
+            "last_accessed": "{{TIMESTAMP}}",
+            "access_count": 5
+          }
+        ]
+      },
+      "episodic": {
+        "max_size": 500,
+        "current_size": 75,
+        "episodes": [
+          {
+            "id": "{{EPISODE_ID}}",
+            "type": "processing",
+            "input": "{{INPUT}}",
+            "output": "{{OUTPUT}}",
+            "timestamp": "{{TIMESTAMP}}",
+            "success": true,
+            "learning_applied": false
+          }
+        ]
+      },
+      "semantic": {
+        "max_size": 10000,
+        "current_size": 1250,
+        "concepts": [
+          {
+            "id": "{{CONCEPT_ID}}",
+            "name": "{{CONCEPT_NAME}}",
+            "description": "{{CONCEPT_DESCRIPTION}}",
+            "confidence": 0.85,
+            "learned_at": "{{TIMESTAMP}}",
+            "last_used": "{{TIMESTAMP}}",
+            "usage_count": 15
+          }
+        ]
+      }
+    },
+
+    "knowledge": {
+      "patterns_learned": [
+        {
+          "pattern_id": "{{PATTERN_ID}}",
+          "pattern_type": "{{PATTERN_TYPE}}",
+          "description": "{{PATTERN_DESCRIPTION}}",
+          "confidence": 0.9,
+          "examples": ["{{EXAMPLE1}}", "{{EXAMPLE2}}"],
+          "learned_at": "{{TIMESTAMP}}",
+          "last_applied": "{{TIMESTAMP}}",
+          "application_count": 25
+        }
+      ],
+      "rules_inferred": [
+        {
+          "rule_id": "{{RULE_ID}}",
+          "condition": "{{CONDITION}}",
+          "action": "{{ACTION}}",
+          "confidence": 0.8,
+          "support_count": 125,
+          "inferred_at": "{{TIMESTAMP}}"
+        }
+      ],
+      "examples_stored": [
+        {
+          "example_id": "{{EXAMPLE_ID}}",
+          "input": "{{INPUT}}",
+          "output": "{{OUTPUT}}",
+          "correctness": 1.0,
+          "stored_at": "{{TIMESTAMP}}",
+          "used_count": 5
+        }
+      ]
+    },
+
+    "metrics": {
+      "requests": {
+        "total_processed": 1500,
+        "successful": 1425,
+        "failed": 75,
+        "success_rate": 0.95
+      },
+      "performance": {
+        "avg_processing_time_ms": 45.2,
+        "p95_processing_time_ms": 125.3,
+        "p99_processing_time_ms": 250.8,
+        "max_processing_time_ms": 500.1
+      },
+      "confidence": {
+        "avg_confidence": 0.85,
+        "confidence_threshold": 0.7,
+        "confidence_distribution": {
+          "0.0-0.2": 25,
+          "0.2-0.4": 50,
+          "0.4-0.6": 125,
+          "0.6-0.8": 500,
+          "0.8-1.0": 800
+        }
+      },
+      "learning": {
+        "total_learning_events": 250,
+        "feedback_received": 125,
+        "concepts_learned": 75,
+        "patterns_detected": 50,
+        "knowledge_refinements": 25
+      }
+    },
+
+    "dependencies": {
+      "required_services": ["{{SERVICE1}}", "{{SERVICE2}}"],
+      "connected_services": {
+        "{{SERVICE1}}": {
+          "status": "connected",
+          "last_check": "{{TIMESTAMP}}",
+          "latency_ms": 5.2
+        }
+      },
+      "agent_collaborations": [
+        {
+          "agent_id": "{{COLLAB_AGENT_ID}}",
+          "collaboration_type": "{{COLLAB_TYPE}}",
+          "success_rate": 0.85,
+          "total_collaborations": 25
+        }
+      ]
+    },
+
+    "errors": {
+      "total_errors": 75,
+      "error_recovery_rate": 0.95,
+      "errors_by_type": {
+        "validation_error": 25,
+        "processing_error": 30,
+        "dependency_error": 10,
+        "timeout_error": 10
+      },
+      "recent_errors": [
+        {
+          "timestamp": "{{TIMESTAMP}}",
+          "error_type": "processing_error",
+          "message": "{{ERROR_MESSAGE}}",
+          "context": "{{ERROR_CONTEXT}}",
+          "resolved": true
+        }
+      ]
+    },
+
+    "health": {
+      "overall_health": "healthy",
+      "component_health": {
+        "memory": "healthy",
+        "processing": "healthy",
+        "learning": "healthy",
+        "dependencies": "healthy"
+      },
+      "last_health_check": "{{TIMESTAMP}}",
+      "health_check_interval_seconds": 60
+    },
+
+    "metadata": {
+      "created_at": "{{TIMESTAMP}}",
+      "last_updated": "{{TIMESTAMP}}",
+      "total_uptime_seconds": 86400,
+      "state_file_version": "1.0.0",
+      "checksum": "{{CHECKSUM}}",
+      "compressed": false
+    }
+  }
+}

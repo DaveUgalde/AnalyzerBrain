@@ -1,0 +1,207 @@
+====================================================================================================
+ANÁLISIS EXHAUSTIVO DEL PROYECTO
+====================================================================================================
+Proyecto: AnalyzerBrain
+Fecha: 2026-01-29T22:56:55.004040
+====================================================================================================
+
+📊 RESUMEN EJECUTIVO
+--------------------------------------------------------------------------------
+Puntuación General: 39.8/100
+Estado: CRÍTICO
+Usabilidad: No recomendado para uso sin reestructuración
+Descripción: El proyecto tiene problemas fundamentales.
+Total Issues: 11082
+Total Recomendaciones: 5157
+
+📈 PUNTUACIONES POR CATEGORÍA
+--------------------------------------------------------------------------------
+STRUCTURE             90.0/100 ██████████████████░░
+COMPLETENESS         100.0/100 ████████████████████
+COHERENCE             36.2/100 ███████░░░░░░░░░░░░░
+CODE_QUALITY           0.0/100 ░░░░░░░░░░░░░░░░░░░░
+FUNCTIONALITY          0.0/100 ░░░░░░░░░░░░░░░░░░░░
+TESTS                  0.0/100 ░░░░░░░░░░░░░░░░░░░░
+USABILITY            100.0/100 ████████████████████
+DOCUMENTATION         61.7/100 ████████████░░░░░░░░
+PERFORMANCE           10.0/100 ██░░░░░░░░░░░░░░░░░░
+SECURITY               0.0/100 ░░░░░░░░░░░░░░░░░░░░
+
+✅ FORTALEZAS
+--------------------------------------------------------------------------------
+• structure
+• completeness
+• usability
+
+⚠️  DEBILIDADES
+--------------------------------------------------------------------------------
+• coherence
+• code_quality
+• functionality
+• tests
+• performance
+• security
+
+🔍 RESULTADOS DETALLADOS
+====================================================================================================
+
+STRUCTURE: 90.0/100
+------------------------------------------------------------
+
+COMPLETENESS: 100.0/100
+------------------------------------------------------------
+
+COHERENCE: 36.2/100
+------------------------------------------------------------
+ISSUES:
+  • Error de sintaxis en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/graph_exports/__init__.py: f-string expression part cannot include a backslash (<unknown>, line 122)
+  • Workflow sin punto de entrada claro: /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/prompt_toolkit/application/run_in_terminal.py
+  • Workflow sin punto de entrada claro: /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/core/workflow_manager.py
+  • Workflow sin punto de entrada claro: /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/dotenv/main.py
+  • Workflow sin punto de entrada claro: /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/typer/main.py
+  • Workflow sin punto de entrada claro: /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/markdown_it/main.py
+  • Workflow sin punto de entrada claro: /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/pydantic_settings/main.py
+  • Workflow sin punto de entrada claro: /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/pydantic/main.py
+  • Workflow sin punto de entrada claro: /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/pydantic/v1/main.py
+  • Workflow sin punto de entrada claro: /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/scipy/_lib/cobyqa/main.py
+
+CODE_QUALITY: 0.0/100
+------------------------------------------------------------
+ISSUES:
+  • Error de sintaxis en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/graph_exports/__init__.py: f-string expression part cannot include a backslash (<unknown>, line 122)
+  • Alta complejidad en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/scripts/verify_data_integrity.py: 58
+  • Alta complejidad en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/scripts/query_project.py: 42
+  • Alta complejidad en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/scripts/exhaustive_project_analyzer_v2.py: 379
+  • Alta complejidad en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/scripts/backup_restore.py: 32
+  • Alta complejidad en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/scripts/migrate_data.py: 31
+  • Alta complejidad en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/scripts/analyze_project.py: 38
+  • Alta complejidad en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/threadpoolctl.py: 90
+  • Alta complejidad en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/six.py: 106
+  • Alta complejidad en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/typing_extensions.py: 556
+
+RECOMENDACIONES:
+  • Implementar función set_additional_attributes en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/threadpoolctl.py
+  • Implementar función get_num_threads en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/threadpoolctl.py
+  • Implementar función set_num_threads en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/threadpoolctl.py
+  • Implementar función get_version en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/threadpoolctl.py
+  • Implementar función exec_module en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/six.py
+  • Implementar función __int__ en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/typing_extensions.py
+  • Implementar función __float__ en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/typing_extensions.py
+  • Implementar función __complex__ en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/typing_extensions.py
+  • Implementar función __bytes__ en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/typing_extensions.py
+  • Implementar función __index__ en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/typing_extensions.py
+
+FUNCTIONALITY: 0.0/100
+------------------------------------------------------------
+ISSUES:
+  • Función crítica '_validate_required_claims' parece subimplementada en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jwt.py
+  • Función crítica '_validate_iat' parece subimplementada en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jwt.py
+  • Función crítica '_validate_nbf' parece subimplementada en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jwt.py
+  • Función crítica '_validate_exp' parece subimplementada en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jwt.py
+  • Función crítica '_validate_headers' parece subimplementada en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jws.py
+  • Función crítica '_validate_kid' parece subimplementada en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jws.py
+  • Función crítica '_execute_with_retry' parece subimplementada en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/diskcache/core.py
+  • Función crítica '_match_constraint' parece subimplementada en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/astroid/constraint.py
+  • Función crítica '_invalidate_cache' parece subimplementada en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/astroid/context.py
+  • Función crítica 'visit_evaluatedobject' parece subimplementada en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/astroid/nodes/as_string.py
+
+RECOMENDACIONES:
+  • Revisar implementación de _validate_required_claims en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jwt.py
+  • Revisar implementación de _validate_iat en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jwt.py
+  • Revisar implementación de _validate_nbf en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jwt.py
+  • Revisar implementación de _validate_exp en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jwt.py
+  • Revisar implementación de _validate_headers en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jws.py
+  • Revisar implementación de _validate_kid en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/jwt/api_jws.py
+  • Revisar implementación de _execute_with_retry en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/diskcache/core.py
+  • Revisar implementación de _match_constraint en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/astroid/constraint.py
+  • Revisar implementación de _invalidate_cache en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/astroid/context.py
+  • Revisar implementación de visit_evaluatedobject en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/astroid/nodes/as_string.py
+
+TESTS: 0.0/100
+------------------------------------------------------------
+ISSUES:
+  • Cobertura baja para módulo src/core: 0.0%
+  • Cobertura baja para módulo src/indexer: 0.0%
+  • Cobertura baja para módulo src/embeddings: 0.0%
+  • Cobertura baja para módulo src/graph: 0.0%
+  • Cobertura baja para módulo src/agents: 0.0%
+  • Cobertura baja para módulo src/memory: 0.0%
+  • Cobertura baja para módulo src/api: 0.0%
+  • Cobertura baja para módulo src/learning: 0.0%
+  • Cobertura baja para módulo src/utils: 0.0%
+  • Problemas de calidad en tests: tests/unit/test_embeddings_generator.py
+
+RECOMENDACIONES:
+  • Añadir tests para módulo src/core
+  • Añadir tests para módulo src/indexer
+  • Añadir tests para módulo src/embeddings
+  • Añadir tests para módulo src/graph
+  • Añadir tests para módulo src/agents
+  • Añadir tests para módulo src/memory
+  • Añadir tests para módulo src/api
+  • Añadir tests para módulo src/learning
+  • Añadir tests para módulo src/utils
+  • Crear tests para los archivos críticos
+
+USABILITY: 100.0/100
+------------------------------------------------------------
+
+DOCUMENTATION: 61.7/100
+------------------------------------------------------------
+ISSUES:
+  • Documentación en código baja: 36.2%
+
+RECOMENDACIONES:
+  • Añadir docstrings a funciones y clases importantes
+
+PERFORMANCE: 10.0/100
+------------------------------------------------------------
+ISSUES:
+  • Posibles bottlenecks identificados: 11
+
+RECOMENDACIONES:
+  • Optimizar: config/__init__.py - Línea 203: Serialización JSON
+  • Optimizar: tests/unit/test_embeddings_generator.py - Línea 587: Loop grande potencial
+  • Optimizar: tests/unit/test_agents_base.py - Línea 247: Operación de sorting
+
+SECURITY: 0.0/100
+------------------------------------------------------------
+ISSUES:
+  • Vulnerabilidades potenciales identificadas: 3
+
+RECOMENDACIONES:
+  • Corregir vulnerabilidad: config/__init__.py - Línea 46: Contraseña en código
+  • Corregir vulnerabilidad: scripts/init_project.py - Línea 268: Contraseña en código
+  • Corregir vulnerabilidad: scripts/exhaustive_project_analyzer_v2.py - Línea 2063: Uso de eval()
+
+📋 PLAN DE ACCIÓN PRIORIZADO
+====================================================================================================
+
+🚨 CRÍTICO (Hacer inmediatamente):
+--------------------------------------------------------------------------------
+• [code_quality] Implementar función set_additional_attributes en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/threadpoolctl.py
+• [code_quality] Implementar función get_num_threads en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/threadpoolctl.py
+• [code_quality] Implementar función set_num_threads en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/threadpoolctl.py
+• [code_quality] Implementar función get_version en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/threadpoolctl.py
+• [code_quality] Implementar función exec_module en /Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/venv/lib/python3.11/site-packages/six.py
+
+🔴 ALTA (Hacer pronto):
+--------------------------------------------------------------------------------
+
+🟡 MEDIA (Planificar):
+--------------------------------------------------------------------------------
+• [documentation] Añadir docstrings a funciones y clases importantes
+
+🟢 BAJA (Mejora continua):
+--------------------------------------------------------------------------------
+
+====================================================================================================
+CONCLUSIÓN
+====================================================================================================
+❌ EL PROYECTO NECESITA REESTRUCTURACIÓN
+No se recomienda usar en producción sin cambios significativos.
+Comenzar por las acciones críticas y reconsiderar arquitectura.
+
+====================================================================================================
+FIN DEL ANÁLISIS
+====================================================================================================

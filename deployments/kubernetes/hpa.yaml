@@ -1,0 +1,214 @@
+# =========================================================
+# Prometheus (Prometheus Operator)
+# =========================================================
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: project-brain
+  namespace: project-brain
+  labels:
+    app: project-brain
+    component: monitoring
+spec:
+  replicas: 1
+  serviceAccountName: prometheus
+  serviceMonitorSelector:
+    matchLabels:
+      app: project-brain
+  serviceMonitorNamespaceSelector:
+    matchNames:
+      - project-brain
+  resources:
+    requests:
+      memory: 400Mi
+      cpu: 200m
+    limits:
+      memory: 2Gi
+      cpu: 1
+  enableAdminAPI: false
+  version: v2.45.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-brain-prometheus
+  namespace: project-brain
+  labels:
+    app: project-brain
+    component: monitoring
+spec:
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 9090
+      targetPort: web
+  selector:
+    prometheus: project-brain
+---
+# =========================================================
+# Grafana
+# =========================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-brain-grafana
+  namespace: project-brain
+  labels:
+    app: project-brain
+    component: monitoring
+    tier: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: project-brain
+      component: monitoring
+      tier: grafana
+  template:
+    metadata:
+      labels:
+        app: project-brain
+        component: monitoring
+        tier: grafana
+    spec:
+      securityContext:
+        runAsUser: 472
+        runAsGroup: 472
+        fsGroup: 472
+        runAsNonRoot: true
+      containers:
+        - name: grafana
+          image: grafana/grafana:10.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: admin
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: project-brain-secrets
+                  key: grafana-admin-password
+            - name: GF_INSTALL_PLUGINS
+              value: grafana-piechart-panel
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+            - name: grafana-dashboards
+              mountPath: /etc/grafana/provisioning/dashboards
+            - name: grafana-datasources
+              mountPath: /etc/grafana/provisioning/datasources
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 1Gi
+              cpu: 500m
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 5
+      volumes:
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: grafana-pvc
+        - name: grafana-dashboards
+          configMap:
+            name: grafana-dashboards
+        - name: grafana-datasources
+          configMap:
+            name: grafana-datasources
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+  namespace: project-brain
+  labels:
+    app: project-brain
+    component: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
+---
+# =========================================================
+# Grafana Dashboards Provisioning
+# =========================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: project-brain
+  labels:
+    app: project-brain
+    component: monitoring
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: Project Brain
+        orgId: 1
+        folder: Project Brain
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /etc/grafana/provisioning/dashboards
+---
+# =========================================================
+# Grafana Datasources
+# =========================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: project-brain
+  labels:
+    app: project-brain
+    component: monitoring
+data:
+  prometheus.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://project-brain-prometheus:9090
+        isDefault: true
+        editable: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-brain-grafana
+  namespace: project-brain
+  labels:
+    app: project-brain
+    component: monitoring
+    tier: grafana
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
+  selector:
+    app: project-brain
+    component: monitoring
+    tier: grafana

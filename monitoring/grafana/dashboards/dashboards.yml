@@ -1,0 +1,28 @@
+# monitoring/grafana/dashboards/dashboard.yml
+# Configuración de provisioning de dashboards para Grafana
+# Project Brain
+
+apiVersion: 1
+
+providers:
+  - name: Project Brain Dashboards
+    orgId: 1
+    folder: Project Brain
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/project-brain
+      foldersFromFilesStructure: true
+
+  - name: Default Dashboards
+    orgId: 1
+    folder: Default
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 60
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/provisioning/dashboards/default
+      foldersFromFilesStructure: true

@@ -1,0 +1,112 @@
+# ============================================
+# APIs Y WEB - PROJECT BRAIN
+# ============================================
+
+# FastAPI core
+fastapi>=0.100.0,<0.111.0
+uvicorn[standard]>=0.23.0,<0.30.0
+httpx>=0.25.0,<0.26.0
+
+# WebSockets
+websockets>=12.0,<13.0
+
+# gRPC
+grpcio>=1.56.0,<2.0.0
+grpcio-tools>=1.56.0,<2.0.0
+grpcio-reflection>=1.56.0,<2.0.0
+protobuf>=4.23.0,<5.0.0
+
+# Authentication & Security
+python-jose[cryptography]>=3.3.0,<4.0.0
+passlib[bcrypt]>=1.7.4,<2.0.0
+python-multipart>=0.0.6,<0.0.7
+itsdangerous>=2.1.0,<3.0.0
+pyjwt>=2.8.0,<3.0.0
+
+# Rate limiting
+slowapi>=0.1.9,<0.2.0
+limits>=3.6.0,<4.0.0
+
+# Validation
+pydantic>=2.0.0,<3.0.0
+email-validator>=2.0.0,<3.0.0
+
+# Templates / docs
+jinja2>=3.1.0,<4.0.0
+
+# Monitoring & Observability
+prometheus-client>=0.17.0,<1.0.0
+opentelemetry-api>=1.20.0,<2.0.0
+opentelemetry-sdk>=1.20.0,<2.0.0
+opentelemetry-instrumentation-fastapi>=0.40b0,<0.41.0
+
+# Compression
+brotli>=1.0.9,<2.0.0
+zstandard>=0.21.0,<1.0.0
+
+# Caching
+redis>=5.0.0,<6.0.0
+
+# Background tasks
+celery>=5.3.0,<6.0.0
+arq>=0.27.0,<0.28.0
+dramatiq>=1.14.0,<2.0.0
+
+# File handling
+aiofiles>=23.0.0,<24.0.0
+python-magic>=0.4.27,<0.5.0
+
+# API utilities
+fastapi-versioning>=0.10.0,<0.11.0
+fastapi-pagination>=0.12.0,<0.13.0
+fastapi-filter>=1.0.0,<2.0.0
+fastapi-cache2>=0.2.0,<0.3.0
+fastapi-limiter>=0.1.5,<0.2.0
+
+# Logging
+structlog>=23.1.0,<24.0.0
+python-json-logger>=2.0.0,<3.0.0
+
+# Configuration
+pydantic-settings>=2.0.0,<3.0.0
+
+# CLI
+typer>=0.9.0,<1.0.0
+click>=8.1.0,<9.0.0
+
+# Database & migrations
+sqlalchemy>=2.0.0,<3.0.0
+alembic>=1.12.0,<2.0.0
+
+# Testing
+pytest>=7.4.0,<8.0.0
+pytest-asyncio>=0.21.0,<1.0.0
+pytest-mock>=3.11.0,<4.0.0
+pytest-cov>=4.1.0,<5.0.0
+respx>=0.20.0,<0.21.0
+pytest-httpx>=0.30.0,<0.31.0
+
+# Performance testing
+locust>=2.15.0,<3.0.0
+
+# Client & schema generation
+openapi-python-client>=0.20.0,<0.21.0
+datamodel-code-generator>=0.25.0,<0.26.0
+
+# Validation utilities
+cerberus>=1.3.0,<2.0.0
+
+# Date / time
+pendulum>=2.1.0,<3.0.0
+arrow>=1.2.0,<2.0.0
+
+# Internationalization
+babel>=2.12.0,<3.0.0
+
+# ASGI servers (alternatives)
+hypercorn>=0.14.0,<0.15.0
+daphne>=4.0.0,<5.0.0
+
+# WSGI / process management
+gunicorn>=21.0.0,<22.0.0
+supervisor>=4.2.0,<5.0.0

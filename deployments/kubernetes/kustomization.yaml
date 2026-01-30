@@ -1,0 +1,64 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: project-brain
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - serviceaccount.yaml
+  - postgresql.yaml
+  - neo4j.yaml
+  - redis.yaml
+  - api-deployment.yaml
+  - nginx-ingress.yaml
+  - monitoring.yaml
+  - hpa.yaml
+
+# -------------------------------------------------
+# Labels comunes a todos los recursos
+# -------------------------------------------------
+commonLabels:
+  app: project-brain
+  managed-by: kustomize
+  environment: production
+
+# -------------------------------------------------
+# Patches estratégicos
+# -------------------------------------------------
+patchesStrategicMerge:
+  - api-deployment-patch.yaml
+
+# -------------------------------------------------
+# ConfigMap Generator
+# -------------------------------------------------
+configMapGenerator:
+  - name: project-brain-config
+    files:
+      - system.yaml=config/system.yaml
+      - models.yaml=config/models.yaml
+      - agents.yaml=config/agents.yaml
+    options:
+      disableNameSuffixHash: true
+
+# -------------------------------------------------
+# Secret Generator
+# -------------------------------------------------
+secretGenerator:
+  - name: project-brain-secrets
+    files:
+      - postgres-password=secrets/postgres-password.txt
+      - neo4j-password=secrets/neo4j-password.txt
+      - redis-password=secrets/redis-password.txt
+      - jwt-secret=secrets/jwt-secret.txt
+    type: Opaque
+    options:
+      disableNameSuffixHash: true
+
+# -------------------------------------------------
+# Transformadores
+# -------------------------------------------------
+transformers:
+  - transformers/annotations.yaml
+  - transformers/labels.yaml

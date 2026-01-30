@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="
+           http://graphml.graphdrawing.org/xmlns
+           http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+
+  <!-- ================= NODE KEYS ================= -->
+
+  <key id="type" for="node" attr.name="type" attr.type="string"/>
+  <key id="id" for="node" attr.name="id" attr.type="string"/>
+  <key id="name" for="node" attr.name="name" attr.type="string"/>
+  <key id="path" for="node" attr.name="path" attr.type="string"/>
+  <key id="extension" for="node" attr.name="extension" attr.type="string"/>
+  <key id="language" for="node" attr.name="language" attr.type="string"/>
+  <key id="signature" for="node" attr.name="signature" attr.type="string"/>
+  <key id="return_type" for="node" attr.name="return_type" attr.type="string"/>
+  <key id="issue_type" for="node" attr.name="issue_type" attr.type="string"/>
+  <key id="severity" for="node" attr.name="severity" attr.type="string"/>
+  <key id="message" for="node" attr.name="message" attr.type="string"/>
+  <key id="file_path" for="node" attr.name="file_path" attr.type="string"/>
+
+  <key id="line_count" for="node" attr.name="line_count" attr.type="int"/>
+  <key id="start_line" for="node" attr.name="start_line" attr.type="int"/>
+  <key id="end_line" for="node" attr.name="end_line" attr.type="int"/>
+  <key id="method_count" for="node" attr.name="method_count" attr.type="int"/>
+  <key id="inheritance_depth" for="node" attr.name="inheritance_depth" attr.type="int"/>
+  <key id="complexity" for="node" attr.name="complexity" attr.type="int"/>
+
+  <key id="confidence" for="node" attr.name="confidence" attr.type="double"/>
+  <key id="created_at" for="node" attr.name="created_at" attr.type="string"/>
+
+  <!-- ================= EDGE KEYS ================= -->
+
+  <key id="relationship_type" for="edge" attr.name="relationship_type" attr.type="string"/>
+  <key id="weight" for="edge" attr.name="weight" attr.type="double"/>
+  <key id="confidence_edge" for="edge" attr.name="confidence" attr.type="double"/>
+  <key id="line_number" for="edge" attr.name="line_number" attr.type="int"/>
+  <key id="import_type" for="edge" attr.name="import_type" attr.type="string"/>
+  <key id="usage_type" for="edge" attr.name="usage_type" attr.type="string"/>
+  <key id="similarity_type" for="edge" attr.name="similarity_type" attr.type="string"/>
+  <key id="similarity_score" for="edge" attr.name="similarity_score" attr.type="double"/>
+  <key id="created_at_edge" for="edge" attr.name="created_at" attr.type="string"/>
+
+  <!-- ================= GRAPH KEYS ================= -->
+
+  <key id="project_id" for="graph" attr.name="project_id" attr.type="string"/>
+  <key id="export_timestamp" for="graph" attr.name="export_timestamp" attr.type="string"/>
+  <key id="version" for="graph" attr.name="version" attr.type="string"/>
+
+  <graph id="G" edgedefault="directed">
+    <data key="project_id">{{PROJECT_ID}}</data>
+    <data key="export_timestamp">{{TIMESTAMP}}</data>
+    <data key="version">1.0.1</data>
+
+    <!-- ================= FILE NODES ================= -->
+    {{#FILES}}
+    <node id="file_{{ID}}">
+      <data key="type">File</data>
+      <data key="id">{{ID}}</data>
+      <data key="name">{{NAME}}</data>
+      <data key="path">{{PATH}}</data>
+      <data key="extension">{{EXTENSION}}</data>
+      <data key="language">{{LANGUAGE}}</data>
+      <data key="line_count">{{LINE_COUNT}}</data>
+      <data key="complexity">{{COMPLEXITY}}</data>
+      <data key="created_at">{{CREATED_AT}}</data>
+    </node>
+    {{/FILES}}
+
+    <!-- ================= FUNCTION NODES ================= -->
+    {{#FUNCTIONS}}
+    <node id="func_{{ID}}">
+      <data key="type">Function</data>
+      <data key="id">{{ID}}</data>
+      <data key="name">{{NAME}}</data>
+      <data key="signature">{{SIGNATURE}}</data>
+      <data key="return_type">{{RETURN_TYPE}}</data>
+      <data key="start_line">{{START_LINE}}</data>
+      <data key="end_line">{{END_LINE}}</data>
+      <data key="complexity">{{CYCLOMATIC_COMPLEXITY}}</data>
+      <data key="created_at">{{CREATED_AT}}</data>
+    </node>
+    {{/FUNCTIONS}}
+
+    <!-- ================= CLASS NODES ================= -->
+    {{#CLASSES}}
+    <node id="class_{{ID}}">
+      <data key="type">Class</data>
+      <data key="id">{{ID}}</data>
+      <data key="name">{{NAME}}</data>
+      <data key="method_count">{{METHOD_COUNT}}</data>
+      <data key="inheritance_depth">{{INHERITANCE_DEPTH}}</data>
+      <data key="created_at">{{CREATED_AT}}</data>
+    </node>
+    {{/CLASSES}}
+
+    <!-- ================= ISSUE NODES ================= -->
+    {{#ISSUES}}
+    <node id="issue_{{ID}}">
+      <data key="type">Issue</data>
+      <data key="id">{{ID}}</data>
+      <data key="issue_type">{{ISSUE_TYPE}}</data>
+      <data key="severity">{{SEVERITY}}</data>
+      <data key="message">{{MESSAGE}}</data>
+      <data key="file_path">{{FILE_PATH}}</data>
+      <data key="confidence">{{CONFIDENCE}}</data>
+      <data key="created_at">{{CREATED_AT}}</data>
+    </node>
+    {{/ISSUES}}
+
+    <!-- ================= RELATIONSHIPS ================= -->
+    {{#CONTAINS_RELATIONS}}
+    <edge id="contains_{{ID}}" source="file_{{SOURCE_ID}}" target="{{TARGET_PREFIX}}_{{TARGET_ID}}">
+      <data key="relationship_type">CONTAINS</data>
+      <data key="weight">{{WEIGHT}}</data>
+      <data key="confidence_edge">{{CONFIDENCE}}</data>
+      <data key="created_at_edge">{{CREATED_AT}}</data>
+    </edge>
+    {{/CONTAINS_RELATIONS}}
+
+  </graph>
+</graphml>

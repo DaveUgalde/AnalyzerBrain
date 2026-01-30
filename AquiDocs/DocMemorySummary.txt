@@ -1,0 +1,13 @@
+episodic_memory.py: Sistema de memoria episódica para eventos específicos con contexto temporal
+memory_cleaner.py: Sistema de limpieza y mantenimiento de memoria
+memory_hierarchy.py: Jerarquía de memoria multi-nivel con promoción y degradación automática
+memory_retriever.py: Sistema avanzado de recuperación con múltiples estrategias
+Cada módulo incluye:
+
+Todas las funciones especificadas en los documentos
+Manejo completo de errores con excepciones personalizadas
+Sistema de métricas y monitoreo
+Documentación completa con docstrings
+Tipado de datos completo
+Configuración mediante Pydantic models
+Implementación de patrones de diseño apropiados

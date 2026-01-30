@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: project-brain
+  labels:
+    name: project-brain
+    environment: production
+    managed-by: kubernetes
+    part-of: analyzer-brain-system

@@ -1,0 +1,255 @@
+# ============================================
+# CONFIGURACIÓN DEL SISTEMA - PROJECT BRAIN
+# ============================================
+
+system:
+  name: "Project Brain"
+  version: "1.0.0"
+  environment: "development"  # development, staging, production
+  log_level: "INFO"
+  debug_mode: false
+  data_dir: "./data"
+  log_dir: "./logs"
+
+  limits:
+    max_project_size_mb: 1024
+    max_file_size_mb: 10
+    max_concurrent_analyses: 5
+    max_concurrent_queries: 100
+    max_analysis_time_minutes: 30
+    max_query_time_seconds: 30
+
+# ============================================
+# PROYECTOS
+# ============================================
+
+projects:
+  supported_extensions:
+    python: [".py", ".pyx", ".pyi"]
+    javascript: [".js", ".jsx"]
+    typescript: [".ts", ".tsx"]
+    java: [".java"]
+    cpp: [".c", ".cpp", ".h", ".hpp"]
+    go: [".go"]
+    rust: [".rs"]
+    csharp: [".cs"]
+    php: [".php"]
+    ruby: [".rb"]
+
+  exclude_patterns:
+    - "**/.git/**"
+    - "**/node_modules/**"
+    - "**/__pycache__/**"
+    - "**/*.min.*"
+    - "**/*.log"
+    - "**/*.spec.*"
+    - "**/*.test.*"
+
+  analysis_levels:
+    quick:
+      timeout_minutes: 5
+      include_tests: false
+      include_docs: false
+
+    standard:
+      timeout_minutes: 15
+      include_tests: true
+      include_docs: true
+
+    comprehensive:
+      timeout_minutes: 30
+      include_tests: true
+      include_docs: true
+
+    deep:
+      timeout_minutes: 30  # alineado con límite global
+      include_tests: true
+      include_docs: true
+      include_security: true
+
+# ============================================
+# EMBEDDINGS
+# ============================================
+
+embeddings:
+  models:
+    text:
+      default: "all_minilm_l6_v2"
+      alternatives:
+        - "all_mpnet_base_v2"
+        - "multi_qa_mpnet_dot_v1"
+
+    code:
+      default: "codebert_base"
+      alternatives:
+        - "graphcodebert_base"
+
+    multilingual:
+      default: "e5_large"
+
+  runtime:
+    device: "auto"  # cpu, cuda, auto
+    batch_size: 32
+    normalize: true
+    cache:
+      enabled: true
+      max_items: 10000
+
+# ============================================
+# APRENDIZAJE
+# ============================================
+
+learning:
+  incremental: true
+  feedback_integration: true
+
+  reinforcement:
+    factor: 0.1
+    decay_rate: 0.01
+    min_confidence: 0.1
+
+  forgetting:
+    enabled: true
+    age_threshold_days: 90
+    relevance_threshold: 0.3
+    strategy: "gradual"
+
+  adaptation:
+    enabled: true
+    learning_rate: 0.3
+    max_domain_shift: 0.5
+
+# ============================================
+# CACHE
+# ============================================
+
+cache:
+  hierarchy:
+    l1_memory:
+      type: "memory"
+      max_items: 1000
+      ttl_seconds: 300
+
+    l2_redis:
+      type: "redis"
+      max_items: 10000
+      ttl_seconds: 3600
+
+    l3_disk:
+      type: "disk"
+      max_items: 100000
+      ttl_seconds: 86400
+
+  eviction_policy: "LRU"
+
+  invalidation:
+    on_change: true
+    on_analysis_update: true
+
+# ============================================
+# SEGURIDAD
+# ============================================
+
+security:
+  authentication:
+    required: false
+    methods: ["api_key", "jwt"]
+
+    api_key:
+      header: "X-API-Key"
+      rotation_days: 90
+
+    jwt:
+      algorithm: "HS256"
+      secret: "${JWT_SECRET}"
+      expiry_hours: 24
+
+  authorization:
+    enabled: false
+    model: "RBAC"
+
+  sandbox:
+    enabled: true
+    level: "process"
+    resource_limits:
+      cpu_cores: 2
+      memory_gb: 4
+      disk_gb: 10
+    network_access: false
+
+# ============================================
+# OBSERVABILIDAD
+# ============================================
+
+observability:
+  metrics:
+    enabled: true
+    port: 9090
+    path: "/metrics"
+
+  logging:
+    level: "INFO"
+    format: "json"
+    file: "./logs/project_brain.log"
+    retention_days: 30
+
+  alerts:
+    enabled: true
+    rules:
+      high_error_rate:
+        condition: "error_rate > 0.05"
+        severity: "warning"
+
+      system_down:
+        condition: "health != healthy"
+        duration: "5m"
+        severity: "critical"
+
+# ============================================
+# BACKUPS
+# ============================================
+
+backup:
+  enabled: true
+  schedule: "0 2 * * *"
+  retention_days: 30
+  location: "./data/backups"
+
+  include:
+    - knowledge_graph
+    - embeddings
+    - configs
+
+  exclude:
+    - cache
+    - temp
+
+# ============================================
+# DESPLIEGUE
+# ============================================
+
+deployment:
+  docker:
+    base_image: "python:3.10-slim"
+    workdir: "/app"
+
+  kubernetes:
+    enabled: false
+    namespace: "project-brain"
+    replicas: 3
+
+    autoscaling:
+      enabled: true
+      min_replicas: 2
+      max_replicas: 10
+      target_cpu: 70
+
+# ============================================
+# DESARROLLO
+# ============================================
+
+development:
+  hot_reload: true
+  debug_toolbar: true
+  profiling: false
+  test_mode: false

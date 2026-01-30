@@ -1,0 +1,264 @@
+
+{
+  "manifest_version": "1.0.0",
+  "system": "Project Brain",
+  "created_at": "{{TIMESTAMP}}",
+  "last_updated": "{{TIMESTAMP}}",
+  
+  "backup_configuration": {
+    "strategy": "full_incremental_hybrid",
+    "schedule": {
+      "full": "0 3 * * *",  
+      "incremental": "0 */6 * * *",  
+      "component": {
+        "database": "0 4 * * *",
+        "embeddings": "0 5 * * *",
+        "graph": "0 6 * * *",
+        "state": "0 */12 * * *"
+      }
+    },
+    "retention": {
+      "full": {
+        "daily": 7,
+        "weekly": 4,
+        "monthly": 12,
+        "yearly": 2
+      },
+      "incremental": {
+        "last_24h": "all",
+        "last_7d": "every_6h",
+        "older_than_7d": "delete"
+      },
+      "snapshots": {
+        "default": 90,
+        "important": "indefinite"
+      }
+    },
+    "compression": {
+      "enabled": true,
+      "algorithm": "gzip",
+      "level": 6,
+      "min_size_mb": 1
+    },
+    "encryption": {
+      "enabled": false, 
+      "algorithm": "AES-256-GCM",
+      "key_rotation_days": 90
+    },
+    "verification": {
+      "verify_after_backup": true,
+      "verify_schedule": "0 4 * * *",
+      "checksum_algorithm": "sha256",
+      "integrity_check": true
+    }
+  },
+  
+  "backup_history": [
+    {
+      "backup_id": "full_20240101_030000",
+      "type": "full",
+      "timestamp": "2024-01-01T03:00:00Z",
+      "status": "completed",
+      "size_bytes": 1250000000,
+      "compressed_size_bytes": 250000000,
+      "compression_ratio": 0.2,
+      "duration_seconds": 1250.5,
+      "components": [
+        "database",
+        "embeddings",
+        "graph",
+        "state",
+        "projects",
+        "config"
+      ],
+      "checksum": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0",
+      "verification": {
+        "verified": true,
+        "verification_timestamp": "2024-01-01T03:30:00Z",
+        "verification_status": "success",
+        "details": "All checks passed"
+      },
+      "metadata": {
+        "system_version": "1.0.0",
+        "total_projects": 15,
+        "total_files": 12500,
+        "total_embeddings": 125000
+      },
+      "storage": {
+        "location": "./data/backups/full/full_20240101_030000.tar.gz",
+        "retention_until": "2024-01-31T03:00:00Z"
+      }
+    },
+    {
+      "backup_id": "incremental_20240101_120000",
+      "type": "incremental",
+      "timestamp": "2024-01-01T12:00:00Z",
+      "status": "completed",
+      "size_bytes": 125000000,
+      "compressed_size_bytes": 25000000,
+      "compression_ratio": 0.2,
+      "duration_seconds": 125.5,
+      "base_backup": "full_20240101_030000",
+      "changes_since_base": {
+        "new_projects": 2,
+        "updated_projects": 3,
+        "new_embeddings": 1250,
+        "new_graph_nodes": 250,
+        "state_changes": 125
+      },
+      "checksum": "b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1",
+      "verification": {
+        "verified": true,
+        "verification_timestamp": "2024-01-01T12:30:00Z",
+        "verification_status": "success"
+      },
+      "storage": {
+        "location": "./data/backups/incremental/incremental_20240101_120000.tar.gz",
+        "retention_until": "2024-01-08T12:00:00Z"
+      }
+    }
+  ],
+  
+  "backup_schedule": {
+    "upcoming": [
+      {
+        "type": "incremental",
+        "scheduled_at": "2024-01-01T18:00:00Z",
+        "estimated_size_bytes": 125000000,
+        "estimated_duration_seconds": 120
+      },
+      {
+        "type": "full",
+        "scheduled_at": "2024-01-02T03:00:00Z",
+        "estimated_size_bytes": 1300000000,
+        "estimated_duration_seconds": 1350
+      }
+    ],
+    "last_24h": {
+      "completed": 4,
+      "failed": 0,
+      "total_size_bytes": 1750000000,
+      "avg_duration_seconds": 875.5
+    }
+  },
+  
+  "storage_metrics": {
+    "total_backups": 125,
+    "total_size_bytes": 125000000000,
+    "total_compressed_size_bytes": 25000000000,
+    "avg_compression_ratio": 0.2,
+    "storage_by_type": {
+      "full": {
+        "count": 30,
+        "total_size_bytes": 100000000000,
+        "avg_size_bytes": 3333333333
+      },
+      "incremental": {
+        "count": 90,
+        "total_size_bytes": 25000000000,
+        "avg_size_bytes": 277777777
+      },
+      "snapshots": {
+        "count": 5,
+        "total_size_bytes": 5000000000,
+        "avg_size_bytes": 1000000000
+      }
+    },
+    "space_utilization": {
+      "total_space_bytes": 1000000000000,
+      "used_space_bytes": 25000000000,
+      "free_space_bytes": 975000000000,
+      "utilization_percent": 2.5
+    }
+  },
+  
+  "performance_metrics": {
+    "backup_performance": {
+      "avg_backup_duration_seconds": 1250.5,
+      "avg_restore_duration_seconds": 1800.2,
+      "throughput_mb_per_second": 100.5,
+      "success_rate": 0.995
+    },
+    "verification_performance": {
+      "avg_verification_time_seconds": 300.5,
+      "verification_success_rate": 0.99,
+      "issues_detected": 5,
+      "issues_resolved": 5
+    }
+  },
+  
+  "retention_status": {
+    "backups_marked_for_deletion": [
+      {
+        "backup_id": "incremental_20231225_120000",
+        "type": "incremental",
+        "timestamp": "2023-12-25T12:00:00Z",
+        "marked_for_deletion_at": "2024-01-01T03:00:00Z",
+        "scheduled_deletion_at": "2024-01-02T03:00:00Z",
+        "reason": "retention_policy_expired"
+      }
+    ],
+    "next_cleanup": "2024-01-02T03:00:00Z",
+    "estimated_space_reclaimed_bytes": 250000000
+  },
+  
+  "recovery_points": [
+    {
+      "recovery_point_id": "rp_20240101_030000",
+      "timestamp": "2024-01-01T03:00:00Z",
+      "backups_required": ["full_20240101_030000"],
+      "estimated_restore_time_seconds": 1800,
+      "system_state": {
+        "version": "1.0.0",
+        "projects_count": 15,
+        "status": "healthy"
+      }
+    },
+    {
+      "recovery_point_id": "rp_20240101_120000",
+      "timestamp": "2024-01-01T12:00:00Z",
+      "backups_required": ["full_20240101_030000", "incremental_20240101_120000"],
+      "estimated_restore_time_seconds": 1925,
+      "system_state": {
+        "version": "1.0.0",
+        "projects_count": 17,
+        "status": "healthy"
+      }
+    }
+  ],
+  
+  "maintenance": {
+    "last_maintenance": "2024-01-01T02:00:00Z",
+    "next_maintenance": "2024-01-02T02:00:00Z",
+    "maintenance_tasks": [
+      {
+        "name": "cleanup_old_backups",
+        "last_run": "2024-01-01T02:00:00Z",
+        "status": "completed",
+        "backups_deleted": 5,
+        "space_reclaimed_bytes": 1250000000
+      },
+      {
+        "name": "verify_all_backups",
+        "last_run": "2024-01-01T04:00:00Z",
+        "status": "completed",
+        "backups_verified": 125,
+        "issues_found": 0
+      },
+      {
+        "name": "update_manifest",
+        "last_run": "2024-01-01T12:00:00Z",
+        "status": "completed"
+      }
+    ]
+  },
+  
+  "metadata": {
+    "manifest_version": "1.0.0",
+    "created_at": "2024-01-01T00:00:00Z",
+    "last_updated": "2024-01-01T12:00:00Z",
+    "checksum": "c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2",
+    "size_bytes": 125000,
+    "compressed": false
+  }
+}

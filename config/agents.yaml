@@ -1,0 +1,281 @@
+# ============================================
+# CONFIGURACIÓN DE AGENTES - PROJECT BRAIN
+# ============================================
+
+agents:
+  enabled:
+    - code_analyzer
+    - qa_agent
+    - architect
+    - detective
+    - curator
+    - analyst
+    - security_agent
+
+  configs:
+
+    code_analyzer:
+      confidence_threshold: 0.7
+      max_processing_time: 30
+      capabilities:
+        - code_analysis
+        - pattern_detection
+        - quality_assessment
+        - complexity_calculation
+      memory_size:
+        short_term: 100
+        long_term: 1000
+        episodic: 500
+        semantic: 5000
+      dependencies:
+        - embeddings
+        - graph
+
+    qa_agent:
+      confidence_threshold: 0.8
+      max_processing_time: 10
+      capabilities:
+        - question_answering
+        - explanation_generation
+        - context_management
+        - clarification_request
+      memory_size:
+        short_term: 200
+        long_term: 500
+        episodic: 1000
+        semantic: 10000
+      dependencies:
+        - embeddings
+        - graph
+        - code_analyzer
+      stream_responses: true
+
+    architect:
+      confidence_threshold: 0.75
+      max_processing_time: 60
+      capabilities:
+        - architecture_review
+        - design_pattern_detection
+        - dependency_analysis
+        - system_design
+      memory_size:
+        short_term: 50
+        long_term: 2000
+        episodic: 1000
+        semantic: 20000
+      dependencies:
+        - graph
+        - code_analyzer
+        - embeddings
+      design_patterns_knowledge_base: ./data/knowledge/design_patterns.json
+
+    detective:
+      confidence_threshold: 0.65
+      max_processing_time: 45
+      capabilities:
+        - issue_investigation
+        - root_cause_analysis
+        - hypothesis_generation
+        - evidence_collection
+      memory_size:
+        short_term: 300
+        long_term: 1500
+        episodic: 2000
+        semantic: 15000
+      dependencies:
+        - graph
+        - code_analyzer
+        - analyst
+      investigation_depth: 5
+
+    curator:
+      confidence_threshold: 0.85
+      max_processing_time: 120
+      capabilities:
+        - knowledge_curation
+        - information_validation
+        - knowledge_organization
+        - quality_assessment
+      memory_size:
+        short_term: 100
+        long_term: 5000
+        episodic: 500
+        semantic: 50000
+      dependencies:
+        - graph
+        - embeddings
+      curation_policies:
+        - validate_sources
+        - check_consistency
+        - remove_duplicates
+        - categorize_knowledge
+
+    analyst:
+      confidence_threshold: 0.7
+      max_processing_time: 30
+      capabilities:
+        - metric_analysis
+        - trend_detection
+        - anomaly_detection
+        - insight_generation
+      memory_size:
+        short_term: 200
+        long_term: 1000
+        episodic: 800
+        semantic: 10000
+      dependencies:
+        - graph
+        - embeddings
+      metrics_to_track:
+        - performance
+        - quality
+        - complexity
+        - maintainability
+
+    security_agent:
+      confidence_threshold: 0.9
+      max_processing_time: 90
+      capabilities:
+        - security_analysis
+        - vulnerability_detection
+        - risk_assessment
+        - security_recommendations
+      memory_size:
+        short_term: 150
+        long_term: 2000
+        episodic: 1000
+        semantic: 25000
+      dependencies:
+        - code_analyzer
+        - graph
+      security_rules_path: ./data/security/security_rules.json
+      cve_database_path: ./data/security/cve_database.json
+
+
+# ============================================
+# COLABORACIÓN ENTRE AGENTES
+# ============================================
+
+collaboration:
+  enabled: true
+  max_collaboration_depth: 3
+  consensus_threshold: 0.6
+  collaboration_protocol: round_robin
+
+  communication_channels:
+    - direct
+    - broadcast
+    - selective
+
+  conflict_resolution:
+    strategy: voting
+    voting_threshold: 0.75
+    authority_agent: curator
+
+
+# ============================================
+# APRENDIZAJE
+# ============================================
+
+learning:
+  enabled: true
+  reinforcement_factor: 0.1
+  forgetting_factor: 0.01
+  feedback_integration: true
+
+  learning_types:
+    reinforcement:
+      enabled: true
+      reward_function: accuracy_based
+      discount_factor: 0.9
+      exploration_rate: 0.1
+
+    supervised:
+      enabled: false
+      training_data_path: ./data/training/agents
+      validation_split: 0.2
+
+    imitation:
+      enabled: true
+      expert_agent: curator
+      imitation_rate: 0.3
+
+  policies:
+    - learn_from_success
+    - learn_from_failure
+    - learn_from_feedback
+    - transfer_learning
+
+  evaluation:
+    frequency: daily
+    metrics:
+      - accuracy
+      - confidence
+      - response_time
+      - user_satisfaction
+
+
+# ============================================
+# MEMORIA
+# ============================================
+
+memory:
+  hierarchy:
+    short_term:
+      capacity: 200
+      retention_minutes: 30
+      access_pattern: fifo
+
+    long_term:
+      capacity: 5000
+      retention_days: 90
+      access_pattern: lru
+
+    episodic:
+      capacity: 1000
+      retention_days: 365
+      access_pattern: timestamp
+
+    semantic:
+      capacity: 100000
+      retention_permanent: true
+      access_pattern: semantic
+
+  consolidation:
+    enabled: true
+    schedule: nightly
+    strategy: replay
+    replay_strength: 0.7
+
+  retrieval:
+    strategies:
+      - similarity_based
+      - context_based
+      - temporal_based
+      - hybrid
+    max_retrieved_items: 10
+    similarity_threshold: 0.7
+
+
+# ============================================
+# SEGURIDAD
+# ============================================
+
+security:
+  sandboxing:
+    enabled: true
+    level: process
+    resource_limits:
+      cpu_cores: 1
+      memory: 2GB
+      disk: 1GB
+    network_access: false
+
+  input_validation:
+    enabled: true
+    max_input_size: 10000
+    encoding: utf-8
+    sanitization_rules_path: ./data/security/sanitization_rules.json
+
+  access_control:
+    enabled: false
