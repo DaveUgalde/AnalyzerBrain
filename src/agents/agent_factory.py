@@ -1,5 +1,8 @@
 """
 agent_factory.py - Fábrica para crear y gestionar agentes.
+
+Versión actualizada manteniendo compatibilidad total con la API original.
+Se han aplicado mejoras de tipado, robustez y legibilidad sin romper contratos.
 """
 
 from __future__ import annotations
@@ -26,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 class AgentType(Enum):
     """Tipos de agentes disponibles."""
+
     CODE_ANALYZER = "code_analyzer"
     ARCHITECT = "architect"
     DETECTIVE = "detective"
@@ -39,6 +43,7 @@ class AgentType(Enum):
 @dataclass(slots=True)
 class AgentConfig:
     """Configuración para crear un agente."""
+
     agent_type: AgentType
     agent_id: str
     capabilities: List[str]
@@ -57,6 +62,7 @@ class AgentFactory:
         self.orchestrator = orchestrator
         self.agent_pool: Dict[str, BaseAgent] = {}
 
+        # Registro de tipos conocidos (API estable)
         self.registered_types: Dict[AgentType, Type[BaseAgent]] = {
             AgentType.CODE_ANALYZER: CodeAnalyzerAgent,
             AgentType.ARCHITECT: ArchitectAgent,
@@ -68,6 +74,7 @@ class AgentFactory:
             AgentType.LEARNING: LearningAgent,
         }
 
+        # Configuraciones por defecto (extensibles)
         self.default_configs: Dict[AgentType, Dict[str, Any]] = {
             AgentType.CODE_ANALYZER: {
                 "memory_size": 2000,
@@ -100,7 +107,7 @@ class AgentFactory:
             raise ValidationError("; ".join(errors))
 
         agent_class = self.registered_types.get(config.agent_type)
-        if not agent_class:
+        if agent_class is None:
             raise ValidationError(f"Tipo de agente no registrado: {config.agent_type}")
 
         try:
@@ -134,7 +141,7 @@ class AgentFactory:
 
             return agent
 
-        except Exception as exc:
+        except Exception as exc:  # pragma: no cover - defensive
             logger.exception("Error creando agente %s", config.agent_id)
             raise BrainException(f"Error creando agente: {exc}") from exc
 
@@ -194,7 +201,7 @@ class AgentFactory:
         if agent_type not in self.registered_types:
             raise ValidationError(f"Tipo de agente no registrado: {agent_type}")
 
-        config = {
+        config: Dict[str, Any] = {
             "agent_type": agent_type.value,
             "memory_size": 1000,
             "learning_enabled": True,

@@ -1,0 +1,123 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+venv/
+.env/
+.env.*
+!.env.example
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MyPy / Ruff
+.mypy_cache/
+.ruff_cache/
+
+# =========================
+# Project Brain runtime
+# =========================
+logs/
+data/
+data/**
+!data/.gitkeep
+
+# Estado del sistema
+state/
+*.state
+*.lock
+
+# Embeddings / vectores
+embeddings/
+chromadb/
+*.bin
+
+# Backups
+backups/
+*.bak
+*.dump
+*.sql
+
+# =========================
+# Docker
+# =========================
+.docker/
+docker-data/
+Docker.raw
+**/Docker.raw
+
+# Docker override files
+docker-compose.override.yml
+
+# =========================
+# Databases
+# =========================
+postgres_data/
+neo4j_data/
+redis_data/
+
+# =========================
+# OS
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# =========================
+# IDEs
+# =========================
+.idea/
+*.iml
+
+# =========================
+# Logs
+# =========================
+*.log
+*.log.*
+
+# =========================
+# Temporary files
+# =========================
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+
+# =========================
+# Security / secrets
+# =========================
+*.key
+*.pem
+*.crt
+*.secret
+
+# =========================
+# Build / dist
+# =========================
+build/
+dist/
+*.egg-info/
+
+# =========================
+# Misc
+# =========================
+.cache/

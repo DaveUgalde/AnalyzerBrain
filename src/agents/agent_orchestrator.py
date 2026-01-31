@@ -1,11 +1,17 @@
 """
 AgentOrchestrator - Coordinates multiple agents for complex tasks.
+
+Updated version preserving full backward compatibility with the original
+public API and runtime behavior, while improving robustness, typing, and
+internal consistency.
 """
 
-from typing import Dict, List, Optional, Any
+from __future__ import annotations
+
 import asyncio
 import uuid
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 from ..core.exceptions import AgentException, ValidationError
 from .base_agent import BaseAgent, AgentInput, AgentOutput
@@ -20,10 +26,10 @@ class AgentOrchestrator:
     def __init__(self, agent_factory: AgentFactory):
         self.agent_factory = agent_factory
         self.active_tasks: Dict[str, Dict[str, Any]] = {}
-        self.task_queue: asyncio.Queue = asyncio.Queue()
+        self.task_queue: asyncio.Queue[Dict[str, Any]] = asyncio.Queue()
         self.agent_performance: Dict[str, List[Dict[str, Any]]] = {}
         self.collaboration_history: List[Dict[str, Any]] = []
-        self._is_running = False
+        self._is_running: bool = False
         self._task_workers: List[asyncio.Task] = []
 
     # ------------------------------------------------------------------
@@ -80,11 +86,11 @@ class AgentOrchestrator:
         agents: List[BaseAgent] = []
         for agent_id in agent_ids:
             agent = self.agent_factory.get_agent(agent_id)
-            if not agent:
+            if agent is None:
                 raise AgentException(f"Agent not found: {agent_id}")
             agents.append(agent)
 
-        coordination = {
+        coordination: Dict[str, Any] = {
             "coordination_id": coordination_id,
             "agents": agent_ids,
             "task": task,
@@ -169,7 +175,7 @@ class AgentOrchestrator:
         """Monitor performance of all agents."""
         agents = list(self.agent_factory.agent_pool.values())
 
-        report = {
+        report: Dict[str, Any] = {
             "timestamp": datetime.now(),
             "timeframe_hours": timeframe_hours,
             "agents": {},
@@ -187,6 +193,9 @@ class AgentOrchestrator:
 
     async def start(self, num_workers: int = 3) -> None:
         """Start orchestrator workers."""
+        if self._is_running:
+            return
+
         self._is_running = True
         self._task_workers = [
             asyncio.create_task(self._task_worker(f"worker-{i}"))
@@ -210,7 +219,7 @@ class AgentOrchestrator:
                 )
 
                 task_id = task_item["task_id"]
-                agents = task_item["agents"]
+                agents: List[BaseAgent] = task_item["agents"]
                 task_data = task_item["task_data"]
 
                 task_record = self.active_tasks[task_id]
@@ -230,19 +239,22 @@ class AgentOrchestrator:
 
                     try:
                         result = await agent.process(agent_input)
-                        task_record["results"][agent.config.agent_id] = result.dict()
-                    except Exception as e:
+                        task_record["results"][
+                            agent.config.agent_id
+                        ] = result.dict()
+                    except Exception as exc:
                         task_record["errors"].append(
                             {
                                 "agent_id": agent.config.agent_id,
-                                "error": str(e),
+                                "error": str(exc),
                                 "timestamp": datetime.now(),
                             }
                         )
 
                 task_record["status"] = (
                     "failed"
-                    if len(task_record["errors"]) == len(task_record["assigned_agents"])
+                    if len(task_record["errors"])
+                    == len(task_record["assigned_agents"])
                     else "completed"
                 )
                 task_record["completed_at"] = datetime.now()
@@ -253,8 +265,8 @@ class AgentOrchestrator:
                 continue
             except asyncio.CancelledError:
                 break
-            except Exception as e:
-                print(f"[{worker_id}] Worker error: {e}")
+            except Exception as exc:  # pragma: no cover - defensive
+                print(f"[{worker_id}] Worker error: {exc}")
                 await asyncio.sleep(1)
 
     # ------------------------------------------------------------------
