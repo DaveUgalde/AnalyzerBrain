@@ -1,0 +1,161 @@
+# Configuración del Analizador de Módulos
+configuracion:
+  # Extensiones de archivo a analizar
+  extensiones_analizar:
+    - .py
+    - .js
+    - .ts
+    - .java
+    - .cpp
+    - .cs
+    - .yaml
+    - .yml
+    - .json
+    - .txt
+    - .md
+    - .sql
+    - .cypher
+    - .cql
+    - .html
+    - .css
+    - .xml
+    - .ini
+    - .cfg
+    - .conf
+    - .toml
+    - .sh
+    - .bat
+    - .ps1
+    - .go
+    - .rs
+    - .php
+    - .rb
+  
+  # Límites de calidad
+  limites_calidad:
+    lineas_por_archivo: 500
+    complejidad_ciclomatica_max: 15
+    lineas_por_funcion: 100
+    metodos_por_clase: 20
+    parametros_por_funcion: 10
+  
+  # Patrones de nombres para análisis
+  patrones_nombres:
+    getters:
+      - "get_"
+      - "fetch_"
+      - "retrieve_"
+      - "find_"
+      - "load_"
+    setters:
+      - "set_"
+      - "update_"
+      - "modify_"
+      - "change_"
+      - "adjust_"
+    validadores:
+      - "validate_"
+      - "check_"
+      - "verify_"
+      - "ensure_"
+      - "assert_"
+    booleanos:
+      - "is_"
+      - "has_"
+      - "can_"
+      - "should_"
+      - "needs_"
+      - "requires_"
+  
+  # Exclusiones
+  excluir_directorios:
+    - "__pycache__"
+    - ".git"
+    - "node_modules"
+    - "venv"
+    - ".venv"
+    - ".pytest_cache"
+    - ".vscode"
+    - "dist"
+    - "build"
+    - ".idea"
+    - ".DS_Store"
+    - "coverage"
+    - ".coverage"
+    - "__pycache__"
+    - "*.egg-info"
+    - "*.log"
+  
+  # Prioridades para pruebas
+  prioridad_pruebas:
+    alta:
+      - "validate"
+      - "auth"
+      - "security"
+      - "payment"
+      - "critical"
+      - "encrypt"
+      - "decrypt"
+      - "authenticate"
+    media:
+      - "process"
+      - "calculate"
+      - "transform"
+      - "api"
+      - "handle"
+      - "parse"
+      - "generate"
+    baja:
+      - "helper"
+      - "util"
+      - "format"
+      - "print"
+      - "log"
+      - "debug"
+  
+  # Configuraciones específicas por tipo de archivo
+  config_por_tipo:
+    python:
+      analizar_funciones: true
+      analizar_clases: true
+      analizar_imports: true
+      calcular_complejidad: true
+    javascript:
+      analizar_funciones: true
+      analizar_clases: true
+      analizar_imports: true
+      calcular_complejidad: false
+    yaml:
+      analizar_estructura: true
+      validar_sintaxis: true
+    json:
+      analizar_estructura: true
+      validar_sintaxis: true
+    texto:
+      analizar_lineas: true
+      buscar_patrones: true
+    sql:
+      analizar_consultas: true
+      buscar_patrones: true
+    cypher:
+      analizar_consultas: true
+      buscar_patrones: true
+  
+  # Patrones a buscar en archivos de texto
+  patrones_busqueda:
+    seguridad:
+      - "password"
+      - "secret"
+      - "token"
+      - "key"
+      - "credential"
+    rendimiento:
+      - "sleep"
+      - "wait"
+      - "delay"
+      - "timeout"
+    deprecado:
+      - "deprecated"
+      - "obsolete"
+      - "legacy"
+      - "old_"

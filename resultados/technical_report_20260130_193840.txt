@@ -1,0 +1,31 @@
+================================================================================
+🔧 REPORTE TÉCNICO DETALLADO
+================================================================================
+
+🔴 TOP 5 FUNCIONES MÁS COMPLEJAS
+----------------------------------------
+1. _apply_validation_rule (validation.py)
+   Complejidad: 41, Líneas: 161
+2. _extract_python_entities (entity_extractor.py)
+   Complejidad: 28, Líneas: 198
+3. retrieve (memory_retriever.py)
+   Complejidad: 27, Líneas: 138
+4. aggregate_metrics (metrics_collector.py)
+   Complejidad: 27, Líneas: 116
+5. validate_consistency (validation.py)
+   Complejidad: 27, Líneas: 117
+
+⚠️  ARCHIVOS QUE NECESITAN ATENCIÓN
+----------------------------------------
+1. memory_retriever.py - Puntaje: 69.1
+   Problemas: Archivo muy grande (1384 líneas), Función 'retrieve_by_similarity' muy larga (63 líneas)
+2. graph_exporter.py - Puntaje: 67.2
+   Problemas: Archivo muy grande (806 líneas), Función 'export_to_gexf' muy compleja (20)
+3. logging_config.py - Puntaje: 67.7
+   Problemas: Archivo muy grande (974 líneas), Función 'setup_logging' muy larga (87 líneas)
+4. file_utils.py - Puntaje: 63.3
+   Problemas: Archivo muy grande (658 líneas), Función 'read_file_safely' muy compleja (16)
+5. parallel_processing.py - Puntaje: 68.9
+   Problemas: Archivo muy grande (1066 líneas), Función 'parallel_map' muy larga (71 líneas)
+
+================================================================================

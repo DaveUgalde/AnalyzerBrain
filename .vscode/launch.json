@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug analyzer_completo",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/tests/analyzer_code/analyzer_completo.py",
+      "args": [
+        "./data",
+        "-o",
+        "resultados",
+        "-v"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    }
+  ]
+}

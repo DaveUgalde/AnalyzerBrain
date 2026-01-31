@@ -1,0 +1,2425 @@
+{
+  "project_metrics": {
+    "total_files": 88,
+    "total_lines": 64467,
+    "total_functions": 1457,
+    "total_classes": 369,
+    "context_distribution": {
+      "BUSINESS_LOGIC": 25,
+      "DATA_MODEL": 25,
+      "API": 22,
+      "UTILITY": 1
+    },
+    "average_complexity": 4.58,
+    "file_types": {
+      "python": 88,
+      "yaml": 0,
+      "json": 0,
+      "toml": 0
+    }
+  },
+  "quality_assessment": {
+    "file_assessments": [
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 13.33,
+          "composite": 88.92
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/main.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 74.88,
+          "composite": 94.49
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/embeddings/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 20.83,
+          "composite": 89.29
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/embeddings/similarity_calculator.py",
+        "scores": {
+          "technical": 29.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 33.19,
+          "composite": 74.66
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (687 líneas)",
+          "Función 'breadth_first_search' muy larga (62 líneas)",
+          "Función 'depth_first_search' muy larga (63 líneas)",
+          "Función 'dijkstra_shortest_path' muy compleja (12)",
+          "Función 'dijkstra_shortest_path' muy larga (102 líneas)",
+          "Función 'a_star_search' muy compleja (11)",
+          "Función 'a_star_search' muy larga (101 líneas)",
+          "Función 'detect_cycles' muy compleja (11)",
+          "Función 'detect_cycles' muy larga (56 líneas)",
+          "Función '_betweenness_centrality' muy compleja (13)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/embeddings/embedding_models.py",
+        "scores": {
+          "technical": 93.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 45.02,
+          "composite": 91.38
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (502 líneas)",
+          "Función 'load_model' muy larga (71 líneas)",
+          "Función '_load_model_info' muy larga (62 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/core/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 11.94,
+          "composite": 88.85
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/core/config_manager.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 64.86,
+          "composite": 93.99
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Función 'load_config' muy compleja (11)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/embeddings/dimensionality_reducer.py",
+        "scores": {
+          "technical": 66.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 65.46,
+          "composite": 85.52
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (744 líneas)",
+          "Función 'reduce_dimensions' muy compleja (15)",
+          "Función 'reduce_dimensions' muy larga (88 líneas)",
+          "Función 'evaluate_reduction' muy larga (61 líneas)",
+          "Función 'inverse_transform' muy compleja (13)",
+          "Función '_apply_autoencoder' muy larga (57 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/core/event_bus.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 61.43,
+          "composite": 93.82
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/embeddings/vector_store.py",
+        "scores": {
+          "technical": 99.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 74.55,
+          "composite": 94.35
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (884 líneas)",
+          "Función 'add_vectors' muy larga (59 líneas)",
+          "Función 'update_vector' muy compleja (11)",
+          "Función '_load_chroma_data' muy compleja (12)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/core/dependency_injector.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 65.27,
+          "composite": 94.01
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/core/workflow_manager.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 17.61,
+          "composite": 86.63
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/embeddings/embedding_generator.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 41.21,
+          "composite": 92.81
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1007 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/core/exceptions.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 57.35,
+          "composite": 88.62
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/core/orchestrator.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 42.99,
+          "composite": 92.9
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (635 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/core/system_state.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 63.44,
+          "composite": 93.92
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/core/plugin_manager.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 38.37,
+          "composite": 92.67
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/core/health_check.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 31.47,
+          "composite": 92.32
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Función 'check_system_health' muy larga (67 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/embeddings/semantic_search.py",
+        "scores": {
+          "technical": 86.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 40.71,
+          "composite": 89.29
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (872 líneas)",
+          "Función '_apply_filters' muy compleja (22)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/memory/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 31.03,
+          "composite": 89.8
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/embeddings/embedding_cache.py",
+        "scores": {
+          "technical": 72.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 63.43,
+          "composite": 86.92
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1039 líneas)",
+          "Función 'get_cached_embedding' muy compleja (19)",
+          "Función 'get_cached_embedding' muy larga (89 líneas)",
+          "Función 'cache_embedding' muy larga (51 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/memory/working_memory.py",
+        "scores": {
+          "technical": 93.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 67.48,
+          "composite": 92.5
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (898 líneas)",
+          "Función 'get_working_memory_contents' muy compleja (12)",
+          "Función 'get_working_memory_contents' muy larga (63 líneas)",
+          "Función 'check_working_memory_limit' muy larga (51 líneas)",
+          "Función 'get_memory_stats' muy larga (61 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/learning/learning_evaluator.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 88.25
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/learning/forgetting_mechanism.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 88.25
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/learning/incremental_learner.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 88.25
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/learning/reinforcement_learner.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 88.25
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/learning/knowledge_refiner.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 88.25
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/learning/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 15.38,
+          "composite": 89.02
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/learning/adaptation_engine.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 88.25
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/memory/episodic_memory.py",
+        "scores": {
+          "technical": 82.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 68.76,
+          "composite": 89.69
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (605 líneas)",
+          "Función 'record_episode' muy larga (55 líneas)",
+          "Función 'consolidate_episodes' muy larga (51 líneas)",
+          "Función 'get_episodic_timeline' muy larga (76 líneas)",
+          "Función '_matches_search_criteria' muy compleja (16)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/memory/memory_hierarchy.py",
+        "scores": {
+          "technical": 27.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 43.25,
+          "composite": 74.79
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (955 líneas)",
+          "Función 'store_in_memory' muy compleja (14)",
+          "Función 'store_in_memory' muy larga (75 líneas)",
+          "Función 'promote_memory' muy larga (64 líneas)",
+          "Función 'demote_memory' muy compleja (13)",
+          "Función 'demote_memory' muy larga (73 líneas)",
+          "Función 'evict_from_memory' muy compleja (11)",
+          "Función 'evict_from_memory' muy larga (58 líneas)",
+          "Función 'optimize_hierarchy' muy compleja (13)",
+          "Función 'optimize_hierarchy' muy larga (69 líneas)",
+          "Función 'get_memory_stats' muy larga (82 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/memory/cache_manager.py",
+        "scores": {
+          "technical": 95.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 44.77,
+          "composite": 91.86
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1481 líneas)",
+          "Función '__init__' muy larga (59 líneas)",
+          "Función 'get_cache_stats' muy larga (66 líneas)",
+          "Función '_clean_orphaned_indices' muy compleja (11)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/memory/memory_consolidator.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 43.76,
+          "composite": 92.94
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1090 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/graph/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 12.0,
+          "composite": 88.85
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/memory/memory_retriever.py",
+        "scores": {
+          "technical": 0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 66.33,
+          "composite": 69.07
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1384 líneas)",
+          "Función 'retrieve_by_similarity' muy larga (63 líneas)",
+          "Función 'retrieve_by_context' muy larga (59 líneas)",
+          "Función 'retrieve_by_time' muy larga (54 líneas)",
+          "Función 'rank_retrieved_memories' muy larga (68 líneas)",
+          "Función 'validate_retrieval' muy larga (87 líneas)",
+          "Función 'retrieve' muy compleja (27)",
+          "Función 'retrieve' muy larga (138 líneas)",
+          "Función '_memory_matches_filters' muy compleja (11)",
+          "Función '_hybrid_retrieval' muy compleja (24)",
+          "Función '_hybrid_retrieval' muy larga (118 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/graph/consistency_checker.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 32.01,
+          "composite": 92.35
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Función 'detect_inconsistencies' muy larga (59 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/memory/memory_cleaner.py",
+        "scores": {
+          "technical": 53.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 30.52,
+          "composite": 80.65
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (793 líneas)",
+          "Función 'clean_expired_memories' muy larga (58 líneas)",
+          "Función 'clean_low_relevance_memories' muy larga (62 líneas)",
+          "Función 'compress_memories' muy larga (67 líneas)",
+          "Función 'archive_old_memories' muy larga (77 líneas)",
+          "Función 'validate_memory_integrity' muy larga (60 líneas)",
+          "Función 'repair_corrupted_memory' muy larga (72 líneas)",
+          "Función 'generate_cleanup_report' muy larga (59 líneas)",
+          "Función '_apply_cleanup_action' muy larga (58 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/memory/semantic_memory.py",
+        "scores": {
+          "technical": 61.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 42.35,
+          "composite": 83.12
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1523 líneas)",
+          "Función 'similarity_to' muy compleja (16)",
+          "Función '_save_to_disk' muy larga (51 líneas)",
+          "Función '_load_from_disk' muy compleja (21)",
+          "Función '_load_from_disk' muy larga (78 líneas)",
+          "Función 'get_memory_stats' muy larga (51 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/graph/knowledge_graph.py",
+        "scores": {
+          "technical": 99.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 71.52,
+          "composite": 94.2
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (597 líneas)",
+          "Función 'find_nodes' muy compleja (12)",
+          "Función 'calculate_graph_metrics' muy larga (63 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/learning/feedback_loop.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 39.18,
+          "composite": 92.71
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1266 líneas)",
+          "Función '_calculate_completeness_score' muy compleja (11)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/graph/graph_analytics.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 49.61,
+          "composite": 93.23
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (645 líneas)",
+          "Función '_simple_kmeans_clustering' muy larga (53 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/graph/graph_builder.py",
+        "scores": {
+          "technical": 85.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 69.47,
+          "composite": 90.6
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (655 líneas)",
+          "Función 'build_from_entities' muy compleja (13)",
+          "Función 'build_from_entities' muy larga (74 líneas)",
+          "Función 'build_from_dependencies' muy larga (55 líneas)",
+          "Función '_infer_implicit_relationships' muy compleja (12)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/graph/schema_manager.py",
+        "scores": {
+          "technical": 38.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 43.85,
+          "composite": 77.44
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1008 líneas)",
+          "Función 'validate_node_schema' muy compleja (12)",
+          "Función 'validate_node_schema' muy larga (59 líneas)",
+          "Función 'validate_edge_schema' muy compleja (13)",
+          "Función 'validate_edge_schema' muy larga (70 líneas)",
+          "Función 'enforce_schema' muy compleja (13)",
+          "Función 'enforce_schema' muy larga (76 líneas)",
+          "Función '_initialize_default_schemas' muy larga (75 líneas)",
+          "Función '_validate_property' muy compleja (18)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/collaboration_protocol.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 52.79,
+          "composite": 93.39
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (735 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/agent_factory.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 99.0,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 10.36,
+          "composite": 86.07
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/detective_agent.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 55.32,
+          "composite": 93.52
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (602 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 99.0,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 13.73,
+          "composite": 88.74
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/agent_orchestrator.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 46.39,
+          "composite": 93.07
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/graph/graph_exporter.py",
+        "scores": {
+          "technical": 0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 30.02,
+          "composite": 67.25
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (806 líneas)",
+          "Función 'export_to_gexf' muy compleja (20)",
+          "Función 'export_to_gexf' muy larga (104 líneas)",
+          "Función 'export_to_graphml' muy compleja (19)",
+          "Función 'export_to_graphml' muy larga (109 líneas)",
+          "Función 'export_to_json' muy compleja (17)",
+          "Función 'export_to_json' muy larga (89 líneas)",
+          "Función 'export_to_cypher' muy compleja (18)",
+          "Función 'export_to_cypher' muy larga (79 líneas)",
+          "Función 'export_to_dot' muy compleja (21)",
+          "Función 'export_to_dot' muy larga (90 líneas)",
+          "Función 'export_to_networkx' muy compleja (13)",
+          "Función 'validate_export' muy compleja (15)",
+          "Función 'validate_export' muy larga (59 líneas)",
+          "Función '_filter_relationships' muy compleja (12)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/graph/graph_traverser.py",
+        "scores": {
+          "technical": 29.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 33.19,
+          "composite": 74.66
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (687 líneas)",
+          "Función 'breadth_first_search' muy larga (62 líneas)",
+          "Función 'depth_first_search' muy larga (63 líneas)",
+          "Función 'dijkstra_shortest_path' muy compleja (12)",
+          "Función 'dijkstra_shortest_path' muy larga (102 líneas)",
+          "Función 'a_star_search' muy compleja (11)",
+          "Función 'a_star_search' muy larga (101 líneas)",
+          "Función 'detect_cycles' muy compleja (11)",
+          "Función 'detect_cycles' muy larga (56 líneas)",
+          "Función '_betweenness_centrality' muy compleja (13)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/graph/graph_query_engine.py",
+        "scores": {
+          "technical": 79.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 56.67,
+          "composite": 88.46
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1027 líneas)",
+          "Función 'execute_query' muy larga (64 líneas)",
+          "Función 'aggregate_graph_data' muy larga (64 líneas)",
+          "Función '_create_pattern_plan' muy larga (54 líneas)",
+          "Función '_calculate_property_stats' muy larga (55 líneas)",
+          "Función '_parse_proprietary_query' muy compleja (16)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/qa_agent.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 53.18,
+          "composite": 93.41
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (880 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/base_agent.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 62.09,
+          "composite": 93.85
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (815 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/curator_agent.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 60.37,
+          "composite": 93.77
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1017 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/utils/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 16.67,
+          "composite": 89.08
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/security_agent.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 59.87,
+          "composite": 93.74
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1869 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/code_analyzer_agent.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 50.13,
+          "composite": 93.26
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1129 líneas)",
+          "Función '_assess_overall_quality' muy compleja (13)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/utils/logging_config.py",
+        "scores": {
+          "technical": 0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 38.6,
+          "composite": 67.68
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (974 líneas)",
+          "Función 'setup_logging' muy larga (87 líneas)",
+          "Función 'format_log_messages' muy larga (65 líneas)",
+          "Función 'rotate_logs' muy compleja (14)",
+          "Función 'rotate_logs' muy larga (77 líneas)",
+          "Función 'analyze_logs' muy compleja (23)",
+          "Función 'analyze_logs' muy larga (134 líneas)",
+          "Función 'export_logs' muy compleja (12)",
+          "Función 'export_logs' muy larga (70 líneas)",
+          "Función '_create_default_config' muy larga (90 líneas)",
+          "Función '_export_logs_html' muy larga (108 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/utils/text_processing.py",
+        "scores": {
+          "technical": 37.5,
+          "architectural": 78.0,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 40.91,
+          "composite": 72.77
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (770 líneas)",
+          "Función 'clean_text' muy compleja (12)",
+          "Función 'clean_text' muy larga (96 líneas)",
+          "Función 'tokenize_text' muy compleja (13)",
+          "Función 'tokenize_text' muy larga (80 líneas)",
+          "Función 'normalize_text' muy compleja (14)",
+          "Función 'normalize_text' muy larga (65 líneas)",
+          "Función 'detect_language' muy larga (68 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/learning_agent.py",
+        "scores": {
+          "technical": 98.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 49.88,
+          "composite": 92.87
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (2925 líneas)",
+          "Función '__init__' muy larga (56 líneas)",
+          "Función '_calculate_overall_progress' muy compleja (12)",
+          "Función '_calculate_overall_progress' muy larga (58 líneas)",
+          "Función '_generate_progress_recommendations' muy larga (51 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/utils/file_utils.py",
+        "scores": {
+          "technical": 0,
+          "architectural": 78.0,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 38.6,
+          "composite": 63.28
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (658 líneas)",
+          "Función 'read_file_safely' muy compleja (16)",
+          "Función 'read_file_safely' muy larga (73 líneas)",
+          "Función 'write_file_safely' muy compleja (18)",
+          "Función 'write_file_safely' muy larga (85 líneas)",
+          "Función 'copy_file' muy larga (54 líneas)",
+          "Función 'delete_file' muy larga (55 líneas)",
+          "Función 'find_files' muy compleja (20)",
+          "Función 'find_files' muy larga (79 líneas)",
+          "Función 'calculate_file_stats' muy compleja (11)",
+          "Función 'calculate_file_stats' muy larga (88 líneas)",
+          "Función '_detect_encoding' muy compleja (12)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/utils/parallel_processing.py",
+        "scores": {
+          "technical": 0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 63.79,
+          "composite": 68.94
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1066 líneas)",
+          "Función 'parallel_map' muy larga (71 líneas)",
+          "Función 'distribute_workload' muy larga (66 líneas)",
+          "Función 'synchronize_tasks' muy compleja (21)",
+          "Función 'synchronize_tasks' muy larga (101 líneas)",
+          "Función 'handle_parallel_errors' muy larga (61 líneas)",
+          "Función 'optimize_parallelization' muy compleja (13)",
+          "Función 'optimize_parallelization' muy larga (88 líneas)",
+          "Función 'monitor_parallel_performance' muy larga (71 líneas)",
+          "Función 'cleanup_parallel_resources' muy compleja (12)",
+          "Función 'cleanup_parallel_resources' muy larga (58 líneas)",
+          "Función '_execute_with_pool' muy compleja (12)",
+          "Función '_execute_with_pool' muy larga (61 líneas)",
+          "Función '_execute_task' muy larga (66 líneas)",
+          "Función '_validate_dependencies' muy compleja (12)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/utils/serialization.py",
+        "scores": {
+          "technical": 44.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 40.53,
+          "composite": 78.78
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (713 líneas)",
+          "Función 'default' muy compleja (12)",
+          "Función 'serialize_to_json' muy larga (64 líneas)",
+          "Función 'deserialize_from_json' muy compleja (11)",
+          "Función 'deserialize_from_json' muy larga (58 líneas)",
+          "Función 'serialize_to_yaml' muy larga (87 líneas)",
+          "Función 'deserialize_from_binary' muy larga (55 líneas)",
+          "Función 'validate_serialization' muy larga (62 líneas)",
+          "Función '_are_equivalent' muy compleja (15)",
+          "Función '_serialize_msgpack' muy compleja (11)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/utils/security_utils.py",
+        "scores": {
+          "technical": 45.5,
+          "architectural": 78.0,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 46.24,
+          "composite": 75.04
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (757 líneas)",
+          "Función 'decrypt_data' muy compleja (13)",
+          "Función 'decrypt_data' muy larga (59 líneas)",
+          "Función 'hash_data' muy larga (82 líneas)",
+          "Función 'sanitize_input' muy compleja (17)",
+          "Función 'sanitize_input' muy larga (80 líneas)",
+          "Función 'audit_security_events' muy larga (68 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/architect_agent.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 53.05,
+          "composite": 93.4
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (2330 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/api/server.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 93.0,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 54.19,
+          "composite": 92.06
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (681 líneas)",
+          "Función 'setup_middleware' muy larga (65 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/api/websocket_api.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 43.12,
+          "composite": 92.91
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (807 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/agents/analyst_agent.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 50.4,
+          "composite": 90.77
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (2508 líneas)",
+          "Función '__init__' muy larga (56 líneas)",
+          "Función '_detect_anomalies_z_score' muy larga (57 líneas)",
+          "Función '_detect_anomalies_dbscan' muy larga (62 líneas)",
+          "Función '_initialize_sample_metrics' muy larga (61 líneas)",
+          "Función 'get_health_status' muy larga (54 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/api/__init__.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 28.12,
+          "composite": 92.16
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/api/grpc_api.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 71.83,
+          "composite": 94.34
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/utils/metrics_collector.py",
+        "scores": {
+          "technical": 0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 59.95,
+          "composite": 68.75
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1548 líneas)",
+          "Función 'collect_metric' muy larga (65 líneas)",
+          "Función 'aggregate_metrics' muy compleja (27)",
+          "Función 'aggregate_metrics' muy larga (116 líneas)",
+          "Función 'calculate_statistics' muy compleja (19)",
+          "Función 'calculate_statistics' muy larga (101 líneas)",
+          "Función '_export_prometheus' muy larga (54 líneas)",
+          "Función 'monitor_metric_trends' muy larga (53 líneas)",
+          "Función '_analyze_linear_trend' muy larga (77 líneas)",
+          "Función '_analyze_exponential_trend' muy larga (53 líneas)",
+          "Función 'alert_on_anomalies' muy compleja (14)",
+          "Función 'alert_on_anomalies' muy larga (78 líneas)",
+          "Función '_detect_rate_change_anomalies' muy larga (52 líneas)",
+          "Función 'optimize_metric_collection' muy larga (64 líneas)",
+          "Función '_check_alerts_async' muy compleja (13)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/api/request_validator.py",
+        "scores": {
+          "technical": 82.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 46.66,
+          "composite": 88.71
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (943 líneas)",
+          "Función '_initialize_default_schemas' muy larga (105 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/api/rate_limiter.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 45.18,
+          "composite": 93.01
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (841 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/api/cli_interface.py",
+        "scores": {
+          "technical": 87.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 47.89,
+          "composite": 89.89
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1019 líneas)",
+          "Función 'parse_arguments' muy larga (88 líneas)",
+          "Función 'format_output' muy compleja (12)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/indexer/project_scanner.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 55.24,
+          "composite": 93.51
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Función 'scan_project' muy larga (55 líneas)",
+          "Función 'detect_project_type' muy compleja (11)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/indexer/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 11.54,
+          "composite": 88.83
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/utils/validation.py",
+        "scores": {
+          "technical": 0,
+          "architectural": 94.67,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 44.24,
+          "composite": 66.9
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1216 líneas)",
+          "Función 'validate_structure' muy compleja (18)",
+          "Función 'validate_structure' muy larga (98 líneas)",
+          "Función 'validate_format' muy compleja (12)",
+          "Función 'validate_format' muy larga (65 líneas)",
+          "Función 'validate_consistency' muy compleja (27)",
+          "Función 'validate_consistency' muy larga (117 líneas)",
+          "Función 'suggest_corrections' muy compleja (14)",
+          "Función 'suggest_corrections' muy larga (71 líneas)",
+          "Función '_validate_value' muy compleja (20)",
+          "Función '_validate_value' muy larga (79 líneas)",
+          "Función '_validate_type' muy compleja (11)",
+          "Función '_check_type' muy compleja (18)",
+          "Función '_parse_union_type' muy compleja (12)",
+          "Función '_apply_validation_rule' muy compleja (41)",
+          "Función '_apply_validation_rule' muy larga (161 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/api/rest_api.py",
+        "scores": {
+          "technical": 44.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 54.69,
+          "composite": 79.48
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (938 líneas)",
+          "Función 'register_endpoints' muy larga (182 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/api/authentication.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 43.22,
+          "composite": 92.91
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1247 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/api/web_ui.py",
+        "scores": {
+          "technical": 64.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 47.39,
+          "composite": 84.24
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1150 líneas)",
+          "Función '_render_dashboard' muy larga (51 líneas)",
+          "Función '_render_query_page' muy compleja (11)",
+          "Función '_render_query_page' muy larga (65 líneas)",
+          "Función '_render_response' muy compleja (23)",
+          "Función '_render_response' muy larga (56 líneas)",
+          "Función '_render_metrics_analysis' muy larga (60 líneas)",
+          "Función '_render_issues_analysis' muy larga (51 líneas)",
+          "Función '_handle_ask_question' muy larga (52 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/indexer/file_processor.py",
+        "scores": {
+          "technical": 83.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 46.61,
+          "composite": 88.96
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Función 'analyze_complexity' muy compleja (16)",
+          "Función 'analyze_complexity' muy larga (71 líneas)",
+          "Función 'extract_imports' muy compleja (12)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/indexer/dependency_mapper.py",
+        "scores": {
+          "technical": 0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 53.46,
+          "composite": 68.42
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (982 líneas)",
+          "Función '_analyze_python_dependencies' muy compleja (15)",
+          "Función '_analyze_python_dependencies' muy larga (133 líneas)",
+          "Función '_analyze_python_dependencies_regex' muy larga (57 líneas)",
+          "Función '_analyze_java_dependencies' muy compleja (17)",
+          "Función '_analyze_java_dependencies' muy larga (89 líneas)",
+          "Función '_analyze_javascript_dependencies' muy larga (69 líneas)",
+          "Función '_analyze_typescript_dependencies' muy compleja (11)",
+          "Función '_analyze_typescript_dependencies' muy larga (55 líneas)",
+          "Función '_analyze_cpp_dependencies' muy compleja (13)",
+          "Función '_analyze_cpp_dependencies' muy larga (55 líneas)",
+          "Función 'calculate_metrics' muy larga (60 líneas)",
+          "Función 'suggest_refactoring' muy larga (60 líneas)",
+          "Función 'export_graph' muy larga (73 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/indexer/multi_language_parser.py",
+        "scores": {
+          "technical": 81.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 45.97,
+          "composite": 88.3
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (818 líneas)",
+          "Función '_extract_python_elements' muy larga (68 líneas)",
+          "Función '_parse_css' muy larga (52 líneas)",
+          "Función 'detect_language' muy compleja (13)",
+          "Función 'detect_language' muy larga (76 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/indexer/version_tracker.py",
+        "scores": {
+          "technical": 69.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 53.83,
+          "composite": 85.69
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1044 líneas)",
+          "Función '_get_git_info' muy larga (64 líneas)",
+          "Función 'compare_versions' muy larga (54 líneas)",
+          "Función 'get_file_statistics' muy larga (101 líneas)",
+          "Función '_generate_version_html_report' muy larga (63 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/indexer/entity_extractor.py",
+        "scores": {
+          "technical": 0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 69.92,
+          "composite": 69.25
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (891 líneas)",
+          "Función '_extract_python_entities' muy compleja (28)",
+          "Función '_extract_python_entities' muy larga (198 líneas)",
+          "Función 'visit_FunctionDef' muy larga (51 líneas)",
+          "Función '_extract_java_entities' muy compleja (13)",
+          "Función '_extract_java_entities' muy larga (106 líneas)",
+          "Función '_extract_java_entities_regex' muy larga (58 líneas)",
+          "Función '_extract_javascript_entities' muy larga (70 líneas)",
+          "Función '_extract_cpp_entities' muy compleja (11)",
+          "Función '_extract_cpp_entities' muy larga (51 líneas)",
+          "Función '_extract_c_entities' muy larga (52 líneas)",
+          "Función 'extract_relationships' muy compleja (12)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/indexer/change_detector.py",
+        "scores": {
+          "technical": 57.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 57.92,
+          "composite": 82.9
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (739 líneas)",
+          "Función 'take_snapshot' muy larga (53 líneas)",
+          "Función 'compare_snapshots' muy larga (77 líneas)",
+          "Función '_calculate_diff' muy compleja (11)",
+          "Función '_calculate_diff' muy larga (59 líneas)",
+          "Función 'analyze_change_impact' muy compleja (11)",
+          "Función 'analyze_change_impact' muy larga (68 líneas)",
+          "Función 'track_changes_over_time' muy larga (74 líneas)",
+          "Función '_generate_html_report' muy larga (67 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/indexer/quality_analyzer.py",
+        "scores": {
+          "technical": 0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 57.63,
+          "composite": 68.63
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (2025 líneas)",
+          "Función '_load_quality_rules' muy larga (115 líneas)",
+          "Función '_analyze_python_file' muy larga (73 líneas)",
+          "Función '_calculate_basic_metrics' muy larga (54 líneas)",
+          "Función '_analyze_python_complexity' muy larga (124 líneas)",
+          "Función '_detect_deep_nesting' muy larga (61 líneas)",
+          "Función '_analyze_python_security' muy compleja (11)",
+          "Función '_analyze_python_security' muy larga (69 líneas)",
+          "Función '_analyze_python_performance' muy larga (81 líneas)",
+          "Función '_analyze_python_documentation' muy larga (107 líneas)",
+          "Función '_detect_javascript_issues' muy larga (56 líneas)",
+          "Función 'analyze_project' muy larga (71 líneas)",
+          "Función '_generate_markdown_report' muy compleja (14)",
+          "Función '_generate_markdown_report' muy larga (95 líneas)",
+          "Función '_generate_html_report' muy larga (181 líneas)",
+          "Función 'get_quality_trends' muy larga (71 líneas)",
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/src/indexer/pattern_detector.py",
+        "scores": {
+          "technical": 0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 53.34,
+          "composite": 68.42
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (1691 líneas)",
+          "Función '_load_pattern_rules' muy larga (122 líneas)",
+          "Función '_detect_python_observer' muy compleja (14)",
+          "Función 'visit_ClassDef' muy compleja (14)",
+          "Función '_detect_deep_nesting' muy larga (66 líneas)",
+          "Función '_detect_nested_loops' muy larga (64 líneas)",
+          "Función '_generate_markdown_report' muy compleja (11)",
+          "Función '_generate_markdown_report' muy larga (59 líneas)",
+          "Función '_generate_html_report' muy larga (81 líneas)",
+          "Función 'suggest_refactoring' muy compleja (15)",
+          "Función 'suggest_refactoring' muy larga (141 líneas)",
+          "Documentación insuficiente"
+        ]
+      }
+    ],
+    "project_averages": {
+      "technical": 74.6,
+      "architectural": 99.09,
+      "performance": 85,
+      "security": 100,
+      "testability": 80,
+      "maintainability": 100,
+      "documentation": 43.33,
+      "composite": 86.38
+    },
+    "exceptional_files": 0,
+    "problematic_files": 0,
+    "quality_tier": "Excellent"
+  },
+  "statistics": {
+    "files_analyzed": 88,
+    "errors": 0,
+    "start_time": 1769823519.919064,
+    "end_time": 0
+  },
+  "timestamp": "2026-01-30T19:38:40.161733"
+}

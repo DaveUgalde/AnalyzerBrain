@@ -1,0 +1,117 @@
+====================================================================================================
+📄 ANÁLISIS DETALLADO: __init__.py
+====================================================================================================
+
+📊 MÉTRICAS BÁSICAS:
+--------------------------------------------------
+Líneas totales: 558
+  - Código: 403
+  - Comentarios: 51 (9.1%)
+  - En blanco: 104
+Funciones: 32
+  - Complejidad promedio: 3.09
+  - Longitud promedio: 9.47 líneas
+Clases: 15
+Dependencias: 13
+  - Externas: 7
+  - Internas: 6
+
+🏆 PUNTAJES DE CALIDAD:
+--------------------------------------------------
+Técnico: 82.8 (BUENO)
+Arquitectónico: 66.5 (ADVERTENCIA)
+Rendimiento: 90.5 (EXCELENTE)
+📈 COMPUESTO: 79.0 (BUENO)
+
+⚠️  PROBLEMAS IDENTIFICADOS:
+--------------------------------------------------
+1. 1 funciones con alta complejidad (>10)
+2. Archivo muy grande (>500 líneas)
+3. Documentación insuficiente
+
+💡 RECOMENDACIONES:
+--------------------------------------------------
+1. Refactorizar funciones complejas en unidades más pequeñas
+2. Considerar dividir en módulos más pequeños
+3. Agregar comentarios y docstrings
+
+🔴 FUNCIONES CON ALTA COMPLEJIDAD:
+--------------------------------------------------
+  - validate: complejidad 12, 27 líneas
+
+🔴 CLASES CON MUCHOS MÉTODOS:
+--------------------------------------------------
+  - BrainConfig: 10 métodos
+
+🔧 ANÁLISIS DETALLADO POR FUNCIÓN:
+--------------------------------------------------
+  ------------------------------------------------------------------------------------------
+  | Función              | Línea    | Comp.  | Líneas   | Paráms   | Puntaje      |
+  ------------------------------------------------------------------------------------------
+  | load                 |       71 |      1 |        3 |        1 | 100.0 (EXC)  |
+  | get_raw_value        |       76 |      1 |        3 |        3 | 100.0 (EXC)  |
+  | resolve              |       84 |      1 |        3 |        2 | 100.0 (EXC)  |
+  | validate             |       92 |      1 |        3 |        2 | 100.0 (EXC)  |
+  | validate_paths       |      114 |      3 |        7 |        2 | 100.0 (EXC)  |
+  | resolve_password     |      137 |      6 |       10 |        2 | 95.0 (EXC)   |
+  |   ⚠️ Problemas: Complejidad moderada (6)                                           |
+  | load                 |      168 |      2 |        9 |        1 | 100.0 (EXC)  |
+  | get_raw_value        |      178 |      4 |       12 |        3 | 100.0 (EXC)  |
+  | _load_yaml_file      |      192 |      8 |       15 |        1 | 95.0 (EXC)   |
+  |   ⚠️ Problemas: Complejidad moderada (8)                                           |
+  | resolve              |      214 |      4 |       13 |        2 | 100.0 (EXC)  |
+  | _env_to_config_key   |      229 |      2 |        7 |        3 | 100.0 (EXC)  |
+  | _set_nested_value    |      238 |     10 |       25 |        3 | 95.0 (EXC)   |
+  |   ⚠️ Problemas: Complejidad moderada (10)                                          |
+  | validate             |      268 |     12 |       27 |        2 | 85.0 (EXC)   |
+  |   ⚠️ Problemas: Complejidad alta (12)                                              |
+  |   💡 Recomendación: Considerar refactorizar para reducir complejidad                 |
+  | __init__             |      303 |      1 |        4 |        1 | 85.0 (EXC)   |
+  |   ⚠️ Problemas: Sin documentación                                                  |
+  |   💡 Recomendación: Agregar docstring que describa propósito, parámetros y retorno   |
+  | get                  |      308 |      5 |       14 |        3 | 100.0 (EXC)  |
+  | clear                |      323 |      2 |        5 |        1 | 100.0 (EXC)  |
+  | _dict_hash           |      330 |      3 |       10 |        1 | 100.0 (EXC)  |
+  | __new__              |      354 |      3 |        6 |        1 | 85.0 (EXC)   |
+  |   ⚠️ Problemas: Sin documentación                                                  |
+  |   💡 Recomendación: Agregar docstring que describa propósito, parámetros y retorno   |
+  | __init__             |      361 |      4 |       11 |        1 | 100.0 (EXC)  |
+  | _config              |      378 |      2 |        8 |        1 | 100.0 (EXC)  |
+  | get                  |      392 |      4 |       21 |        3 | 100.0 (EXC)  |
+  | get_model            |      414 |      1 |       13 |        3 | 100.0 (EXC)  |
+  | system               |      429 |      1 |        3 |        1 | 100.0 (EXC)  |
+  | databases            |      434 |      1 |        8 |        1 | 100.0 (EXC)  |
+  | api                  |      444 |      1 |        3 |        1 | 100.0 (EXC)  |
+  | reload               |      448 |      4 |       14 |        1 | 100.0 (EXC)  |
+  | export               |      463 |      3 |        9 |        2 | 100.0 (EXC)  |
+  | get_config           |      479 |      2 |        6 |        0 | 100.0 (EXC)  |
+  | get_system_config    |      487 |      1 |        3 |        0 | 100.0 (EXC)  |
+  | get_database_config  |      492 |      1 |        3 |        1 | 100.0 (EXC)  |
+  | get_api_config       |      497 |      1 |        3 |        0 | 100.0 (EXC)  |
+  | init_config          |      505 |      4 |       22 |        1 | 100.0 (EXC)  |
+  ------------------------------------------------------------------------------------------
+
+🏛️  ANÁLISIS DETALLADO POR CLASE:
+--------------------------------------------------
+  --------------------------------------------------------------------------------
+  | Clase                | Línea    | Métodos  | Atribs   | Puntaje      |
+  --------------------------------------------------------------------------------
+  | ConfigError          |       47 |        0 |        0 | 100.0 (EXC)  |
+  | ConfigLoadError      |       51 |        0 |        0 | 100.0 (EXC)  |
+  | ConfigValidationErro |       55 |        0 |        0 | 100.0 (EXC)  |
+  | ConfigResolveError   |       59 |        0 |        0 | 100.0 (EXC)  |
+  | ConfigLoader         |       67 |        2 |        0 | 100.0 (EXC)  |
+  | EnvResolver          |       80 |        1 |        0 | 100.0 (EXC)  |
+  | ConfigValidator      |       88 |        1 |        0 | 100.0 (EXC)  |
+  | SystemConfig         |      100 |        1 |        8 | 100.0 (EXC)  |
+  | DatabaseConfig       |      122 |        1 |        9 | 100.0 (EXC)  |
+  | APIConfig            |      148 |        0 |        5 | 100.0 (EXC)  |
+  | YamlConfigLoader     |      162 |        3 |        2 | 100.0 (EXC)  |
+  | EnvironmentResolver  |      209 |        3 |        1 | 100.0 (EXC)  |
+  | ConfigValidatorImpl  |      265 |        1 |        0 | 100.0 (EXC)  |
+  | ConfigCache          |      300 |        4 |        0 | 100.0 (EXC)  |
+  | BrainConfig          |      345 |       10 |        2 | 85.0 (EXC)   |
+  |   ⚠️ Clase grande (10 métodos)                                                  |
+  --------------------------------------------------------------------------------
+
+====================================================================================================

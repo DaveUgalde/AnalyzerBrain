@@ -1,0 +1,316 @@
+# 📊 REPORTE DE ANÁLISIS DE MÓDULO
+
+**Fecha:** 2026-01-30 13:01:10
+**Ruta analizada:** `/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data`
+**Analizador:** Analizador de Módulos v2.0 (Corregido)
+
+## 📈 MÉTRICAS GENERALES
+
+| Métrica | Valor |
+|---------|-------|
+| Archivos Analizados | 7 |
+| Funciones Totales | 108 |
+| Clases Totales | 7 |
+| Issues Totales | 46 |
+| Recomendaciones Pruebas | 37 |
+
+## ⚠️ ISSUES ENCONTRADOS
+
+#### Tamaño
+- **Descripción:** Archivo demasiado grande (352 > 300 líneas)
+- **Ubicación:** `embeddings/__init__.py`
+- **Recomendación:** Dividir en módulos más pequeños (límite recomendado: 300 líneas)
+
+#### Responsabilidad
+- **Descripción:** Clase 'VectorStorage' con muchos métodos (13 > 10)
+- **Ubicación:** `embeddings/__init__.py:23`
+- **Recomendación:** Considerar el principio de responsabilidad única, dividir clase (límite: 10)
+
+#### Complejidad
+- **Descripción:** Función 'get' muy compleja (CC: 12 > 10)
+- **Ubicación:** `cache/__init__.py:83`
+- **Recomendación:** Simplificar lógica, dividir en funciones más pequeñas (límite: 10)
+
+#### Responsabilidad
+- **Descripción:** Clase 'CacheManager' con muchos métodos (15 > 10)
+- **Ubicación:** `cache/__init__.py:26`
+- **Recomendación:** Considerar el principio de responsabilidad única, dividir clase (límite: 10)
+
+#### Complejidad
+- **Descripción:** Función 'export_project' muy compleja (CC: 11 > 10)
+- **Ubicación:** `projects/__init__.py:184`
+- **Recomendación:** Simplificar lógica, dividir en funciones más pequeñas (límite: 10)
+
+#### Responsabilidad
+- **Descripción:** Clase 'ProjectStorage' con muchos métodos (11 > 10)
+- **Ubicación:** `projects/__init__.py:17`
+- **Recomendación:** Considerar el principio de responsabilidad única, dividir clase (límite: 10)
+
+#### Responsabilidad
+- **Descripción:** Clase 'GraphExporter' con muchos métodos (11 > 10)
+- **Ubicación:** `graph_exports/__init__.py:24`
+- **Recomendación:** Considerar el principio de responsabilidad única, dividir clase (límite: 10)
+
+#### Tamaño
+- **Descripción:** Archivo demasiado grande (395 > 300 líneas)
+- **Ubicación:** `state/__init__.py`
+- **Recomendación:** Dividir en módulos más pequeños (límite recomendado: 300 líneas)
+
+#### Tamaño función
+- **Descripción:** Función '_create_tables' muy larga (76 > 50 líneas)
+- **Ubicación:** `state/__init__.py:61`
+- **Recomendación:** Dividir en funciones más pequeñas (límite: 50 líneas)
+
+### BAJA (31 issues)
+
+#### Documentación
+- **Descripción:** Función pública '__init__' sin docstring
+- **Ubicación:** `init_data_structure.py:17`
+- **Recomendación:** Agregar docstring descriptivo con parámetros y retorno
+
+#### Documentación
+- **Descripción:** Función pública 'main' sin docstring
+- **Ubicación:** `init_data_structure.py:249`
+- **Recomendación:** Agregar docstring descriptivo con parámetros y retorno
+
+#### Documentación
+- **Descripción:** Función pública '__init__' sin docstring
+- **Ubicación:** `embeddings/__init__.py:26`
+- **Recomendación:** Agregar docstring descriptivo con parámetros y retorno
+
+#### Documentación
+- **Descripción:** Función pública 'store_embedding' sin docstring
+- **Ubicación:** `embeddings/__init__.py:80`
+- **Recomendación:** Agregar docstring descriptivo con parámetros y retorno
+
+#### Documentación
+- **Descripción:** Función pública 'get_embedding' sin docstring
+- **Ubicación:** `embeddings/__init__.py:106`
+- **Recomendación:** Agregar docstring descriptivo con parámetros y retorno
+
+#### Documentación
+- **Descripción:** Función pública 'search_similar' sin docstring
+- **Ubicación:** `embeddings/__init__.py:133`
+- **Recomendación:** Agregar docstring descriptivo con parámetros y retorno
+
+#### Documentación
+- **Descripción:** Función pública 'batch_store' sin docstring
+- **Ubicación:** `embeddings/__init__.py:173`
+- **Recomendación:** Agregar docstring descriptivo con parámetros y retorno
+
+#### Documentación
+- **Descripción:** Función pública 'get_stats' sin docstring
+- **Ubicación:** `embeddings/__init__.py:305`
+- **Recomendación:** Agregar docstring descriptivo con parámetros y retorno
+
+#### Documentación
+- **Descripción:** Función pública 'cleanup_cache' sin docstring
+- **Ubicación:** `embeddings/__init__.py:331`
+- **Recomendación:** Agregar docstring descriptivo con parámetros y retorno
+
+#### Documentación
+- **Descripción:** Función pública '__init__' sin docstring
+- **Ubicación:** `cache/__init__.py:29`
+- **Recomendación:** Agregar docstring descriptivo con parámetros y retorno
+
+
+## 🧪 RECOMENDACIONES DE PRUEBAS
+
+**Total recomendaciones:** 37
+
+### Pruebas de Prioridad ALTA (8)
+
+#### init_data_structure.py::initialize_all
+- **Tipo:** unit
+- **Descripción:** Pruebas para función initialize_all
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self
+  - Prueba con valores límite para self
+  - Prueba con valores inválidos para self
+- **Ejemplo:**
+```python
+resultado = initialize_all(self=None)
+```
+
+#### embeddings/__init__.py::cleanup_cache
+- **Tipo:** unit
+- **Descripción:** Pruebas para función cleanup_cache
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, max_age_days (int) = 30
+  - Prueba con valores límite para self
+  - Prueba con valores inválidos para self
+- **Ejemplo:**
+```python
+resultado = cleanup_cache(self=None, max_age_days=30)
+```
+
+#### cache/__init__.py::get
+- **Tipo:** unit
+- **Descripción:** Pruebas para función get
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, key (str), namespace (str) = 'default'
+  - Prueba con valores límite para self, key
+  - Prueba con valores inválidos para self, key
+- **Ejemplo:**
+```python
+resultado = get(self=None, key="test", namespace='default')
+```
+
+#### cache/__init__.py::set
+- **Tipo:** unit
+- **Descripción:** Pruebas para función set
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, key (str), value (Any), namespace (str) = 'default', ttl (Optional[int]) = None, level (str) = 'all'
+  - Prueba con valores límite para self, key, value
+  - Prueba con valores inválidos para self, key, value
+- **Ejemplo:**
+```python
+resultado = set(self=None, key="test", value=None, namespace='default', ttl=None, level='all')
+```
+
+#### projects/__init__.py::export_project
+- **Tipo:** unit
+- **Descripción:** Pruebas para función export_project
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, project_id (str), export_format (str) = 'json'
+  - Prueba con valores límite para self, project_id
+  - Prueba con valores inválidos para self, project_id
+- **Ejemplo:**
+```python
+resultado = export_project(self=None, project_id="test", export_format='json')
+```
+
+### Pruebas de Prioridad MEDIA (17)
+
+#### embeddings/__init__.py::store_embedding
+- **Tipo:** unit
+- **Descripción:** Pruebas para función store_embedding
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, entity_id (str), embedding (List[float]), metadata (Dict[str, Any]), model_name (str) = 'default'
+  - Prueba con valores límite para self, entity_id, embedding, metadata
+  - Prueba con valores inválidos para self, entity_id, embedding, metadata
+- **Ejemplo:**
+```python
+resultado = store_embedding(self=None, entity_id="test", embedding=[], metadata="test", model_name='default')
+```
+
+#### embeddings/__init__.py::get_embedding
+- **Tipo:** unit
+- **Descripción:** Pruebas para función get_embedding
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, entity_id (str)
+  - Prueba con valores límite para self, entity_id
+  - Prueba con valores inválidos para self, entity_id
+  - Prueba con datos existentes
+- **Ejemplo:**
+```python
+resultado = get_embedding(self=None, entity_id="test")
+```
+
+#### embeddings/__init__.py::search_similar
+- **Tipo:** unit
+- **Descripción:** Pruebas para función search_similar
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, query_embedding (List[float]), top_k (int) = 10, threshold (float) = 0.7, filters (Optional[Dict[str, Any]]) = None
+  - Prueba con valores límite para self, query_embedding
+  - Prueba con valores inválidos para self, query_embedding
+- **Ejemplo:**
+```python
+resultado = search_similar(self=None, query_embedding=[], top_k=10, threshold=0.7, filters=None)
+```
+
+#### embeddings/__init__.py::batch_store
+- **Tipo:** unit
+- **Descripción:** Pruebas para función batch_store
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, embeddings (List[Tuple[str, List[float], Dict[str, Any]]]), model_name (str) = 'default'
+  - Prueba con valores límite para self, embeddings
+  - Prueba con valores inválidos para self, embeddings
+- **Ejemplo:**
+```python
+resultado = batch_store(self=None, embeddings="test", model_name='default')
+```
+
+#### embeddings/__init__.py::get_stats
+- **Tipo:** unit
+- **Descripción:** Pruebas para función get_stats
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self
+  - Prueba con valores límite para self
+  - Prueba con valores inválidos para self
+  - Prueba con datos existentes
+- **Ejemplo:**
+```python
+resultado = get_stats(self=None)
+```
+
+### Pruebas de Prioridad BAJA (12)
+
+#### init_data_structure.py::__init__
+- **Tipo:** unit
+- **Descripción:** Pruebas para función __init__
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, base_path (str) = './data', force (bool) = False
+  - Prueba con valores límite para self
+  - Prueba con valores inválidos para self
+- **Ejemplo:**
+```python
+resultado = __init__(self=None, base_path='./data', force=False)
+```
+
+#### init_data_structure.py::main
+- **Tipo:** unit
+- **Descripción:** Pruebas para función main
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+
+#### embeddings/__init__.py::__init__
+- **Tipo:** unit
+- **Descripción:** Pruebas para función __init__
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, storage_path (Path), config (Optional[Dict[str, Any]]) = None
+  - Prueba con valores límite para self, storage_path
+  - Prueba con valores inválidos para self, storage_path
+- **Ejemplo:**
+```python
+resultado = __init__(self=None, storage_path=None, config=None)
+```
+
+#### cache/__init__.py::__init__
+- **Tipo:** unit
+- **Descripción:** Pruebas para función __init__
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, cache_path (Path), config (Optional[Dict[str, Any]]) = None
+  - Prueba con valores límite para self, cache_path
+  - Prueba con valores inválidos para self, cache_path
+- **Ejemplo:**
+```python
+resultado = __init__(self=None, cache_path=None, config=None)
+```
+
+#### projects/__init__.py::__init__
+- **Tipo:** unit
+- **Descripción:** Pruebas para función __init__
+- **Casos sugeridos:**
+  - Caso normal con entrada válida
+  - Prueba con diferentes combinaciones de: self, projects_base (Path)
+  - Prueba con valores límite para self, projects_base
+  - Prueba con valores inválidos para self, projects_base
+- **Ejemplo:**
+```python
+resultado = __init__(self=None, projects_base=None)
+```
+

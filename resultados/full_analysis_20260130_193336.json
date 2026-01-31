@@ -1,0 +1,1233 @@
+{
+  "project_metrics": {
+    "total_files": 52,
+    "total_lines": 3420,
+    "total_functions": 127,
+    "total_classes": 27,
+    "context_distribution": {
+      "UTILITY": 18,
+      "BUSINESS_LOGIC": 15,
+      "DATA_MODEL": 5,
+      "API": 1,
+      "CONFIGURATION": 7
+    },
+    "average_complexity": 2.54,
+    "file_types": {
+      "python": 45,
+      "yaml": 2,
+      "json": 5,
+      "toml": 0
+    }
+  },
+  "quality_assessment": {
+    "file_assessments": [
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/embeddings/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 42.86,
+          "composite": 90.39
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/embeddings/metadata.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/embeddings/utils.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/init_data_structure.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 26.58,
+          "composite": 87.08
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [
+          "FACTORY",
+          "FACTORY",
+          "FACTORY",
+          "FACTORY",
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/embeddings/storage.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 70.27,
+          "composite": 89.26
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/embeddings/operations.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/embeddings/cache.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/embeddings/search.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/cache/models.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 78.0,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 81.35
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/embeddings/chroma.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/cache/memory.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/cache/disk.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/projects/metadata.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/projects/files.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/cache/redis_cache.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/projects/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 88.25
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/projects/analysis.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/projects/filesystem.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/cache/__init__.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 84.85,
+          "composite": 89.99
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/projects/utils.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/projects/sanapshots.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/graph_exports/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 88.25
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/projects/export.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/graph_exports/builders.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/db.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 1.61,
+          "composite": 85.83
+        },
+        "contexts": [
+          "DATA_MODEL"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/graph_exports/exporter.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 78.0,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 81.82,
+          "composite": 85.44
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/projects/storage.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 83.95,
+          "composite": 89.95
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/graph_exports/utils.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/snapshots.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/__init__.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 88.25
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/utils.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 88.25
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/sessions.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 52.17,
+          "composite": 88.36
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/components.py",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 88.25
+        },
+        "contexts": [],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/agents.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 30.0,
+          "composite": 87.25
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/workflows.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 41.18,
+          "composite": 87.81
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/events.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 62.5,
+          "composite": 88.88
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/operations.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 48.44,
+          "composite": 88.17
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/backups/crypto.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/graph_exports/exporters.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/manager.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 80.26,
+          "composite": 89.76
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/backups/archive.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/backups/metadata.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/backups/filesystem.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "UTILITY"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/embeddings/chromadb_config.yaml",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 22.05,
+          "composite": 87.85
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": []
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/config/data_config.yaml",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 1.71,
+          "composite": 86.84
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/projects/project_template.json",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 0.0,
+          "composite": 86.75
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/cache/l3_cache_config.json",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 0.0,
+          "composite": 86.75
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/system_state.json",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 0.0,
+          "composite": 86.75
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/backups/scheduler.py",
+        "scores": {
+          "technical": 80.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 0.0,
+          "composite": 85.75
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/state/agents_state_template.json",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 0.0,
+          "composite": 86.75
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/backups/backup_manifest.json",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 0.0,
+          "composite": 86.75
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/data/backups/__init__.py",
+        "scores": {
+          "technical": 74.5,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 100,
+          "documentation": 88.5,
+          "composite": 88.8
+        },
+        "contexts": [
+          "BUSINESS_LOGIC"
+        ],
+        "design_patterns": [
+          "FACTORY"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Función 'create_backup' muy larga (61 líneas)",
+          "Documentación insuficiente"
+        ]
+      }
+    ],
+    "project_averages": {
+      "technical": 82.39,
+      "architectural": 99.15,
+      "performance": 85,
+      "security": 100,
+      "testability": 80,
+      "maintainability": 97.98,
+      "documentation": 15.75,
+      "composite": 86.76
+    },
+    "exceptional_files": 0,
+    "problematic_files": 0,
+    "quality_tier": "Excellent"
+  },
+  "statistics": {
+    "files_analyzed": 52,
+    "errors": 0,
+    "start_time": 1769823216.802706,
+    "end_time": 0
+  },
+  "timestamp": "2026-01-30T19:33:36.915171"
+}

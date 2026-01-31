@@ -1,0 +1,175 @@
+{
+  "project_metrics": {
+    "total_files": 6,
+    "total_lines": 1007,
+    "total_functions": 32,
+    "total_classes": 15,
+    "context_distribution": {
+      "CONFIGURATION": 5,
+      "API": 1
+    },
+    "average_complexity": 2.97,
+    "file_types": {
+      "python": 1,
+      "yaml": 5,
+      "json": 0,
+      "toml": 0
+    }
+  },
+  "quality_assessment": {
+    "file_assessments": [
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/config/api.yaml",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 5.71,
+          "composite": 87.04
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/config/models.yaml",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 6.19,
+          "composite": 87.06
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/config/agents.yaml",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 8.7,
+          "composite": 87.18
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/config/system.yaml",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 6.52,
+          "composite": 87.08
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/config/databases.yaml",
+        "scores": {
+          "technical": 90.0,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 85,
+          "documentation": 7.53,
+          "composite": 87.13
+        },
+        "contexts": [
+          "CONFIGURATION"
+        ],
+        "design_patterns": [],
+        "solid_principles": [],
+        "issues": [
+          "Documentación insuficiente"
+        ]
+      },
+      {
+        "file": "/Users/davidugalde/Documents/Study/GitHub/AnalyzerBrain/config/__init__.py",
+        "scores": {
+          "technical": 100,
+          "architectural": 100,
+          "performance": 85,
+          "security": 100,
+          "testability": 80,
+          "maintainability": 155.51,
+          "documentation": 5.02,
+          "composite": 96.55
+        },
+        "contexts": [
+          "API"
+        ],
+        "design_patterns": [
+          "SINGLETON"
+        ],
+        "solid_principles": [
+          "SINGLE_RESPONSIBILITY"
+        ],
+        "issues": [
+          "Archivo muy grande (558 líneas)",
+          "Función 'validate' muy compleja (12)",
+          "Documentación insuficiente"
+        ]
+      }
+    ],
+    "project_averages": {
+      "technical": 91.67,
+      "architectural": 100,
+      "performance": 85,
+      "security": 100,
+      "testability": 80,
+      "maintainability": 96.75,
+      "documentation": 6.61,
+      "composite": 88.67
+    },
+    "exceptional_files": 1,
+    "problematic_files": 0,
+    "quality_tier": "Excellent"
+  },
+  "statistics": {
+    "files_analyzed": 6,
+    "errors": 0,
+    "start_time": 1769822769.494495,
+    "end_time": 0
+  },
+  "timestamp": "2026-01-30T19:26:09.604557"
+}

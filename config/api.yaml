@@ -1,80 +1,67 @@
 # ============================================
-# CONFIGURACIÓN DE APIs - PROJECT BRAIN
+# CONFIGURACIÓN DE API - REFACTORIZADA
 # ============================================
 
 api:
-
-  # ============================================
-  # API REST
-  # ============================================
-
+  
+  # API REST principal
   rest:
-    enabled: true
-    host: "0.0.0.0"
-    port: 8000
-    workers: 4
-    reload: false  # SOLO desarrollo
-
-    cors:
-      enabled: true
-      allow_origins:
-        - "http://localhost:3000"
-        - "http://localhost:8080"
-        - "https://app.projectbrain.dev"
-      allow_credentials: true
-      allow_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-      allow_headers: ["Authorization", "Content-Type", "X-Request-ID"]
-      max_age: 600
-
-    rate_limiting:
-      enabled: true
-      storage_url: "redis://localhost:6379/0"
-      strategy: fixed-window
-      limits:
-        default: "100/minute"
-        authenticated: "1000/minute"
-        analysis_endpoints: "10/minute"
-        query_endpoints: "60/minute"
-
-    compression:
-      enabled: true
-      minimum_size: 1000
-      algorithms:
-        - gzip
-
-    timeouts:
-      request_timeout: 30
-      keepalive_timeout: 5
-      graceful_timeout: 10
-
-    logging:
-      enabled: true
-      level: INFO
-      format: json
-      access_log: true
-
+    enabled: "${API_REST_ENABLED:-true}"
+    
+    server:
+      host: "${API_HOST:-0.0.0.0}"
+      port: "${API_PORT:-8000}"
+      workers: "${API_WORKERS:-4}"
+      reload: "${API_RELOAD:-false}"
+    
+    security:
+      cors:
+        enabled: true
+        allow_origins:
+          - "http://localhost:3000"
+          - "http://localhost:8080"
+          - "https://app.projectbrain.dev"
+        allow_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        allow_headers: ["Authorization", "Content-Type", "X-Request-ID"]
+      
+      rate_limiting:
+        enabled: "${API_RATE_LIMITING:-true}"
+        storage: "redis://${REDIS_HOST:-localhost}:${REDIS_PORT:-6379}/0"
+        strategy: "fixed-window"
+        
+        limits:
+          default: "100/minute"
+          authenticated: "1000/minute"
+          analysis: "10/minute"
+          query: "60/minute"
+    
+    performance:
+      compression:
+        enabled: true
+        minimum_size: 1000
+        algorithm: "gzip"
+      
+      timeouts:
+        request: 30
+        keepalive: 5
+        graceful: 10
+    
     documentation:
       enabled: true
-      path: "/docs"
       openapi_url: "/openapi.json"
+      docs_url: "/docs"
       redoc_url: "/redoc"
-      title: "Project Brain API"
-      version: "1.0.0"
-      description: "API completa para el sistema Project Brain"
 
-  # ============================================
-  # WEBSOCKET API
-  # ============================================
-
+  # WebSocket para tiempo real
   websocket:
-    enabled: true
-    host: "0.0.0.0"
-    port: 8001
-    ping_interval: 30
-    ping_timeout: 10
-    max_connections: 1000
-    max_message_size: 1048576
-
+    enabled: "${API_WS_ENABLED:-true}"
+    
+    server:
+      host: "${WS_HOST:-0.0.0.0}"
+      port: "${WS_PORT:-8001}"
+      ping_interval: 30
+      max_connections: 1000
+    
     protocol:
       version: "1.0.0"
       message_types:
@@ -82,144 +69,37 @@ api:
         - subscribe
         - query
         - analysis_progress
-        - change_detected
-        - ping
-        - pong
-
+    
     subscriptions:
       enabled: true
       topics:
         - analysis_progress
         - change_detected
-        - learning_updates
         - system_metrics
-      max_subscriptions_per_connection: 10
 
-    reconnection:
-      enabled: true
-      max_attempts: 5
-      backoff_factor: 2.0
-      max_backoff_seconds: 60
-
-  # ============================================
-  # gRPC API
-  # ============================================
-
-  grpc:
-    enabled: false
-    host: "0.0.0.0"
-    port: 50051
-    max_workers: 10
-    max_message_length: 4194304
-
-    services:
-      - ProjectService
-      - AnalysisService
-      - QueryService
-      - KnowledgeService
-
-    reflection:
-      enabled: true
-
-    health:
-      enabled: true
-      service_name: "project_brain.GrpcService"
-
-  # ============================================
-  # AUTENTICACIÓN
-  # ============================================
-
+  # Autenticación y autorización
   authentication:
-    enabled: false
-
+    enabled: "${API_AUTH_ENABLED:-false}"
+    
     methods:
       api_key:
         enabled: true
         header: "X-API-Key"
-        query_param: "api_key"
         rotation_days: 90
         key_length: 32
-
+      
       jwt:
         enabled: true
-        algorithm: HS256
-        secret: "${JWT_SECRET}"  # se resuelve por env
+        algorithm: "HS256"
+        secret: "${JWT_SECRET}"
         expiry_hours: 24
-        refresh_token_enabled: true
-        refresh_token_expiry_days: 7
-
-      oauth2:
-        enabled: false
-        providers:
-          github:
-            client_id: "${GITHUB_CLIENT_ID}"
-            client_secret: "${GITHUB_CLIENT_SECRET}"
-            scopes: ["read:user", "user:email"]
-
-  # ============================================
-  # VALIDACIÓN DE REQUESTS
-  # ============================================
-
-  request_validation:
-    enabled: true
-
-    schema_validation:
-      enabled: true
-      strict: true
-
-    sanitization:
-      enabled: true
-      rules:
-        - type: sql_injection
-          action: reject
-        - type: xss
-          action: sanitize
-        - type: path_traversal
-          action: reject
-
-    max_sizes:
-      request_body: 10485760
-      query_params: 2048
-      headers: 8192
-
-  # ============================================
-  # MONITOREO
-  # ============================================
-
-  monitoring:
-    metrics:
-      enabled: true
-      endpoint: "/metrics"
-      include_default: true
-
-    tracing:
-      enabled: false
-      provider: otel
-      endpoint: "http://localhost:14268/api/traces"
-      sampling_rate: 0.1
-
-    structured_logging:
-      enabled: true
-      format: json
-
-  # ============================================
-  # WEBHOOKS
-  # ============================================
-
-  webhooks:
-    enabled: true
-
-    events:
-      analysis_completed:
-        enabled: true
-        payload_template: "./webhooks/templates/analysis_completed.json"
-
-      change_detected:
-        enabled: true
-        payload_template: "./webhooks/templates/change_detected.json"
-
-    delivery:
-      max_attempts: 3
-      retry_delay: 60
-      timeout: 30
-      secret: "${WEBHOOK_SECRET}"
+    
+    roles:
+      viewer:
+        permissions: ["read", "query"]
+      
+      analyst:
+        permissions: ["read", "query", "analyze"]
+      
+      admin:
+        permissions: ["read", "write", "query", "analyze", "configure"]

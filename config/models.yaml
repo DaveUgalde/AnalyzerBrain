@@ -1,242 +1,113 @@
 # ============================================
-# CONFIGURACIÓN DE MODELOS ML - PROJECT BRAIN
+# CONFIGURACIÓN DE MODELOS ML - REFACTORIZADA
 # ============================================
 
 models:
-
-  # ============================================
-  # EMBEDDINGS
-  # ============================================
-
+  
+  # Embeddings para diferentes tipos de contenido
   embeddings:
-
     text:
+      default: "all_minilm_l6_v2"
+      
       all_minilm_l6_v2:
         id: "sentence-transformers/all-MiniLM-L6-v2"
-        type: "embedding"
         dimensions: 384
-        max_seq_length: 512
-        language: "multilingual"
-        license: "apache-2.0"
-        cache_dir: "./models/all-minilm-l6-v2"
-
+        max_seq_length: 256
+        cache_dir: "./models/text/all-minilm-l6-v2"
+      
       all_mpnet_base_v2:
         id: "sentence-transformers/all-mpnet-base-v2"
-        type: "embedding"
         dimensions: 768
-        max_seq_length: 512
-        language: "english"
-        license: "apache-2.0"
-        cache_dir: "./models/all-mpnet-base-v2"
-
-      multi_qa_mpnet_dot_v1:
-        id: "sentence-transformers/multi-qa-mpnet-base-dot-v1"
-        type: "embedding"
-        dimensions: 768
-        max_seq_length: 512
-        language: "english"
-        license: "apache-2.0"
-        cache_dir: "./models/multi-qa-mpnet-dot-v1"
-
-      paraphrase_multilingual_mpnet_v2:
-        id: "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
-        type: "embedding"
-        dimensions: 768
-        max_seq_length: 512
-        language: "multilingual"
-        license: "apache-2.0"
-        cache_dir: "./models/paraphrase-multilingual-mpnet-v2"
-
+        max_seq_length: 384
+        cache_dir: "./models/text/all-mpnet-base-v2"
+    
     code:
+      default: "codebert_base"
+      
       codebert_base:
         id: "microsoft/codebert-base"
-        type: "embedding"
         dimensions: 768
         max_seq_length: 512
-        languages: ["python", "java", "javascript", "go", "ruby", "php"]
-        license: "mit"
-        cache_dir: "./models/codebert-base"
-
+        languages: ["python", "java", "javascript", "go"]
+        cache_dir: "./models/code/codebert-base"
+      
       graphcodebert_base:
         id: "microsoft/graphcodebert-base"
-        type: "embedding"
         dimensions: 768
         max_seq_length: 512
-        languages: ["python", "java", "javascript", "go", "ruby", "php"]
-        license: "mit"
-        cache_dir: "./models/graphcodebert-base"
-
+        languages: ["python", "java", "javascript", "go"]
+        cache_dir: "./models/code/graphcodebert-base"
+    
     multilingual:
+      default: "e5_large"
+      
       e5_large:
         id: "intfloat/multilingual-e5-large"
-        type: "embedding"
         dimensions: 1024
         max_seq_length: 512
-        license: "mit"
-        cache_dir: "./models/e5-large"
+        cache_dir: "./models/multilingual/e5-large"
 
-  # ============================================
-  # CLASIFICACIÓN
-  # ============================================
-
-  classification:
-
-    intent:
-      id: "bert-base-multilingual-cased"
-      engine: "transformers"
-      num_labels: 12
-      labels:
-        - code_analysis
-        - question_answer
-        - architecture_review
-        - security_audit
-        - performance_analysis
-        - dependency_check
-        - pattern_detection
-        - code_generation
-        - refactoring_suggestion
-        - documentation_request
-        - test_generation
-        - other
-      cache_dir: "./models/intent_classifier"
-
-    language:
-      engine: "fasttext"
-      model_path: "./models/fasttext/language.bin"
-      supported_languages:
-        - python
-        - javascript
-        - typescript
-        - java
-        - cpp
-        - go
-        - rust
-        - csharp
-        - php
-        - ruby
-
-  # ============================================
-  # GENERACIÓN
-  # ============================================
-
+  # Modelos generativos
   generation:
-
-    code:
-      codellama_7b:
-        id: "codellama/CodeLlama-7b-Instruct-hf"
-        type: "generative"
-        context_length: 4096
-        license: "llama2"
-        cache_dir: "./models/codellama-7b"
-        hardware_required:
-          min_vram_gb: 16
-
-      wizardcoder_34b:
-        id: "WizardLM/WizardCoder-Python-34B-V1.0"
-        type: "generative"
-        context_length: 2048
-        license: "llama2"
-        cache_dir: "./models/wizardcoder-34b"
-        hardware_required:
-          min_vram_gb: 48
-          load_if_available: false
-
     text:
+      default: "mistral_7b"
+      
       mistral_7b:
         id: "mistralai/Mistral-7B-Instruct-v0.1"
-        type: "generative"
         context_length: 8192
-        license: "apache-2.0"
-        cache_dir: "./models/mistral-7b"
-
+        cache_dir: "./models/generation/mistral-7b"
+        hardware:
+          min_vram_gb: 16
+          recommended_vram_gb: 24
+      
       llama2_7b_chat:
         id: "meta-llama/Llama-2-7b-chat-hf"
-        type: "generative"
         context_length: 4096
-        license: "llama2"
-        cache_dir: "./models/llama2-7b"
+        cache_dir: "./models/generation/llama2-7b"
+        hardware:
+          min_vram_gb: 14
+          recommended_vram_gb: 16
+    
+    code:
+      default: "codellama_7b"
+      
+      codellama_7b:
+        id: "codellama/CodeLlama-7b-Instruct-hf"
+        context_length: 4096
+        cache_dir: "./models/generation/codellama-7b"
+        hardware:
+          min_vram_gb: 16
+          recommended_vram_gb: 20
 
-  # ============================================
-  # ANÁLISIS DE CÓDIGO
-  # ============================================
-
-  code_analysis:
-
-    smells:
-      model: "codebert_base"
-      types:
-        - long_method
-        - large_class
-        - duplicate_code
-        - complex_method
-        - many_parameters
-        - feature_envy
-        - data_class
-        - god_class
-
-    security:
-      model: "graphcodebert_base"
-      vulnerabilities:
-        - sql_injection
-        - xss
-        - command_injection
-        - path_traversal
-        - insecure_deserialization
-        - weak_cryptography
-
-    complexity:
-      engine: "classical_ml"
-      model: "random_forest"
-      features:
-        - line_count
-        - parameter_count
-        - nesting_depth
-        - control_flow_statements
-
-  # ============================================
-  # OPTIMIZACIÓN
-  # ============================================
-
-  optimization:
-
-    quantization:
+  # Configuración de hardware
+  hardware:
+    gpu:
+      enabled: "${MODELS_GPU_ENABLED:-true}"
+      devices: "${CUDA_VISIBLE_DEVICES:-[0]}"
+      memory_fraction: 0.8
+      precision: "float16"
+    
+    cpu:
+      threads: "${MODELS_CPU_THREADS:-${CPU_COUNT:-8}}"
+      memory_limit_gb: "${MODELS_CPU_MEMORY_GB:-16}"
+    
+    mixed_precision:
       enabled: true
+      dtype: "${MODELS_PRECISION:-float16}"
+    
+    quantization:
+      enabled: "${MODELS_QUANTIZATION:-true}"
       backend: "bitsandbytes"
       precision: "int8"
 
-    pruning:
-      enabled: false
-
-    distillation:
-      enabled: false
-
-  # ============================================
-  # CACHE
-  # ============================================
-
+  # Caché y optimización
   cache:
     root_dir: "./models"
     max_size_gb: 50
-    eviction_policy: "lru"
+    eviction_policy: "LRU"
+    
     preload:
       enabled: true
       models:
-        - all_minilm_l6_v2
-        - codebert_base
-
-  # ============================================
-  # HARDWARE
-  # ============================================
-
-  hardware:
-    gpu:
-      enabled: true
-      devices: [0]
-      memory_fraction: 0.8
-
-    cpu:
-      threads: 8
-
-    mixed_precision:
-      enabled: true
-      dtype: "float16"
+        - text.all_minilm_l6_v2
+        - code.codebert_base
