@@ -5,7 +5,6 @@ Permite exportar grafos de conocimiento, embeddings, análisis, etc.
 """
 
 import sys
-import os
 import argparse
 import logging
 from pathlib import Path
@@ -17,36 +16,54 @@ from datetime import datetime
 import pickle
 import csv
 
-# Añadir el directorio src al path para imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+# -------------------------------------------------------------------
+# Paths robustos
+# -------------------------------------------------------------------
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+SRC_DIR = BASE_DIR / "src"
+
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+# -------------------------------------------------------------------
+# Imports internos
+# -------------------------------------------------------------------
 
 from core.orchestrator import BrainOrchestrator
 from core.config_manager import ConfigManager
 from utils.logging_config import setup_logging
 
+# -------------------------------------------------------------------
 
-SUPPORTED_FORMATS = {"json", "yaml", "pickle", "csv"}
+SUPPORTED_FORMATS = ("json", "yaml", "pickle", "csv")
 
+# -------------------------------------------------------------------
+# KnowledgeExporter
+# -------------------------------------------------------------------
 
 class KnowledgeExporter:
     """Clase para exportar conocimiento del sistema."""
 
     def __init__(self, config_path: Optional[str] = None):
-        self.config_path = config_path or "../config/system.yaml"
+        self.config_path = config_path or str(BASE_DIR / "config" / "system.yaml")
         self.config: Optional[Dict[str, Any]] = None
         self.orchestrator: Optional[BrainOrchestrator] = None
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(self.__class__.__name__)
+
+    # ------------------------------------------------------------------
 
     async def initialize(self) -> bool:
         try:
+            (BASE_DIR / "logs").mkdir(parents=True, exist_ok=True)
+
             setup_logging({
                 "level": "INFO",
                 "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                "file": "../logs/export_knowledge.log",
+                "file": str(BASE_DIR / "logs" / "export_knowledge.log"),
             })
 
-            config_manager = ConfigManager(self.config_path)
-            self.config = config_manager.get_config()
+            self.config = ConfigManager(self.config_path).get_config()
 
             self.orchestrator = BrainOrchestrator(self.config_path)
             await self.orchestrator.initialize()
@@ -54,21 +71,25 @@ class KnowledgeExporter:
             self.logger.info("✅ Exportador inicializado correctamente")
             return True
 
-        except Exception as e:
+        except Exception:
             self.logger.exception("❌ Error inicializando exportador")
             return False
+
+    # ------------------------------------------------------------------
+    # EXPORT
+    # ------------------------------------------------------------------
 
     async def export_project_knowledge(
         self,
         project_id: str,
         output_path: str,
-        format: str = "json",
+        export_format: str = "json",
         include: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
 
-        format = format.lower()
-        if format not in SUPPORTED_FORMATS:
-            raise ValueError(f"Formato no soportado: {format}")
+        export_format = export_format.lower()
+        if export_format not in SUPPORTED_FORMATS:
+            raise ValueError(f"Formato no soportado: {export_format}")
 
         if include is None or "all" in include:
             include = ["graph", "embeddings", "analysis", "metadata"]
@@ -76,7 +97,7 @@ class KnowledgeExporter:
         export_data: Dict[str, Any] = {
             "project_id": project_id,
             "export_timestamp": datetime.now().isoformat(),
-            "format": format,
+            "format": export_format,
             "included": include,
             "data": {},
         }
@@ -93,19 +114,19 @@ class KnowledgeExporter:
         if "metadata" in include:
             export_data["data"]["metadata"] = await self._export_metadata(project_id)
 
-        self._save_export(export_data, output_path, format)
+        self._save_export(export_data, output_path, export_format)
         export_data["statistics"] = self._calculate_export_stats(export_data)
 
         self.logger.info(
             "📤 Exportación completada | proyecto=%s formato=%s",
             project_id,
-            format,
+            export_format,
         )
 
         return export_data
 
     # ------------------------------------------------------------------
-    # EXPORTERS
+    # EXPORTERS (placeholders compatibles)
     # ------------------------------------------------------------------
 
     async def _export_knowledge_graph(self, project_id: str) -> Dict[str, Any]:
@@ -169,23 +190,22 @@ class KnowledgeExporter:
     # SAVE / SERIALIZATION
     # ------------------------------------------------------------------
 
-    def _save_export(self, data: Dict[str, Any], output_path: str, format: str) -> None:
+    def _save_export(self, data: Dict[str, Any], output_path: str, export_format: str) -> None:
         path = Path(output_path)
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        if format == "json":
-            with path.open("w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
+        if export_format == "json":
+            path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
 
-        elif format == "yaml":
+        elif export_format == "yaml":
             with path.open("w", encoding="utf-8") as f:
                 yaml.safe_dump(data, f, allow_unicode=True, sort_keys=False)
 
-        elif format == "pickle":
+        elif export_format == "pickle":
             with path.open("wb") as f:
                 pickle.dump(data, f)
 
-        elif format == "csv":
+        elif export_format == "csv":
             self._save_as_csv(data, path)
 
     def _save_as_csv(self, data: Dict[str, Any], base_path: Path) -> None:
@@ -196,7 +216,7 @@ class KnowledgeExporter:
             self.logger.warning("⚠️ No hay entidades para exportar a CSV")
             return
 
-        csv_path = base_path.with_name(base_path.stem + "_entities.csv")
+        csv_path = base_path.with_suffix("").with_name(base_path.stem + "_entities.csv")
 
         with csv_path.open("w", encoding="utf-8", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=entities[0].keys())
@@ -208,18 +228,18 @@ class KnowledgeExporter:
     # ------------------------------------------------------------------
 
     def _calculate_export_stats(self, export_data: Dict[str, Any]) -> Dict[str, Any]:
+        raw = json.dumps(export_data, ensure_ascii=False).encode("utf-8")
         return {
             "total_entities": export_data.get("data", {}).get("knowledge_graph", {}).get("entity_count", 0),
             "total_embeddings": export_data.get("data", {}).get("embeddings", {}).get("total_embeddings", 0),
             "total_issues": export_data.get("data", {}).get("analysis", {}).get("issue_count", 0),
             "total_patterns": export_data.get("data", {}).get("analysis", {}).get("pattern_count", 0),
-            "export_size_bytes": len(json.dumps(export_data, ensure_ascii=False).encode("utf-8")),
+            "export_size_bytes": len(raw),
         }
 
     async def shutdown(self) -> None:
         if self.orchestrator:
             await self.orchestrator.shutdown()
-
 
 # ----------------------------------------------------------------------
 # CLI
@@ -227,9 +247,9 @@ class KnowledgeExporter:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Exporta conocimiento de Project Brain")
-    parser.add_argument("--config", default="../config/system.yaml")
+    parser.add_argument("--config", default=str(BASE_DIR / "config" / "system.yaml"))
 
-    sub = parser.add_subparsers(dest="command")
+    sub = parser.add_subparsers(dest="command", required=True)
 
     export = sub.add_parser("export", help="Exportar conocimiento de un proyecto")
     export.add_argument("project_id")
@@ -239,29 +259,26 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    if args.command != "export":
-        parser.print_help()
-        return 1
-
     async def run() -> int:
         exporter = KnowledgeExporter(args.config)
         if not await exporter.initialize():
             return 1
 
-        include = args.include.split(",") if args.include else None
+        try:
+            include = args.include.split(",") if args.include else None
 
-        await exporter.export_project_knowledge(
-            project_id=args.project_id,
-            output_path=args.output,
-            format=args.format,
-            include=include,
-        )
+            await exporter.export_project_knowledge(
+                project_id=args.project_id,
+                output_path=args.output,
+                export_format=args.format,
+                include=include,
+            )
+            return 0
 
-        await exporter.shutdown()
-        return 0
+        finally:
+            await exporter.shutdown()
 
     return asyncio.run(run())
 
-
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

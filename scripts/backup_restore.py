@@ -10,24 +10,27 @@ import shutil
 import tarfile
 import hashlib
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Set
 from datetime import datetime
 from enum import Enum
 
 # -------------------------------------------------------------------
 # Paths
 # -------------------------------------------------------------------
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 SRC_DIR = BASE_DIR / "src"
-sys.path.insert(0, str(SRC_DIR))
+
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
 # -------------------------------------------------------------------
 # Imports internos
 # -------------------------------------------------------------------
+
 from core.config_manager import ConfigManager
 from core.exceptions import BrainException
 from utils.logging_config import setup_logging
-
 
 # -------------------------------------------------------------------
 # Enums
@@ -39,7 +42,6 @@ class BackupType(Enum):
     CONFIG = "config"
     DATABASE = "database"
 
-
 # -------------------------------------------------------------------
 # BackupManager
 # -------------------------------------------------------------------
@@ -50,8 +52,8 @@ class BackupManager:
     def __init__(self, config_path: Optional[str] = None):
         self.config_path = config_path or str(BASE_DIR / "config" / "system.yaml")
         self.config: Dict[str, Any] = {}
-        self.logger = logging.getLogger(__name__)
-        self.backup_dir: Path | None = None
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self.backup_dir: Optional[Path] = None
 
     # ----------------------------
     # Init
@@ -59,12 +61,15 @@ class BackupManager:
 
     def initialize(self) -> bool:
         try:
+            (BASE_DIR / "logs").mkdir(parents=True, exist_ok=True)
+
             setup_logging({
                 "level": "INFO",
                 "file": str(BASE_DIR / "logs" / "backup_restore.log"),
             })
 
             self.config = ConfigManager(self.config_path).get_config()
+
             self.backup_dir = Path(
                 self.config.get("backup", {}).get(
                     "location",
@@ -93,16 +98,16 @@ class BackupManager:
     ) -> Dict[str, Any]:
 
         include = include or self._default_includes(backup_type)
-        exclude = set(exclude or [])
+        exclude_set: Set[str] = set(exclude or [])
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output = self._resolve_output_path(output_path, backup_type, timestamp)
         temp_dir = self._create_temp_dir(timestamp)
 
-        metadata = self._init_metadata(backup_type, include, exclude)
+        metadata = self._init_metadata(backup_type, include, exclude_set)
 
         try:
-            self._collect_files(include, exclude, temp_dir, metadata)
+            self._collect_files(include, exclude_set, temp_dir, metadata)
             self._write_metadata(temp_dir, metadata)
             self._pack_backup(temp_dir, output)
             self._finalize_metadata(metadata, output)
@@ -128,7 +133,7 @@ class BackupManager:
         return self.backup_dir / f"backup_{backup_type.value}_{timestamp}.tar.gz"
 
     def _create_temp_dir(self, timestamp: str) -> Path:
-        temp_dir = Path(f"/tmp/project_brain_backup_{timestamp}")
+        temp_dir = BASE_DIR / ".tmp" / f"backup_{timestamp}"
         temp_dir.mkdir(parents=True, exist_ok=True)
         return temp_dir
 
@@ -136,7 +141,7 @@ class BackupManager:
         self,
         backup_type: BackupType,
         include: List[str],
-        exclude: set,
+        exclude: Set[str],
     ) -> Dict[str, Any]:
         return {
             "id": f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
@@ -151,7 +156,7 @@ class BackupManager:
     def _collect_files(
         self,
         include: List[str],
-        exclude: set,
+        exclude: Set[str],
         temp_dir: Path,
         metadata: Dict[str, Any],
     ) -> None:
@@ -188,6 +193,9 @@ class BackupManager:
         restore_dir = self._resolve_restore_dir(restore_path)
         metadata = self._load_backup_metadata(backup_file)
 
+        if not metadata:
+            raise BrainException("Metadata de backup no encontrada")
+
         if verify:
             self._verify_checksum(backup_file, metadata)
 
@@ -220,7 +228,9 @@ class BackupManager:
         with tarfile.open(backup_file, "r:gz") as tar:
             for m in tar.getmembers():
                 if m.name.endswith("backup_metadata.json"):
-                    return json.load(tar.extractfile(m))
+                    f = tar.extractfile(m)
+                    if f:
+                        return json.load(f)
         return {}
 
     def _verify_checksum(self, backup_file: Path, metadata: Dict[str, Any]) -> None:
@@ -272,7 +282,7 @@ class BackupManager:
         path: Path,
         temp_dir: Path,
         metadata: Dict[str, Any],
-        exclude: set,
+        exclude: Set[str],
     ) -> None:
 
         if not path.exists():
@@ -287,10 +297,11 @@ class BackupManager:
             shutil.copytree(path, dest, dirs_exist_ok=True)
             for f in dest.rglob("*"):
                 if f.is_file():
-                    metadata["files"].append(str(f))
+                    metadata["files"].append(str(f.relative_to(temp_dir)))
         else:
-            shutil.copy2(path, temp_dir / path.name)
-            metadata["files"].append(path.name)
+            dest = temp_dir / path.name
+            shutil.copy2(path, dest)
+            metadata["files"].append(str(dest.relative_to(temp_dir)))
 
     def _sha256(self, file: Path) -> str:
         h = hashlib.sha256()
@@ -309,7 +320,9 @@ class BackupManager:
     ) -> None:
 
         member_path = Path(member.name)
-        if ".." in member_path.parts:
+        resolved = (target_dir / member_path).resolve()
+
+        if not str(resolved).startswith(str(target_dir.resolve())):
             return
 
         if items and not any(i in member.name for i in items):
@@ -319,10 +332,26 @@ class BackupManager:
 
         if member.isfile():
             restored.append({
-                "path": str(target_dir / member.name),
+                "path": str(resolved),
                 "size_bytes": member.size,
             })
 
+    # ===============================================================
+    # Listing
+    # ===============================================================
+
+    def list_backups(self) -> List[Dict[str, Any]]:
+        assert self.backup_dir is not None
+        backups = []
+
+        for f in sorted(self.backup_dir.glob("backup_*.tar.gz")):
+            backups.append({
+                "file": str(f),
+                "size_bytes": f.stat().st_size,
+                "created": datetime.fromtimestamp(f.stat().st_mtime).isoformat(),
+            })
+
+        return backups
 
 # =====================================================================
 # CLI
@@ -364,7 +393,6 @@ def main() -> int:
 
     commands[args.cmd]()
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

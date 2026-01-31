@@ -13,35 +13,59 @@ import sys
 from pathlib import Path
 import traceback
 
-# Añadir src al path
+# ----------------------------------------------------------------------
+# PATH SETUP
+# ----------------------------------------------------------------------
+
+# Directorio base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 SRC_DIR = BASE_DIR / "src"
-sys.path.insert(0, str(SRC_DIR))
 
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+
+# ----------------------------------------------------------------------
+# MAIN LOGIC
+# ----------------------------------------------------------------------
 
 def initialize_data_system() -> bool:
     """Inicializa todo el sistema de datos."""
     print("\n=== INICIALIZANDO SISTEMA DE DATOS ===\n")
 
-    # Directorio base de datos
     data_dir = (BASE_DIR / "data").resolve()
 
     try:
+        # ------------------------------------------------------------------
+        # Crear directorio base de datos
+        # ------------------------------------------------------------------
         if not data_dir.exists():
             print(f"📁 Creando directorio de datos: {data_dir}")
             data_dir.mkdir(parents=True, exist_ok=True)
         else:
             print(f"📁 Directorio de datos existente: {data_dir}")
 
-        # Importar DataManager aquí para asegurar path correcto
-        from data.init_data_structure import DataManager
+        # ------------------------------------------------------------------
+        # Importar DataManager dinámicamente (path seguro)
+        # ------------------------------------------------------------------
+        try:
+            from data.init_data_structure import DataManager
+        except ImportError as e:
+            raise ImportError(
+                "No se pudo importar DataManager desde "
+                "'data.init_data_structure'. Verifica el módulo y el path."
+            ) from e
 
+        # ------------------------------------------------------------------
         # Inicializar DataManager
+        # ------------------------------------------------------------------
         print("\n🚀 Inicializando DataManager...")
         data_manager = DataManager(str(data_dir))
 
+        # ------------------------------------------------------------------
         # Obtener estadísticas
-        stats = data_manager.get_storage_stats()
+        # ------------------------------------------------------------------
+        stats = data_manager.get_storage_stats() or {}
 
         def gb(value: int) -> float:
             return value / (1024 ** 3)
@@ -58,16 +82,22 @@ def initialize_data_system() -> bool:
         print(f"Tamaño de backups: {mb(stats.get('backup_size', 0)):.2f} MB")
         print(f"Espacio libre: {gb(stats.get('free_space', 0)):.2f} GB")
 
+        # ------------------------------------------------------------------
         # Validar integridad
+        # ------------------------------------------------------------------
         print("\n=== 🔍 VALIDANDO INTEGRIDAD ===")
-        integrity = data_manager.validate_data_integrity()
+        integrity = data_manager.validate_data_integrity() or {}
 
         valid_total = 0
         invalid_total = 0
 
         for category, results in integrity.items():
-            valid = results.get("valid", 0)
-            invalid = results.get("invalid", 0)
+            if not isinstance(results, dict):
+                print(f"⚠️  Resultado inválido para categoría '{category}'")
+                continue
+
+            valid = int(results.get("valid", 0))
+            invalid = int(results.get("invalid", 0))
 
             print(f"{category}: {valid} válidos, {invalid} inválidos")
             valid_total += valid
@@ -80,9 +110,11 @@ def initialize_data_system() -> bool:
         else:
             print(f"⚠️  {invalid_total} elementos inválidos encontrados")
 
+        # ------------------------------------------------------------------
         # Limpiar archivos temporales
+        # ------------------------------------------------------------------
         print("\n=== 🧹 LIMPIANDO ARCHIVOS TEMPORALES ===")
-        removed = data_manager.cleanup_temp_files()
+        removed = data_manager.cleanup_temp_files() or 0
         print(f"Eliminados {removed} archivos temporales")
 
         print("\n=== ✅ SISTEMA DE DATOS INICIALIZADO CORRECTAMENTE ===\n")
@@ -94,6 +126,10 @@ def initialize_data_system() -> bool:
         traceback.print_exc()
         return False
 
+
+# ----------------------------------------------------------------------
+# ENTRYPOINT
+# ----------------------------------------------------------------------
 
 if __name__ == "__main__":
     success = initialize_data_system()

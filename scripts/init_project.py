@@ -14,9 +14,12 @@ from typing import Dict, Any, Optional
 # -------------------------------------------------
 # Ajuste robusto del path del proyecto
 # -------------------------------------------------
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 SRC_DIR = BASE_DIR / "src"
-sys.path.insert(0, str(SRC_DIR))
+
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
 from core.config_manager import ConfigManager
 from core.orchestrator import BrainOrchestrator
@@ -46,7 +49,9 @@ class SystemInitializer:
 
     def initialize(self, skip_db: bool = False) -> bool:
         try:
+            self._ensure_base_directories()
             self._setup_logging()
+
             self.logger.info("🚀 Iniciando inicialización del sistema Project Brain")
 
             self._load_configuration()
@@ -71,6 +76,9 @@ class SystemInitializer:
     # -------------------------------------------------
     # LOGGING & CONFIG
     # -------------------------------------------------
+
+    def _ensure_base_directories(self) -> None:
+        (BASE_DIR / "logs").mkdir(parents=True, exist_ok=True)
 
     def _setup_logging(self) -> None:
         log_config = {
@@ -172,6 +180,7 @@ class SystemInitializer:
 
         with driver.session() as session:
             session.run("RETURN 1")
+
         self._create_neo4j_indexes(driver)
         driver.close()
         self.logger.info("✅ Neo4j conectado")
@@ -213,7 +222,7 @@ class SystemInitializer:
         try:
             client.get_collection(name)
             self.logger.info(f"📦 ChromaDB colección '{name}' existente")
-        except ValueError:
+        except Exception:
             client.create_collection(
                 name=name,
                 metadata={"hnsw:space": cfg.get("similarity_metric", "cosine")},

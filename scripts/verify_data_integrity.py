@@ -79,6 +79,9 @@ class DataIntegrityChecker:
         }
 
         for name, result in results.items():
+            if name == "overall":
+                continue
+
             overall["total_checks"] += 1
             status = result.get("status", "failed")
 
@@ -179,7 +182,7 @@ class DataIntegrityChecker:
 
         for fname in ("chroma.sqlite3", "chroma_settings.json"):
             if not (chroma_dir / fname).exists():
-                results["status"] = "failed"
+                results["invalid_embeddings"] += 1
                 results["details"].append(f"Falta archivo ChromaDB: {fname}")
 
     def _check_embedding_cache(self, embeddings_dir: Path, results: Dict[str, Any]) -> None:
@@ -297,6 +300,7 @@ class DataIntegrityChecker:
             return results
 
         import sqlite3
+        conn = None
 
         try:
             conn = sqlite3.connect(db_file)
@@ -309,12 +313,11 @@ class DataIntegrityChecker:
 
         except Exception as e:
             results["status"] = "failed"
+            results["invalid_components"] += 1
             results["details"].append(str(e))
         finally:
-            try:
+            if conn:
                 conn.close()
-            except Exception:
-                pass
 
         return results
 

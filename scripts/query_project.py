@@ -19,7 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SRC_DIR = BASE_DIR / "src"
 DATA_DIR = BASE_DIR / "data" / "projects"
 
-sys.path.insert(0, str(SRC_DIR))
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
 # ---------------------------------------------------------------------
 # Imports internos
@@ -66,7 +67,9 @@ class ProjectQuery:
             "file": str(BASE_DIR / "logs" / "query_project.log"),
         })
 
+        # Cargar config para validar existencia (aunque no se use directamente aquí)
         ConfigManager(self.config_path).get_config()
+
         self.orchestrator = BrainOrchestrator(self.config_path)
         await self.orchestrator.initialize()
 
@@ -89,6 +92,9 @@ class ProjectQuery:
         options: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
 
+        if not self.orchestrator:
+            raise RuntimeError("Orchestrator no inicializado")
+
         query_context = {
             "session_id": self.session_id,
             **(context or {}),
@@ -106,7 +112,7 @@ class ProjectQuery:
         self.logger.info(
             "Pregunta procesada en %.2fs | Confianza %.1f%%",
             elapsed,
-            result.get("confidence", 0) * 100,
+            (result.get("confidence") or 0) * 100,
         )
         return result
 
@@ -118,11 +124,10 @@ class ProjectQuery:
         if not DATA_DIR.exists():
             return []
 
-        projects = [
-            self._load_project_metadata(p)
-            for p in DATA_DIR.iterdir()
-            if p.is_dir()
-        ]
+        projects = []
+        for p in DATA_DIR.iterdir():
+            if p.is_dir():
+                projects.append(self._load_project_metadata(p))
 
         return sorted(
             projects,
@@ -131,14 +136,14 @@ class ProjectQuery:
         )
 
     def _load_project_metadata(self, project_dir: Path) -> Dict[str, Any]:
-        metadata = {}
+        metadata: Dict[str, Any] = {}
         metadata_file = project_dir / "metadata.json"
 
         if metadata_file.exists():
             try:
-                metadata = json.loads(metadata_file.read_text())
+                metadata = json.loads(metadata_file.read_text(encoding="utf-8"))
             except Exception:
-                pass
+                self.logger.warning("No se pudo leer metadata de %s", project_dir)
 
         return {
             "id": project_dir.name,
@@ -180,7 +185,7 @@ class ProjectQuery:
         ])
 
     def _format_confidence(self, answer: Dict[str, Any]) -> str:
-        confidence = answer.get("confidence", 0)
+        confidence = answer.get("confidence") or 0.0
         level = "Alta" if confidence > 0.8 else "Media" if confidence > 0.5 else "Baja"
         return f"\n📊 Confianza: {confidence:.1%} ({level})"
 
@@ -249,12 +254,18 @@ async def with_query(config: str, fn):
 
 async def handle_ask(args) -> int:
     async def run(query: ProjectQuery):
-        context = json.loads(Path(args.file).read_text()) if args.file else {}
+        context = {}
+        if args.file:
+            context = json.loads(Path(args.file).read_text(encoding="utf-8"))
+
         answer = await query.ask(args.question, args.project, context)
         print(query.format_answer(answer, args.verbose))
 
         if args.output:
-            Path(args.output).write_text(json.dumps(answer, indent=2))
+            Path(args.output).write_text(
+                json.dumps(answer, indent=2, ensure_ascii=False),
+                encoding="utf-8",
+            )
             print(f"\n💾 Respuesta guardada en {args.output}")
         return 0
 

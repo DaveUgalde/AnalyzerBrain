@@ -9,7 +9,7 @@ import shutil
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Optional, List, Callable
+from typing import Optional, List, Callable, Dict, Tuple
 
 # -------------------------------------------------
 # Logging
@@ -40,7 +40,7 @@ class DataMigrator:
         self.data_dir = data_dir.resolve()
         self.migration_log = self.data_dir / "migration_log.json"
 
-        self.migrations: dict[tuple[str, str], Callable[[], None]] = {
+        self.migrations: Dict[Tuple[str, str], Callable[[], None]] = {
             ("1.0.0", "1.1.0"): self._migrate_1_0_0_to_1_1_0,
             ("1.1.0", "1.2.0"): self._migrate_1_1_0_to_1_2_0,
             ("1.2.0", "2.0.0"): self._migrate_1_2_0_to_2_0_0,
@@ -63,7 +63,8 @@ class DataMigrator:
 
     def _read_version_file(self, path: Path) -> str:
         try:
-            return json.loads(path.read_text()).get("version", "1.0.0")
+            data = json.loads(path.read_text(encoding="utf-8"))
+            return data.get("version", "1.0.0")
         except Exception:
             logger.warning("version.json corrupto, asumiendo 1.0.0")
             return "1.0.0"
@@ -90,7 +91,6 @@ class DataMigrator:
             self._run_migration_chain(current)
             self._update_version_file(self.LATEST_VERSION)
             self._log_migration(current, self.LATEST_VERSION, success=True)
-
             logger.info("✅ Migración completada exitosamente")
             return True
 
@@ -143,7 +143,10 @@ class DataMigrator:
         if not legacy.exists():
             return
 
-        data = json.loads(legacy.read_text())
+        try:
+            data = json.loads(legacy.read_text(encoding="utf-8"))
+        except Exception as e:
+            raise RuntimeError(f"embeddings.json inválido: {e}")
 
         for key, value in data.items():
             payload = (
@@ -151,7 +154,10 @@ class DataMigrator:
                 if isinstance(value, dict)
                 else {"vector": value, "metadata": {}, "version": "1.0.0"}
             )
-            (cache_dir / f"{key}.json").write_text(json.dumps(payload, indent=2))
+            (cache_dir / f"{key}.json").write_text(
+                json.dumps(payload, indent=2),
+                encoding="utf-8",
+            )
 
         legacy.rename(legacy.with_suffix(".json.bak"))
 
@@ -164,50 +170,61 @@ class DataMigrator:
         db_path = state_dir / "state.db"
         conn = sqlite3.connect(db_path)
 
-        with conn:
-            conn.execute(
-                """
-                CREATE TABLE IF NOT EXISTS migration_state (
-                    key TEXT PRIMARY KEY,
-                    value TEXT
-                )
-                """
-            )
-
-        old_sessions = self.data_dir / "sessions"
-        if old_sessions.exists():
-            for f in old_sessions.glob("*.json"):
+        try:
+            with conn:
                 conn.execute(
-                    "INSERT OR IGNORE INTO migration_state VALUES (?, ?)",
-                    (f"session_{f.stem}", f.read_text()),
+                    """
+                    CREATE TABLE IF NOT EXISTS migration_state (
+                        key TEXT PRIMARY KEY,
+                        value TEXT
+                    )
+                    """
                 )
 
-        conn.close()
+            old_sessions = self.data_dir / "sessions"
+            if old_sessions.exists():
+                for f in old_sessions.glob("*.json"):
+                    conn.execute(
+                        "INSERT OR IGNORE INTO migration_state VALUES (?, ?)",
+                        (f"session_{f.stem}", f.read_text(encoding="utf-8")),
+                    )
+        finally:
+            conn.close()
 
     def _migrate_1_2_0_to_2_0_0(self) -> None:
         temp = self.data_dir / "_migration_tmp"
         temp.mkdir(exist_ok=True)
 
-        for item in self.data_dir.iterdir():
-            if item.name not in {
-                "_migration_tmp",
-                "version.json",
-                "migration_log.json",
-            }:
-                shutil.move(str(item), temp / item.name)
+        try:
+            for item in self.data_dir.iterdir():
+                if item.name not in {
+                    "_migration_tmp",
+                    "version.json",
+                    "migration_log.json",
+                }:
+                    shutil.move(str(item), temp / item.name)
 
-        sys.path.insert(0, str(self.data_dir.parent / "src"))
-        from data.init_data_structure import DataManager
+            sys.path.insert(0, str(self.data_dir.parent / "src"))
+            from data.init_data_structure import DataManager
 
-        DataManager(str(self.data_dir))
+            DataManager(str(self.data_dir))
 
-        for folder in ("projects", "embeddings", "state"):
-            src = temp / folder
-            dst = self.data_dir / folder
-            if src.exists():
-                shutil.copytree(src, dst, dirs_exist_ok=True)
+            for folder in ("projects", "embeddings", "state"):
+                src = temp / folder
+                dst = self.data_dir / folder
+                if src.exists():
+                    shutil.copytree(src, dst, dirs_exist_ok=True)
 
-        shutil.rmtree(temp)
+        except Exception:
+            if self.data_dir.exists():
+                shutil.rmtree(self.data_dir)
+            shutil.move(str(temp), self.data_dir)
+            raise
+        finally:
+            if temp.exists():
+                shutil.rmtree(temp)
+            if sys.path and sys.path[0].endswith("/src"):
+                sys.path.pop(0)
 
     # =================================================
     # BACKUP & LOG
@@ -233,7 +250,10 @@ class DataMigrator:
             "version": version,
             "migrated_at": datetime.now().isoformat(),
         }
-        (self.data_dir / "version.json").write_text(json.dumps(payload, indent=2))
+        (self.data_dir / "version.json").write_text(
+            json.dumps(payload, indent=2),
+            encoding="utf-8",
+        )
 
     def _log_migration(
         self,
@@ -252,10 +272,16 @@ class DataMigrator:
 
         log = []
         if self.migration_log.exists():
-            log = json.loads(self.migration_log.read_text())
+            try:
+                log = json.loads(self.migration_log.read_text(encoding="utf-8"))
+            except Exception:
+                log = []
 
         log.append(entry)
-        self.migration_log.write_text(json.dumps(log[-100:], indent=2))
+        self.migration_log.write_text(
+            json.dumps(log[-100:], indent=2),
+            encoding="utf-8",
+        )
 
 
 # -------------------------------------------------

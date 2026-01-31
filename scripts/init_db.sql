@@ -4,6 +4,10 @@
 -- Project Brain - PostgreSQL Schema
 -- ============================================
 
+-- ============================================
+-- CONFIGURACIÓN INICIAL
+-- ============================================
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -19,8 +23,8 @@ SET row_security = off;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-CREATE EXTENSION IF NOT EXISTS "pg_trgm";     -- similarity()
--- CREATE EXTENSION IF NOT EXISTS "vector";   -- opcional (pgvector)
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+-- CREATE EXTENSION IF NOT EXISTS "vector"; -- opcional (pgvector)
 
 -- ============================================
 -- TABLAS PRINCIPALES
@@ -33,21 +37,21 @@ CREATE TABLE IF NOT EXISTS projects (
     description TEXT,
     language VARCHAR(50),
 
-    file_count INTEGER DEFAULT 0 CHECK (file_count >= 0),
-    total_lines BIGINT DEFAULT 0 CHECK (total_lines >= 0),
-    function_count INTEGER DEFAULT 0 CHECK (function_count >= 0),
-    class_count INTEGER DEFAULT 0 CHECK (class_count >= 0),
-    issue_count INTEGER DEFAULT 0 CHECK (issue_count >= 0),
+    file_count INTEGER NOT NULL DEFAULT 0 CHECK (file_count >= 0),
+    total_lines BIGINT NOT NULL DEFAULT 0 CHECK (total_lines >= 0),
+    function_count INTEGER NOT NULL DEFAULT 0 CHECK (function_count >= 0),
+    class_count INTEGER NOT NULL DEFAULT 0 CHECK (class_count >= 0),
+    issue_count INTEGER NOT NULL DEFAULT 0 CHECK (issue_count >= 0),
 
-    analysis_status VARCHAR(50) DEFAULT 'pending',
+    analysis_status VARCHAR(50) NOT NULL DEFAULT 'pending',
     last_analyzed TIMESTAMPTZ,
     analysis_duration_seconds INTEGER CHECK (analysis_duration_seconds >= 0),
 
-    metadata JSONB DEFAULT '{}'::jsonb,
-    tags TEXT[] DEFAULT '{}',
+    metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+    tags TEXT[] NOT NULL DEFAULT '{}',
 
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMPTZ
 );
 
@@ -63,27 +67,24 @@ CREATE TABLE IF NOT EXISTS files (
     size_bytes BIGINT NOT NULL CHECK (size_bytes >= 0),
     line_count INTEGER NOT NULL CHECK (line_count >= 0),
     content_hash CHAR(64) NOT NULL,
-    encoding VARCHAR(50) DEFAULT 'utf-8',
+    encoding VARCHAR(50) NOT NULL DEFAULT 'utf-8',
 
     complexity_level VARCHAR(20),
-    maintainability_index DECIMAL(5,2) CHECK (maintainability_index BETWEEN 0 AND 100),
-    test_coverage DECIMAL(5,2) CHECK (test_coverage BETWEEN 0 AND 100),
-    duplication_rate DECIMAL(5,2) CHECK (duplication_rate BETWEEN 0 AND 100),
+    maintainability_index NUMERIC(5,2) CHECK (maintainability_index BETWEEN 0 AND 100),
+    test_coverage NUMERIC(5,2) CHECK (test_coverage BETWEEN 0 AND 100),
+    duplication_rate NUMERIC(5,2) CHECK (duplication_rate BETWEEN 0 AND 100),
 
     parsed_ast JSONB,
-    entities JSONB DEFAULT '[]'::jsonb,
-    issues JSONB DEFAULT '[]'::jsonb,
-    dependencies JSONB DEFAULT '[]'::jsonb,
+    entities JSONB NOT NULL DEFAULT '[]'::jsonb,
+    issues JSONB NOT NULL DEFAULT '[]'::jsonb,
+    dependencies JSONB NOT NULL DEFAULT '[]'::jsonb,
 
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_parsed TIMESTAMPTZ,
 
     UNIQUE (project_id, path)
 );
-
--- (Funciones, clases, imports, issues, relationships, embeddings, etc.)
--- ⚠️ Se mantienen iguales estructuralmente; solo se corrigen tipos y constraints
 
 -- ============================================
 -- FUNCIONES UTILITARIAS
@@ -97,23 +98,38 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- NOTA:
+-- Esta función asume que las tablas functions, classes e issues existen.
+-- check_function_bodies = false evita errores al crearla antes.
+
 CREATE OR REPLACE FUNCTION update_project_stats(project_uuid UUID)
 RETURNS VOID AS $$
 BEGIN
     UPDATE projects p
     SET
-        file_count = (SELECT COUNT(*) FROM files WHERE project_id = p.id),
-        total_lines = COALESCE((SELECT SUM(line_count) FROM files WHERE project_id = p.id), 0),
-        function_count = (SELECT COUNT(*) FROM functions WHERE project_id = p.id),
-        class_count = (SELECT COUNT(*) FROM classes WHERE project_id = p.id),
-        issue_count = (SELECT COUNT(*) FROM issues WHERE project_id = p.id AND is_fixed = FALSE),
+        file_count = (
+            SELECT COUNT(*) FROM files WHERE project_id = p.id
+        ),
+        total_lines = COALESCE((
+            SELECT SUM(line_count) FROM files WHERE project_id = p.id
+        ), 0),
+        function_count = (
+            SELECT COUNT(*) FROM functions WHERE project_id = p.id
+        ),
+        class_count = (
+            SELECT COUNT(*) FROM classes WHERE project_id = p.id
+        ),
+        issue_count = (
+            SELECT COUNT(*) FROM issues
+            WHERE project_id = p.id AND is_fixed = FALSE
+        ),
         updated_at = CURRENT_TIMESTAMP
     WHERE p.id = project_uuid;
 END;
 $$ LANGUAGE plpgsql;
 
 -- ============================================
--- LIMPIEZA DE DATOS ANTIGUOS (CORREGIDA)
+-- LIMPIEZA DE DATOS ANTIGUOS
 -- ============================================
 
 CREATE OR REPLACE FUNCTION cleanup_old_data(retention_days INTEGER DEFAULT 90)
@@ -122,18 +138,18 @@ DECLARE
     deleted_rows INTEGER;
 BEGIN
     DELETE FROM operation_logs
-    WHERE started_at < CURRENT_TIMESTAMP - (retention_days || ' days')::INTERVAL;
+    WHERE started_at < CURRENT_TIMESTAMP - make_interval(days => retention_days);
     GET DIAGNOSTICS deleted_rows = ROW_COUNT;
     RETURN QUERY SELECT deleted_rows, 'operation_logs';
 
     DELETE FROM user_interactions
-    WHERE created_at < CURRENT_TIMESTAMP - (retention_days || ' days')::INTERVAL
+    WHERE created_at < CURRENT_TIMESTAMP - make_interval(days => retention_days)
       AND feedback_score IS NULL;
     GET DIAGNOSTICS deleted_rows = ROW_COUNT;
     RETURN QUERY SELECT deleted_rows, 'user_interactions';
 
     DELETE FROM system_metrics
-    WHERE timestamp < CURRENT_TIMESTAMP - (retention_days || ' days')::INTERVAL
+    WHERE timestamp < CURRENT_TIMESTAMP - make_interval(days => retention_days)
       AND metric_name NOT LIKE 'daily_%';
     GET DIAGNOSTICS deleted_rows = ROW_COUNT;
     RETURN QUERY SELECT deleted_rows, 'system_metrics';
@@ -141,7 +157,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- ============================================
--- SEARCH (CORREGIDA)
+-- SEARCH DE ENTIDADES
 -- ============================================
 
 CREATE OR REPLACE FUNCTION search_entities(
@@ -163,15 +179,25 @@ BEGIN
     SELECT *
     FROM (
         SELECT
-            fn.id, 'function', fn.name, fn.project_id, f.path, fn.start_line,
-            similarity(fn.name, search_query)
+            fn.id AS entity_id,
+            'function'::TEXT AS entity_type,
+            fn.name AS entity_name,
+            fn.project_id,
+            f.path AS file_path,
+            fn.start_line AS line_number,
+            similarity(fn.name, search_query) AS match_score
         FROM functions fn
         JOIN files f ON fn.file_id = f.id
 
         UNION ALL
 
         SELECT
-            c.id, 'class', c.name, c.project_id, f.path, 1,
+            c.id,
+            'class',
+            c.name,
+            c.project_id,
+            f.path,
+            1,
             similarity(c.name, search_query)
         FROM classes c
         JOIN files f ON c.file_id = f.id
@@ -179,7 +205,12 @@ BEGIN
         UNION ALL
 
         SELECT
-            f.id, 'file', f.name, f.project_id, f.path, 1,
+            f.id,
+            'file',
+            f.name,
+            f.project_id,
+            f.path,
+            1,
             similarity(f.name, search_query)
         FROM files f
     ) s
@@ -190,15 +221,17 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- ============================================
--- TRIGGERS (IDEMPOTENTES)
+-- TRIGGERS
 -- ============================================
 
 DROP TRIGGER IF EXISTS update_projects_updated_at ON projects;
 CREATE TRIGGER update_projects_updated_at
 BEFORE UPDATE ON projects
-FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
 
--- (mismo patrón para files, functions, classes, issues, embeddings)
+-- Repetir este patrón para:
+-- files, functions, classes, issues, embeddings
 
 -- ============================================
 -- FIN
