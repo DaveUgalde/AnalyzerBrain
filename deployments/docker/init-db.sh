@@ -41,26 +41,44 @@ DATA_DIR="/app/data"
 LOG_DIR="/app/logs"
 CONFIG_DIR="/app/config"
 
+mkdir -p "$DATA_DIR/embeddings"
+
 # =========================
-# Esperar servicios
+# Esperar servicios (con límite)
 # =========================
+MAX_RETRIES=60
+
 log "Esperando PostgreSQL..."
-until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" > /dev/null 2>&1; do
+for ((i=1; i<=MAX_RETRIES; i++)); do
+    if pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" > /dev/null 2>&1; then
+        log "✅ PostgreSQL disponible"
+        break
+    fi
     sleep 2
+    [[ "$i" -eq "$MAX_RETRIES" ]] && fail "PostgreSQL no respondió"
 done
-log "✅ PostgreSQL disponible"
 
 log "Esperando Neo4j..."
-until nc -z "$NEO4J_HOST" "$NEO4J_PORT"; do
+for ((i=1; i<=MAX_RETRIES; i++)); do
+    if command -v nc >/dev/null 2>&1; then
+        nc -z "$NEO4J_HOST" "$NEO4J_PORT" && break
+    else
+        (echo > /dev/tcp/"$NEO4J_HOST"/"$NEO4J_PORT") >/dev/null 2>&1 && break
+    fi
     sleep 2
+    [[ "$i" -eq "$MAX_RETRIES" ]] && fail "Neo4j no respondió"
 done
 log "✅ Neo4j disponible"
 
 log "Esperando Redis..."
-until redis-cli -h "$REDIS_HOST" -p "$REDIS_PORT" -a "$REDIS_PASSWORD" ping 2>/dev/null | grep -q PONG; do
+for ((i=1; i<=MAX_RETRIES; i++)); do
+    if redis-cli -h "$REDIS_HOST" -p "$REDIS_PORT" -a "$REDIS_PASSWORD" ping 2>/dev/null | grep -q PONG; then
+        log "✅ Redis disponible"
+        break
+    fi
     sleep 2
+    [[ "$i" -eq "$MAX_RETRIES" ]] && fail "Redis no respondió"
 done
-log "✅ Redis disponible"
 
 # =========================
 # PostgreSQL
@@ -84,7 +102,7 @@ log "Configurando Neo4j..."
 cypher-shell \
     -u "$NEO4J_USER" \
     -p "$NEO4J_PASSWORD" \
-    -a "bolt://${NEO4J_HOST}:${NEO4J_PORT}" <<'CYPHER'
+    -a "bolt://${NEO4J_HOST}:${NEO4J_PORT}" <<'CYPHER' || true
 CREATE CONSTRAINT IF NOT EXISTS FOR (p:Project) REQUIRE p.id IS UNIQUE;
 CREATE CONSTRAINT IF NOT EXISTS FOR (f:File) REQUIRE f.id IS UNIQUE;
 CREATE CONSTRAINT IF NOT EXISTS FOR (fn:Function) REQUIRE fn.id IS UNIQUE;
@@ -102,7 +120,7 @@ log "✅ Neo4j configurado"
 # Redis
 # =========================
 log "Configurando Redis..."
-redis-cli -h "$REDIS_HOST" -p "$REDIS_PORT" -a "$REDIS_PASSWORD" <<EOF
+redis-cli -h "$REDIS_HOST" -p "$REDIS_PORT" -a "$REDIS_PASSWORD" <<EOF || true
 CONFIG SET maxmemory 1gb
 CONFIG SET maxmemory-policy allkeys-lru
 SET system:initialized true

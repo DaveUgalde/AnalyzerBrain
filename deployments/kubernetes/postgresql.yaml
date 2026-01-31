@@ -13,6 +13,7 @@ spec:
     - name: postgres
       port: 5432
       targetPort: 5432
+      protocol: TCP
   selector:
     app: project-brain
     component: database
@@ -43,6 +44,7 @@ spec:
         tier: postgresql
         version: "15"
     spec:
+      terminationGracePeriodSeconds: 30
       securityContext:
         fsGroup: 999
         runAsUser: 999
@@ -54,6 +56,7 @@ spec:
           ports:
             - containerPort: 5432
               name: postgres
+              protocol: TCP
           env:
             - name: POSTGRES_DB
               value: project_brain
@@ -112,7 +115,7 @@ spec:
             name: project-brain-config
             items:
               - key: init-script.sh
-                path: init.sql
+                path: init-script.sh
   volumeClaimTemplates:
     - metadata:
         name: postgres-data

@@ -110,9 +110,10 @@ data:
     sleep 10
 
     if [ -f /app/scripts/init_system.py ]; then
+      echo "[INIT] Ejecutando init_system.py"
       python3 /app/scripts/init_system.py
     else
-      echo "[INIT] Script init_system.py no encontrado"
+      echo "[INIT] ERROR: Script init_system.py no encontrado"
       exit 1
     fi
 

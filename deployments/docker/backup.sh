@@ -78,7 +78,11 @@ cypher-shell \
     "CALL apoc.export.cypher.all(null, {format:'cypher-shell'})" \
     > "$WORK_DIR/neo4j.cypher"
 
-log "✅ Backup Neo4j completado"
+if [[ ! -s "$WORK_DIR/neo4j.cypher" ]]; then
+    log "⚠️  Backup Neo4j generado pero vacío"
+else
+    log "✅ Backup Neo4j completado"
+fi
 
 # ======================
 # 3. Backup Redis
@@ -117,9 +121,15 @@ fi
 # ======================
 if [[ -d "$LOG_DIR" ]]; then
     log "Iniciando backup de logs (últimos 7 días)..."
-    find "$LOG_DIR" -name "*.log" -mtime -7 -print0 \
-        | tar --null -czf "$WORK_DIR/logs.tar.gz" --files-from=-
-    log "✅ Backup logs completado"
+    mapfile -d '' LOG_FILES < <(find "$LOG_DIR" -name "*.log" -mtime -7 -print0)
+
+    if (( ${#LOG_FILES[@]} > 0 )); then
+        printf '%s\0' "${LOG_FILES[@]}" \
+            | tar --null -czf "$WORK_DIR/logs.tar.gz" --files-from=-
+        log "✅ Backup logs completado"
+    else
+        log "⚠️  No hay logs recientes para respaldar"
+    fi
 fi
 
 # ======================

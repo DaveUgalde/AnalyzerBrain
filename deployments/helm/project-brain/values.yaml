@@ -17,6 +17,9 @@ global:
     enabled: true
     secretName: project-brain-tls
 
+# Also exposed at root for template compatibility
+imagePullSecrets: []
+
 # ---------------------------------------------------------------------
 # API configuration
 # ---------------------------------------------------------------------
@@ -78,6 +81,9 @@ api:
     jwtSecret: ""
     apiKeyAdmin: ""
     apiKeyService: ""
+
+  extraVolumes: []
+  extraVolumeMounts: []
 
   config:
     system:
@@ -218,7 +224,6 @@ ingress:
 
 # ---------------------------------------------------------------------
 # Cert Manager (dependency)
-# IMPORTANT: no hyphens in values paths
 # ---------------------------------------------------------------------
 certManager:
   enabled: true
@@ -262,7 +267,7 @@ tolerations: []
 nodeSelector: {}
 
 # ---------------------------------------------------------------------
-# Extras
+# Extras (global fallback)
 # ---------------------------------------------------------------------
 extraVolumes: []
 extraVolumeMounts: []

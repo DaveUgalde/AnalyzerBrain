@@ -6,6 +6,10 @@ set -Eeuo pipefail
 HEALTH_STATUS=0
 ERROR_MESSAGES=()
 
+# Valores seguros para el resumen
+DISK_USAGE="N/A"
+MEM_FREE_GB="N/A"
+
 echo "==========================================="
 echo "HEALTH CHECK - PROJECT BRAIN"
 echo "Fecha: $(date -Iseconds)"
@@ -23,7 +27,7 @@ check_service() {
     local cmd=("$@")
 
     echo -n "Verificando ${service_name}... "
-    if "${cmd[@]}" > /dev/null 2>&1; then
+    if ( "${cmd[@]}" ) > /dev/null 2>&1; then
         log_ok ""
     else
         log_fail ""
@@ -93,7 +97,7 @@ fi
 # 5. Memoria
 # =========================
 echo -n "Verificando memoria... "
-MEM_FREE_MB=$(free -m | awk 'NR==2 {print $7}')
+MEM_FREE_MB=$(free -m | awk 'NR==2 {print ($7 ? $7 : $4)}')
 MEM_FREE_GB=$(awk "BEGIN {printf \"%.2f\", ${MEM_FREE_MB}/1024}")
 
 if [[ "$MEM_FREE_MB" -gt 512 ]]; then
@@ -155,7 +159,7 @@ done
 # 9. Puertos críticos
 # =========================
 echo -n "Verificando puertos críticos... "
-if nc -z localhost 8000 && nc -z localhost 8001; then
+if command -v nc >/dev/null 2>&1 && nc -z localhost 8000 && nc -z localhost 8001; then
     log_ok ""
 else
     log_fail ""
@@ -168,14 +172,13 @@ fi
 # =========================
 echo -n "Verificando errores recientes en logs... "
 if [[ -d /app/logs ]]; then
-    RECENT_ERRORS=$(find /app/logs -name "*.log" -type f -mtime -1 \
-        -exec grep -qiE "ERROR|CRITICAL|Exception" {} \; && echo "yes" || echo "")
-    if [[ -z "$RECENT_ERRORS" ]]; then
-        log_ok ""
-    else
+    if find /app/logs -name "*.log" -type f -mtime -1 -print0 \
+        | xargs -0 grep -qiE "ERROR|CRITICAL|Exception"; then
         log_fail ""
         ERROR_MESSAGES+=("Errores recientes encontrados en logs")
         HEALTH_STATUS=1
+    else
+        log_ok ""
     fi
 else
     log_ok "(logs no presentes)"

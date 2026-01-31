@@ -26,9 +26,12 @@ icon: https://raw.githubusercontent.com/project-brain/analyzer-brain/main/docs/l
 
 annotations:
   artifacthub.io/changes: |
-    - Initial release of Project Brain Helm chart
-    - Production-ready configuration for all core components
-    - Supports horizontal scaling and high availability
+    - kind: added
+      description: Initial release of Project Brain Helm chart
+    - kind: added
+      description: Production-ready configuration for all core components
+    - kind: added
+      description: Supports horizontal scaling and high availability
 
   artifacthub.io/images: |
     - name: api

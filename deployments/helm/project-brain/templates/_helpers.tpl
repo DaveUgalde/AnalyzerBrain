@@ -2,30 +2,30 @@
 Expand the name of the chart.
 */}}
 {{- define "project-brain.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end }}
 
 {{/*
 Create a default fully qualified app name.
 */}}
 {{- define "project-brain.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
 {{- end }}
 
 {{/*
 Chart label
 */}}
 {{- define "project-brain.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end }}
 
 {{/*
@@ -52,81 +52,71 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Service account
 */}}
 {{- define "project-brain.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "project-brain.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
+{{- if .Values.serviceAccount.create -}}
+{{- default (include "project-brain.fullname" .) .Values.serviceAccount.name -}}
+{{- else -}}
+{{- default "default" .Values.serviceAccount.name -}}
+{{- end -}}
 {{- end }}
 
 {{/*
 PostgreSQL hostname
 */}}
 {{- define "project-brain.postgresql.host" -}}
-{{- if .Values.postgresql.enabled }}
-{{- printf "%s-postgresql" (include "project-brain.fullname" .) }}
-{{- else }}
-{{- .Values.externalPostgresql.host }}
-{{- end }}
+{{- if .Values.postgresql.enabled -}}
+{{- printf "%s-postgresql" (include "project-brain.fullname" .) -}}
+{{- else -}}
+{{- .Values.externalPostgresql.host -}}
+{{- end -}}
 {{- end }}
 
 {{/*
 Neo4j hostname
 */}}
 {{- define "project-brain.neo4j.host" -}}
-{{- if .Values.neo4j.enabled }}
-{{- printf "%s-neo4j" (include "project-brain.fullname" .) }}
-{{- else }}
-{{- .Values.externalNeo4j.host }}
-{{- end }}
+{{- if .Values.neo4j.enabled -}}
+{{- printf "%s-neo4j" (include "project-brain.fullname" .) -}}
+{{- else -}}
+{{- .Values.externalNeo4j.host -}}
+{{- end -}}
 {{- end }}
 
 {{/*
 Redis hostname
 */}}
 {{- define "project-brain.redis.host" -}}
-{{- if .Values.redis.enabled }}
-{{- printf "%s-redis-master" (include "project-brain.fullname" .) }}
-{{- else }}
-{{- .Values.externalRedis.host }}
-{{- end }}
+{{- if .Values.redis.enabled -}}
+{{- printf "%s-redis-master" (include "project-brain.fullname" .) -}}
+{{- else -}}
+{{- .Values.externalRedis.host -}}
+{{- end -}}
 {{- end }}
 
 {{/*
-PostgreSQL connection string
+Connection strings
 */}}
 {{- define "project-brain.postgresql.connectionString" -}}
-{{- if .Values.postgresql.enabled }}
+{{- if .Values.postgresql.enabled -}}
 postgresql://{{ .Values.postgresql.global.postgresql.auth.username }}:{{ .Values.postgresql.global.postgresql.auth.password }}@{{ include "project-brain.postgresql.host" . }}:5432/{{ .Values.postgresql.global.postgresql.auth.database }}
-{{- else }}
+{{- else -}}
 postgresql://{{ .Values.externalPostgresql.username }}:{{ .Values.externalPostgresql.password }}@{{ .Values.externalPostgresql.host }}:{{ .Values.externalPostgresql.port }}/{{ .Values.externalPostgresql.database }}
-{{- end }}
+{{- end -}}
 {{- end }}
 
-{{/*
-Neo4j connection string
-*/}}
 {{- define "project-brain.neo4j.connectionString" -}}
-{{- if .Values.neo4j.enabled }}
-bolt://{{ include "project-brain.neo4j.host" . }}:7687
-{{- else }}
-bolt://{{ .Values.externalNeo4j.host }}:{{ .Values.externalNeo4j.port }}
-{{- end }}
+bolt://{{ include "project-brain.neo4j.host" . }}:{{ ternary 7687 .Values.externalNeo4j.port .Values.neo4j.enabled }}
 {{- end }}
 
-{{/*
-Redis connection string
-*/}}
 {{- define "project-brain.redis.connectionString" -}}
-{{- if .Values.redis.enabled }}
+{{- if .Values.redis.enabled -}}
 redis://:{{ .Values.redis.auth.password }}@{{ include "project-brain.redis.host" . }}:6379/0
-{{- else }}
+{{- else -}}
 redis://:{{ .Values.externalRedis.password }}@{{ .Values.externalRedis.host }}:{{ .Values.externalRedis.port }}/0
-{{- end }}
+{{- end -}}
 {{- end }}
 
 {{/*
-API environment variables
+API env vars
 */}}
 {{- define "project-brain.api.env" -}}
 - name: ENVIRONMENT
@@ -143,42 +133,24 @@ API environment variables
 - name: POSTGRES_PORT
   value: "5432"
 - name: POSTGRES_DB
-  value: {{ .Values.postgresql.global.postgresql.auth.database | quote }}
+  value: {{ ternary .Values.postgresql.global.postgresql.auth.database .Values.externalPostgresql.database .Values.postgresql.enabled | quote }}
 - name: POSTGRES_USER
-  value: {{ .Values.postgresql.global.postgresql.auth.username | quote }}
+  value: {{ ternary .Values.postgresql.global.postgresql.auth.username .Values.externalPostgresql.username .Values.postgresql.enabled | quote }}
+
 - name: POSTGRES_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ include "project-brain.fullname" . }}-postgresql
-      key: postgres-password
+      name: {{ ternary (printf "%s-postgresql" (include "project-brain.fullname" .)) .Values.externalPostgresql.secretName .Values.postgresql.enabled }}
+      key: {{ ternary "postgres-password" .Values.externalPostgresql.passwordKey .Values.postgresql.enabled }}
 
 - name: NEO4J_URI
   value: {{ include "project-brain.neo4j.connectionString" . | quote }}
-- name: NEO4J_USER
-  value: "neo4j"
-- name: NEO4J_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "project-brain.fullname" . }}-neo4j
-      key: neo4j-password
 
 - name: REDIS_URI
   value: {{ include "project-brain.redis.connectionString" . | quote }}
 
-- name: JWT_SECRET
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "project-brain.fullname" . }}-secrets
-      key: jwt-secret
-
-- name: API_KEY_ADMIN
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "project-brain.fullname" . }}-secrets
-      key: api-key-admin
-
 {{- with .Values.api.extraEnv }}
-{{- toYaml . | nindent 0 }}
+{{ toYaml . | nindent 0 }}
 {{- end }}
 {{- end }}
 
@@ -194,7 +166,7 @@ metadata:
     {{- include "project-brain.labels" . | nindent 4 }}
 data:
   system.yaml: |
-{{ .Values.api.config.system.yaml | indent 4 }}
+{{ .Values.api.config.system.yaml | default "" | indent 4 }}
 {{- end }}
 
 {{/*

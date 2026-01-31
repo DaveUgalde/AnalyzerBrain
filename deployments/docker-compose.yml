@@ -51,7 +51,7 @@ services:
     networks:
       - brain_network_dev
     healthcheck:
-      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "brain_password_dev", "RETURN 1"]
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p brain_password_dev 'RETURN 1' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5

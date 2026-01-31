@@ -12,11 +12,13 @@ metadata:
     {{- end }}
 
 spec:
-  ingressClassName: {{ .Values.api.ingress.className | quote }}
+  {{- with .Values.api.ingress.className }}
+  ingressClassName: {{ . | quote }}
+  {{- end }}
 
-  {{- if .Values.api.ingress.tls }}
+  {{- with .Values.api.ingress.tls }}
   tls:
-    {{- toYaml .Values.api.ingress.tls | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 
   rules:

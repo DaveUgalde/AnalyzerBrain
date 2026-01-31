@@ -3,6 +3,9 @@ kind: Kustomization
 
 namespace: project-brain
 
+# -------------------------------------------------
+# Recursos base
+# -------------------------------------------------
 resources:
   - namespace.yaml
   - configmap.yaml
@@ -18,6 +21,7 @@ resources:
 
 # -------------------------------------------------
 # Labels comunes a todos los recursos
+# (se aplican además de los transformers)
 # -------------------------------------------------
 commonLabels:
   app: project-brain
@@ -47,17 +51,17 @@ configMapGenerator:
 # -------------------------------------------------
 secretGenerator:
   - name: project-brain-secrets
+    type: Opaque
     files:
       - postgres-password=secrets/postgres-password.txt
       - neo4j-password=secrets/neo4j-password.txt
       - redis-password=secrets/redis-password.txt
       - jwt-secret=secrets/jwt-secret.txt
-    type: Opaque
     options:
       disableNameSuffixHash: true
 
 # -------------------------------------------------
-# Transformadores
+# Transformadores personalizados
 # -------------------------------------------------
 transformers:
   - transformers/annotations.yaml

@@ -24,7 +24,7 @@ spec:
       cpu: 200m
     limits:
       memory: 2Gi
-      cpu: 1
+      cpu: "1"
   enableAdminAPI: false
   version: v2.45.0
 ---
@@ -42,6 +42,7 @@ spec:
     - name: web
       port: 9090
       targetPort: web
+      protocol: TCP
   selector:
     prometheus: project-brain
 ---
@@ -111,15 +112,17 @@ spec:
           livenessProbe:
             httpGet:
               path: /api/health
-              port: 3000
+              port: http
             initialDelaySeconds: 60
             periodSeconds: 10
+            timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: /api/health
-              port: 3000
+              port: http
             initialDelaySeconds: 30
             periodSeconds: 5
+            timeoutSeconds: 5
       volumes:
         - name: grafana-storage
           persistentVolumeClaim:
@@ -208,6 +211,7 @@ spec:
     - name: http
       port: 3000
       targetPort: http
+      protocol: TCP
   selector:
     app: project-brain
     component: monitoring
