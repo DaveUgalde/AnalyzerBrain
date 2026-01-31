@@ -20,7 +20,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 import threading
 from collections import defaultdict, deque
-from ..core.exceptions import BrainException
+from core.exceptions import BrainException
 
 class LogLevel(str, Enum):
     """Niveles de log soportados."""

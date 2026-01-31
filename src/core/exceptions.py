@@ -1,6 +1,8 @@
 """
 Excepciones personalizadas del sistema Project Brain.
 """
+from typing import Any
+
 
 class BrainException(Exception):
     """Excepción base para todos los errores del sistema."""

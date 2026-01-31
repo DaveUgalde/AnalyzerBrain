@@ -11,7 +11,7 @@ from typing import Dict, Any, Optional, Callable, List
 import yaml
 from pydantic import BaseModel, ValidationError
 
-from .exceptions import ConfigurationError
+from core.exceptions import ConfigurationError
 
 
 class ConfigManager:

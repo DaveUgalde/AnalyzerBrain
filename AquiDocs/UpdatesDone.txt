@@ -1,0 +1,19 @@
+docker system prune -af
+docker build . --no-cache --progress=plain
+
+
+Pasos siguientes:
+
+docker images -a
+
+# Opción 1 (recomendada): Reconstruir con nombre
+docker build . -t project-brain:latest --no-cache --progress=plain
+
+# Probar
+docker run -it --rm project-brain python scripts/init_project.py --verbose
+
+# O usar docker-compose
+docker-compose up
+
+# Opción 3: Usar docker-compose directamente
+docker-compose up --build

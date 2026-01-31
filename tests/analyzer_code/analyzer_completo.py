@@ -1,1222 +1,643 @@
 #!/usr/bin/env python3
 """
-ANALIZADOR DE CÓDIGO DE PRIMERA CATEGORÍA - v2.1
-Versión corregida con serialización JSON y manejo de errores AST.
+DEPENDENCY ANALYZER PRO - v1.0
+Analiza todas las dependencias de un proyecto Python y compara con requirements.
+Genera reportes detallados de dependencias faltantes y conflictos.
 """
 
-from __future__ import annotations
-
 import ast
-import argparse
-import json
-import hashlib
-import yaml
-import toml
-from pathlib import Path
-from dataclasses import dataclass, field, asdict
-from typing import List, Dict, Set, Tuple, Any, Optional, Union
-from concurrent.futures import ProcessPoolExecutor, as_completed
-from collections import defaultdict, Counter
-import statistics
-import time
-import sys
 import re
-from enum import Enum, auto
+import sys
+import json
+import toml
+import yaml
+from pathlib import Path
+from typing import Dict, List, Set, Tuple, Optional, Any
+from collections import defaultdict, Counter
+import subprocess
+import pkg_resources
 from datetime import datetime
+import argparse
 
-# ============================================================
-# CONFIGURACIÓN AVANZADA
-# ============================================================
-
-class AnalysisContext(Enum):
-    """Contextos de análisis para aplicar reglas específicas."""
-    CONFIGURATION = auto()
-    API = auto()
-    DATABASE = auto()
-    BUSINESS_LOGIC = auto()
-    UTILITY = auto()
-    TEST = auto()
-    DATA_MODEL = auto()
-    SERVICE = auto()
-    VALIDATOR = auto()
-
-class CodeQualityTier(Enum):
-    """Niveles de calidad de código."""
-    EXCEPTIONAL = 95
-    EXCELLENT = 85
-    GOOD = 70
-    ADEQUATE = 50
-    NEEDS_IMPROVEMENT = 30
-    PROBLEMATIC = 15
-    CRITICAL = 0
-
-# Umbrales contextuales
-CONTEXTUAL_THRESHOLDS = {
-    AnalysisContext.CONFIGURATION: {
-        'max_lines': 800,
-        'max_complexity': 15,
-        'min_cohesion': 60,
-        'max_coupling': 40
-    },
-    AnalysisContext.API: {
-        'max_lines': 400,
-        'max_complexity': 10,
-        'min_cohesion': 70,
-        'max_coupling': 30
-    },
-    AnalysisContext.BUSINESS_LOGIC: {
-        'max_lines': 300,
-        'max_complexity': 8,
-        'min_cohesion': 80,
-        'max_coupling': 20
-    },
-    AnalysisContext.UTILITY: {
-        'max_lines': 200,
-        'max_complexity': 6,
-        'min_cohesion': 90,
-        'max_coupling': 10
-    }
+# Mapeo de imports a paquetes PyPI (casos especiales)
+IMPORT_TO_PACKAGE = {
+    'sklearn': 'scikit-learn',
+    'PIL': 'Pillow',
+    'yaml': 'PyYAML',
+    'bs4': 'beautifulsoup4',
+    'dateutil': 'python-dateutil',
+    'cv2': 'opencv-python',
+    'Bio': 'biopython',
+    'MySQLdb': 'mysqlclient',
+    'psycopg2': 'psycopg2-binary',
+    'dotenv': 'python-dotenv',
+    'tensorflow.keras': 'tensorflow',
+    'torch': 'torch',
+    'pydantic_ai': 'pydantic-ai',
+    'sqlalchemy': 'SQLAlchemy',
+    'aiohttp': 'aiohttp',
+    'httpx': 'httpx',
+    'fastapi': 'fastapi',
+    'uvicorn': 'uvicorn[standard]',
+    'pandas': 'pandas',
+    'numpy': 'numpy',
+    'langchain': 'langchain',
+    'openai': 'openai',
+    'anthropic': 'anthropic',
+    'cohere': 'cohere',
+    'transformers': 'transformers',
+    'sentence_transformers': 'sentence-transformers',
+    'chromadb': 'chromadb',
+    'crewai': 'crewai',
+    'pyautogen': 'pyautogen',
+    'instructor': 'instructor',
+    'marvin': 'marvin',
+    'nltk': 'nltk',
+    'gensim': 'gensim',
+    'spacy': 'spacy',
+    'rapidfuzz': 'rapidfuzz',
+    'langdetect': 'langdetect',
+    'jellyfish': 'jellyfish',
+    'textblob': 'textblob',
+    'pdfminer': 'pdfminer.six',
+    'docx': 'python-docx',
+    'redis': 'redis',
+    'pymongo': 'pymongo',
+    'elasticsearch': 'elasticsearch',
+    'neo4j': 'neo4j-driver',
+    'asyncpg': 'asyncpg',
+    'psycopg2': 'psycopg2-binary',
+    'sqlalchemy': 'SQLAlchemy',
+    'alembic': 'alembic',
+    'pytest': 'pytest',
+    'black': 'black',
+    'flake8': 'flake8',
+    'mypy': 'mypy',
+    'pre_commit': 'pre-commit',
+    'jupyter': 'jupyter',
+    'jupyterlab': 'jupyterlab',
+    'matplotlib': 'matplotlib',
+    'seaborn': 'seaborn',
+    'plotly': 'plotly',
+    'scikit_learn': 'scikit-learn',
+    'networkx': 'networkx',
+    'scipy': 'scipy',
+    'cryptography': 'cryptography',
+    'psutil': 'psutil',
+    'tqdm': 'tqdm',
+    'structlog': 'structlog',
+    'prometheus_client': 'prometheus-client',
+    'typer': 'typer',
+    'rich': 'rich',
+    'typing_extensions': 'typing-extensions',
+    'pydantic': 'pydantic',
+    'pydantic_settings': 'pydantic-settings',
+    'anyio': 'anyio',
+    'aiofiles': 'aiofiles',
+    'jinja2': 'Jinja2',
+    'platformdirs': 'platformdirs',
+    'filelock': 'filelock',
+    'python_multipart': 'python-multipart',
 }
 
-# Librerías externas comunes
-EXTERNAL_LIBRARIES = {
-    'os', 'sys', 'json', 'time', 'datetime', 'math', 're',
-    'typing', 'pathlib', 'hashlib', 'argparse', 'dataclasses',
-    'collections', 'itertools', 'functools', 'threading',
-    'multiprocessing', 'concurrent', 'asyncio', 'logging'
+# Módulos estándar de Python (no necesitan instalación)
+PYTHON_STDLIB_MODULES = {
+    'os', 'sys', 're', 'json', 'time', 'datetime', 'math', 'hashlib',
+    'collections', 'itertools', 'functools', 'typing', 'pathlib',
+    'argparse', 'dataclasses', 'enum', 'abc', 'copy', 'csv', 'decimal',
+    'fractions', 'random', 'statistics', 'string', 'textwrap', 'unicodedata',
+    'bisect', 'heapq', 'array', 'weakref', 'types', 'pdb', 'pickle',
+    'shelve', 'marshal', 'sqlite3', 'hashlib', 'hmac', 'secrets',
+    'doctest', 'unittest', 'logging', 'getpass', 'curses', 'platform',
+    'errno', 'ctypes', 'threading', 'multiprocessing', 'concurrent',
+    'asyncio', 'socket', 'ssl', 'select', 'shutil', 'tempfile', 'glob',
+    'fnmatch', 'linecache', 'codecs', 'locale', 'gettext', 'stringprep',
+    'readline', 'rlcompleter', 'atexit', 'signal', 'subprocess', 'os.path',
+    'io', 'zipfile', 'tarfile', 'lzma', 'bz2', 'zlib', 'gzip', 'importlib',
+    'pkgutil', 'modulefinder', 'runpy', 'sysconfig', 'builtins', 'warnings',
+    'contextlib', 'abc', 'atexit', 'traceback', '__future__', 'future',
+    'functools', 'inspect', 'site', 'code', 'codeop', 'py_compile',
+    'compileall', 'imp', 'zipimport', 'pkg_resources', 'setuptools'
 }
 
-# ============================================================
-# MODELOS DE DATOS AVANZADOS (MEJORADOS PARA SERIALIZACIÓN)
-# ============================================================
-
-@dataclass
-class FunctionMetrics:
-    """Métricas avanzadas de función."""
-    name: str
-    lineno: int
-    end_lineno: int
-    complexity: int
-    lines: int
-    parameters: int
-    returns: int
-    nesting_level: int
-    has_docstring: bool
-    calls: List[str]
-    decorators: List[str]
-    is_async: bool
-    is_generator: bool
-    cognitive_complexity: int = 0
+class DependencyExtractor(ast.NodeVisitor):
+    """Extrae imports de archivos Python usando AST."""
     
-    def to_dict(self) -> Dict[str, Any]:
-        """Convierte a diccionario para serialización."""
-        return asdict(self)
-
-@dataclass
-class ClassMetrics:
-    """Métricas avanzadas de clase."""
-    name: str
-    lineno: int
-    methods: List[FunctionMetrics]
-    attributes: List[str]
-    inheritance: List[str]
-    has_docstring: bool
-    is_abstract: bool
-    is_dataclass: bool
-    is_exception: bool
-    class_variables: int
-    instance_variables: int
-    property_count: int
-    static_methods: int
-    class_methods: int
-    lcom4: float = 0.0
-    
-    def to_dict(self) -> Dict[str, Any]:
-        """Convierte a diccionario para serialización."""
-        result = asdict(self)
-        result['methods'] = [m.to_dict() for m in self.methods]
-        return result
-
-@dataclass
-class ModuleDependencies:
-    """Dependencias de módulo."""
-    imports: Set[str]
-    import_from: Set[str]
-    external_deps: Set[str]
-    internal_deps: Set[str]
-    relative_imports: Set[str]
-    cyclic_dependencies: List[Tuple[str, str]]
-    
-    def to_dict(self) -> Dict[str, Any]:
-        """Convierte a diccionario para serialización."""
-        return {
-            'imports': list(self.imports),
-            'import_from': list(self.import_from),
-            'external_deps': list(self.external_deps),
-            'internal_deps': list(self.internal_deps),
-            'relative_imports': list(self.relative_imports),
-            'cyclic_dependencies': self.cyclic_dependencies
-        }
-
-@dataclass
-class FileMetrics:
-    """Métricas completas de archivo."""
-    path: str
-    module: str
-    lines: int
-    code_lines: int
-    comment_lines: int
-    blank_lines: int
-    docstring_lines: int
-    functions: List[FunctionMetrics]
-    classes: List[ClassMetrics]
-    dependencies: ModuleDependencies
-    file_hash: str
-    encoding: str
-    line_endings: str
-    
-    # Métricas calculadas
-    comment_ratio: float = 0.0
-    function_density: float = 0.0
-    class_density: float = 0.0
-    maintainability_index: float = 0.0
-    
-    # Contexto
-    contexts: List[str] = field(default_factory=list)
-    design_patterns: List[str] = field(default_factory=list)
-    solid_principles: List[str] = field(default_factory=list)
-    
-    def to_dict(self) -> Dict[str, Any]:
-        """Convierte a diccionario para serialización."""
-        return {
-            'path': self.path,
-            'module': self.module,
-            'lines': self.lines,
-            'code_lines': self.code_lines,
-            'comment_lines': self.comment_lines,
-            'blank_lines': self.blank_lines,
-            'docstring_lines': self.docstring_lines,
-            'functions': [f.to_dict() for f in self.functions],
-            'classes': [c.to_dict() for c in self.classes],
-            'dependencies': self.dependencies.to_dict(),
-            'file_hash': self.file_hash,
-            'encoding': self.encoding,
-            'line_endings': self.line_endings,
-            'comment_ratio': self.comment_ratio,
-            'function_density': self.function_density,
-            'class_density': self.class_density,
-            'maintainability_index': self.maintainability_index,
-            'contexts': self.contexts,
-            'design_patterns': self.design_patterns,
-            'solid_principles': self.solid_principles
-        }
-
-@dataclass
-class QualityScore:
-    """Puntaje de calidad multidimensional."""
-    technical: float
-    architectural: float
-    performance: float
-    security: float
-    testability: float
-    maintainability: float
-    documentation: float
-    composite: float
-    
-    def to_dict(self) -> Dict[str, float]:
-        return {
-            'technical': self.technical,
-            'architectural': self.architectural,
-            'performance': self.performance,
-            'security': self.security,
-            'testability': self.testability,
-            'maintainability': self.maintainability,
-            'documentation': self.documentation,
-            'composite': self.composite
-        }
-
-# ============================================================
-# ANALIZADOR AST AVANZADO (CORREGIDO)
-# ============================================================
-
-class AdvancedASTAnalyzer(ast.NodeVisitor):
-    """Analizador AST avanzado con métricas sofisticadas."""
-    
-    def __init__(self, file_path: Path):
-        self.file_path = file_path
-        self.functions: List[FunctionMetrics] = []
-        self.classes: List[ClassMetrics] = []
-        self.imports: Set[str] = set()
-        self.import_from: Set[str] = set()
-        self.relative_imports: Set[str] = set()
-        self.current_class: Optional[str] = None
-        self.nesting_level = 0
+    def __init__(self):
+        self.imports = set()
+        self.import_from = defaultdict(set)
         
-    def visit_Import(self, node: ast.Import):
+    def visit_Import(self, node):
         for alias in node.names:
             module_name = alias.name.split('.')[0]
             self.imports.add(module_name)
         self.generic_visit(node)
     
-    def visit_ImportFrom(self, node: ast.ImportFrom):
+    def visit_ImportFrom(self, node):
         if node.module:
             module_name = node.module.split('.')[0]
-            self.import_from.add(module_name)
-            
-            # Detectar imports relativos
-            if node.level > 0:
-                self.relative_imports.add(module_name)
-        
+            if node.level == 0:  # No es import relativo
+                self.imports.add(module_name)
+                # También registrar imports específicos
+                for alias in node.names:
+                    self.import_from[module_name].add(alias.name)
         self.generic_visit(node)
-    
-    def _calculate_complexity(self, node: ast.AST) -> Tuple[int, int]:
-        """Calcula complejidad ciclomática y cognitiva."""
-        complexity = 1
-        cognitive_complexity = 0
-        
-        # Tipos de nodos que incrementan complejidad
-        complexity_nodes = (
-            ast.If, ast.While, ast.For, ast.AsyncFor,
-            ast.Try, ast.ExceptHandler, ast.With, ast.AsyncWith,
-            ast.BoolOp
-        )
-        
-        for child in ast.walk(node):
-            if isinstance(child, complexity_nodes):
-                complexity += 1
-                # Incrementar complejidad cognitiva por anidamiento
-                if isinstance(child, (ast.If, ast.While, ast.For, ast.AsyncFor)):
-                    cognitive_complexity += 1
-        
-        return complexity, cognitive_complexity
-    
-    def visit_FunctionDef(self, node: ast.FunctionDef):
-        # Calcular métricas básicas
-        params = len(node.args.args) + len(node.args.kwonlyargs)
-        returns = sum(1 for n in ast.walk(node) if isinstance(n, ast.Return))
-        has_docstring = ast.get_docstring(node) is not None
-        
-        # Calcular complejidades
-        complexity, cognitive_complexity = self._calculate_complexity(node)
-        
-        # Extraer decoradores
-        decorators = []
-        for decorator in node.decorator_list:
-            if isinstance(decorator, ast.Name):
-                decorators.append(decorator.id)
-            elif isinstance(decorator, ast.Attribute):
-                decorators.append(decorator.attr)
-        
-        # Extraer llamadas
-        calls = []
-        for child in ast.walk(node):
-            if isinstance(child, ast.Call):
-                if isinstance(child.func, ast.Name):
-                    calls.append(child.func.id)
-                elif isinstance(child.func, ast.Attribute):
-                    calls.append(child.func.attr)
-        
-        func_metrics = FunctionMetrics(
-            name=node.name,
-            lineno=node.lineno,
-            end_lineno=node.end_lineno or node.lineno,
-            complexity=complexity,
-            lines=(node.end_lineno or node.lineno) - node.lineno + 1,
-            parameters=params,
-            returns=returns,
-            nesting_level=self.nesting_level,
-            has_docstring=has_docstring,
-            calls=calls,
-            decorators=decorators,
-            is_async=isinstance(node, ast.AsyncFunctionDef),
-            is_generator=any(isinstance(n, ast.Yield) or isinstance(n, ast.YieldFrom) 
-                           for n in ast.walk(node)),
-            cognitive_complexity=cognitive_complexity
-        )
-        
-        self.functions.append(func_metrics)
-        
-        # Visitar hijos con contexto aumentado
-        self.nesting_level += 1
-        self.generic_visit(node)
-        self.nesting_level -= 1
-    
-    def visit_ClassDef(self, node: ast.ClassDef):
-        # Métricas de clase básicas
-        inheritance = [base.id for base in node.bases if isinstance(base, ast.Name)]
-        has_docstring = ast.get_docstring(node) is not None
-        
-        # Detectar tipo de clase
-        is_abstract = any(isinstance(decorator, ast.Name) and decorator.id == 'abstractmethod'
-                         for decorator in node.decorator_list)
-        is_dataclass = any(isinstance(decorator, ast.Name) and decorator.id == 'dataclass'
-                          for decorator in node.decorator_list)
-        is_exception = 'Exception' in inheritance or 'Error' in node.name
-        
-        # Extraer atributos
-        attributes = []
-        class_vars = 0
-        instance_vars = 0
-        
-        for child in node.body:
-            if isinstance(child, ast.AnnAssign):
-                if isinstance(child.target, ast.Name):
-                    attributes.append(child.target.id)
-                    if child.value is None:
-                        class_vars += 1
-                    else:
-                        instance_vars += 1
-            elif isinstance(child, ast.Assign):
-                for target in child.targets:
-                    if isinstance(target, ast.Name):
-                        attributes.append(target.id)
-                        instance_vars += 1
-        
-        # Contar propiedades y métodos especiales
-        property_count = 0
-        static_methods = 0
-        class_methods = 0
-        
-        for child in node.body:
-            if isinstance(child, ast.FunctionDef):
-                for decorator in child.decorator_list:
-                    if isinstance(decorator, ast.Name):
-                        if decorator.id == 'property':
-                            property_count += 1
-                        elif decorator.id == 'staticmethod':
-                            static_methods += 1
-                        elif decorator.id == 'classmethod':
-                            class_methods += 1
-        
-        # Guardar contexto temporal
-        prev_class = self.current_class
-        self.current_class = node.name
-        
-        # Visitar métodos
-        self.generic_visit(node)
-        
-        # Filtrar métodos de esta clase
-        class_methods_list = []
-        for func in self.functions:
-            if func.lineno >= node.lineno and func.end_lineno <= (node.end_lineno or node.lineno):
-                class_methods_list.append(func)
-        
-        # Calcular LCOM4 (Lack of Cohesion of Methods) simplificado
-        lcom4 = self._calculate_lcom4_simple(class_methods_list, attributes)
-        
-        class_metrics = ClassMetrics(
-            name=node.name,
-            lineno=node.lineno,
-            methods=class_methods_list,
-            attributes=attributes,
-            inheritance=inheritance,
-            has_docstring=has_docstring,
-            is_abstract=is_abstract,
-            is_dataclass=is_dataclass,
-            is_exception=is_exception,
-            class_variables=class_vars,
-            instance_variables=instance_vars,
-            property_count=property_count,
-            static_methods=static_methods,
-            class_methods=class_methods,
-            lcom4=lcom4
-        )
-        
-        self.classes.append(class_metrics)
-        self.current_class = prev_class
-    
-    def _calculate_lcom4_simple(self, methods: List[FunctionMetrics], 
-                               attributes: List[str]) -> float:
-        """Calcula LCOM4 simplificado."""
-        if not methods or not attributes:
-            return 0.0
-        
-        # Contar métodos que acceden a cada atributo
-        attribute_access = {attr: 0 for attr in attributes}
-        
-        for method in methods:
-            for call in method.calls:
-                if call in attributes:
-                    attribute_access[call] += 1
-        
-        # Métodos que no comparten atributos
-        total_methods = len(methods)
-        if total_methods <= 1:
-            return 0.0
-        
-        # Calcular métrica simplificada
-        shared_attributes = sum(1 for count in attribute_access.values() if count > 1)
-        total_pairs = total_methods * (total_methods - 1) / 2
-        
-        if total_pairs == 0:
-            return 0.0
-        
-        # LCOM4 simplificado: porcentaje de pares que no comparten atributos
-        lcom4 = (1 - (shared_attributes / total_pairs)) * 100 if total_pairs > 0 else 100
-        return min(100, max(0, lcom4))
 
-# ============================================================
-# SISTEMA DE PUNTAJES CONTEXTUAL (SIMPLIFICADO)
-# ============================================================
-
-class ContextualScoringSystem:
-    """Sistema de puntuación que considera contexto."""
+class ProjectDependencyAnalyzer:
+    """Analizador completo de dependencias del proyecto."""
     
-    @staticmethod
-    def calculate_technical_score(file_metrics: FileMetrics) -> float:
-        """Calcula puntaje técnico contextual."""
-        base_score = 100.0
+    def __init__(self, project_path: Path):
+        self.project_path = project_path
+        self.all_imports = set()
+        self.import_details = defaultdict(list)
+        self.requirements_files = []
+        self.parsed_requirements = defaultdict(dict)  # {file: {package: version}}
         
-        if not file_metrics.functions:
-            return 90.0  # Archivos sin funciones tienen buena puntuación por defecto
-        
-        # Penalizaciones por complejidad
-        for func in file_metrics.functions:
-            # Penalizar funciones muy complejas
-            if func.complexity > 10:
-                base_score -= (func.complexity - 10) * 2
-            
-            # Penalizar funciones muy largas
-            if func.lines > 50:
-                base_score -= (func.lines - 50) * 0.5
-            
-            # Penalizar anidamiento profundo
-            if func.nesting_level > 3:
-                base_score -= (func.nesting_level - 3) * 3
-        
-        # Bonus por documentación
-        documented_funcs = sum(1 for f in file_metrics.functions if f.has_docstring)
-        if file_metrics.functions:
-            doc_ratio = documented_funcs / len(file_metrics.functions)
-            if doc_ratio > 0.8:
-                base_score += 10
-            elif doc_ratio < 0.3:
-                base_score -= 20
-        
-        # Ajustar por contexto
-        if 'CONFIGURATION' in file_metrics.contexts:
-            base_score += 5  # Archivos de configuración tienen más tolerancia
-        
-        return max(0, min(100, base_score))
-    
-    @staticmethod
-    def calculate_architectural_score(file_metrics: FileMetrics) -> float:
-        """Calcula puntaje arquitectónico."""
-        base_score = 100.0
-        
-        # Cohesión (LCOM4)
-        if file_metrics.classes:
-            avg_lcom4 = statistics.mean(cls.lcom4 for cls in file_metrics.classes)
-            if avg_lcom4 > 50:  # Baja cohesión
-                base_score -= (avg_lcom4 - 50) * 0.5
-        
-        # Acoplamiento
-        coupling = len(file_metrics.dependencies.internal_deps)
-        if coupling > 10:
-            base_score -= (coupling - 10) * 2
-        
-        # Herencia apropiada
-        for cls in file_metrics.classes:
-            if len(cls.inheritance) > 2:  # Herencia múltiple excesiva
-                base_score -= 5
-        
-        # Bonus por principios SOLID
-        if file_metrics.solid_principles:
-            base_score += len(file_metrics.solid_principles) * 3
-        
-        return max(0, min(100, base_score))
-    
-    @staticmethod
-    def calculate_security_score(file_metrics: FileMetrics) -> float:
-        """Calcula puntaje de seguridad."""
-        base_score = 100.0
-        
-        security_issues = 0
-        
-        for func in file_metrics.functions:
-            func_calls = ' '.join(func.calls).lower()
-            
-            # Patrones inseguros
-            insecure_patterns = ['eval(', 'exec(', 'pickle.loads', 'yaml.load']
-            if any(pattern in func_calls for pattern in insecure_patterns):
-                security_issues += 10
-        
-        base_score -= security_issues
-        return max(0, min(100, base_score))
-
-# ============================================================
-# ANALIZADOR PRINCIPAL (SIMPLIFICADO Y CORREGIDO)
-# ============================================================
-
-class EliteCodeAnalyzer:
-    """Analizador de código de primera categoría."""
-    
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
-        self.config = config or {}
-        self.metrics_cache: Dict[str, FileMetrics] = {}
-        
-        # Estadísticas
-        self.stats = {
-            'files_analyzed': 0,
-            'errors': 0,
-            'start_time': 0,
-            'end_time': 0
-        }
-    
-    def analyze_project(self, root_path: Path, 
-                       max_workers: Optional[int] = None) -> Dict[str, Any]:
-        """Analiza un proyecto completo."""
-        self.stats['start_time'] = time.time()
-        
-        print(f"🚀 Iniciando análisis de élite: {root_path}")
-        
-        # Descubrir archivos
-        all_files = self._discover_files(root_path)
-        print(f"📁 Encontrados {len(all_files)} archivos para analizar")
-        
-        if not all_files:
-            print("⚠️  No se encontraron archivos para analizar")
-            return {}
-        
-        # Analizar archivos en paralelo
-        print("🔬 Analizando archivos...")
-        file_metrics_list = self._analyze_files_parallel(all_files, max_workers)
-        
-        # Calcular métricas de proyecto
-        print("📈 Calculando métricas globales...")
-        project_metrics = self._calculate_project_metrics(file_metrics_list)
-        
-        # Evaluar calidad
-        print("🏆 Evaluando calidad...")
-        quality_assessment = self._assess_quality(file_metrics_list)
-        
-        # Generar reportes
-        print("📊 Generando reportes...")
-        reports = self._generate_reports(file_metrics_list, project_metrics, quality_assessment)
-        
-        self.stats['end_time'] = time.time()
-        elapsed = self.stats['end_time'] - self.stats['start_time']
-        
-        print(f"✅ Análisis completado en {elapsed:.2f} segundos")
-        print(f"📊 Archivos analizados: {self.stats['files_analyzed']}")
-        print(f"⚠️  Errores: {self.stats['errors']}")
-        
-        return {
-            'project_metrics': project_metrics,
-            'quality_assessment': quality_assessment,
-            'reports': reports,
-            'statistics': self.stats.copy(),
-            'timestamp': datetime.now().isoformat()
-        }
-    
-    def _discover_files(self, root: Path) -> List[Path]:
-        """Descubre todos los archivos relevantes."""
-        include_patterns = ['*.py', '*.yaml', '*.yml', '*.json', '*.toml']
-        
+    def discover_files(self) -> List[Path]:
+        """Descubre todos los archivos Python del proyecto."""
         exclude_dirs = {
-            '.git', '__pycache__', '.pytest_cache',
-            '.venv', 'venv', 'env', 'node_modules',
-            'build', 'dist'
+            '.git', '__pycache__', '.pytest_cache', '.mypy_cache',
+            '.venv', 'venv', 'env', 'node_modules', 'build', 'dist',
+            'htmlcov', '.coverage', '.tox', '.hypothesis'
         }
         
-        files = []
-        for pattern in include_patterns:
-            for file in root.rglob(pattern):
-                # Excluir directorios no deseados
-                if any(excluded in file.parts for excluded in exclude_dirs):
-                    continue
-                
-                # Excluir archivos muy grandes
-                try:
-                    if file.stat().st_size > 5 * 1024 * 1024:
-                        continue
-                except OSError:
-                    continue
-                
-                files.append(file)
+        exclude_patterns = ['*.pyc', '*.pyo', '*.pyd', '*.so']
         
-        return files
-    
-    def _analyze_files_parallel(self, files: List[Path], 
-                               max_workers: Optional[int]) -> List[FileMetrics]:
-        """Analiza archivos en paralelo."""
-        file_metrics_list = []
-        
-        with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            futures = {executor.submit(self._analyze_single_file, f): f for f in files}
+        python_files = []
+        for file in self.project_path.rglob('*.py'):
+            # Excluir directorios no deseados
+            if any(excluded in file.parts for excluded in exclude_dirs):
+                continue
             
-            for i, future in enumerate(as_completed(futures), 1):
-                try:
-                    result = future.result()
-                    if result:
-                        file_metrics_list.append(result)
-                        self.stats['files_analyzed'] += 1
-                except Exception as e:
-                    file_path = futures[future]
-                    print(f"⚠️  Error analizando {file_path.name}: {str(e)[:100]}...")
-                    self.stats['errors'] += 1
-                
-                if i % 5 == 0 or i == len(files):
-                    print(f"  📊 Progreso: {i}/{len(files)} archivos analizados")
+            # Excluir archivos de test si se quiere (opcional)
+            if 'test' in file.name.lower() or 'tests' in file.parts:
+                continue  # O comentar esta línea para incluir tests
+            
+            try:
+                if file.stat().st_size > 10 * 1024 * 1024:  # 10MB
+                    continue
+            except OSError:
+                continue
+            
+            python_files.append(file)
         
-        return file_metrics_list
+        return python_files
     
-    def _analyze_single_file(self, file_path: Path) -> Optional[FileMetrics]:
-        """Analiza un solo archivo."""
+    def discover_requirements_files(self) -> List[Path]:
+        """Encuentra todos los archivos de requirements."""
+        req_patterns = ['requirements*.txt', 'requirements/*.txt', 'setup.py', 
+                       'setup.cfg', 'pyproject.toml', 'Pipfile', 'poetry.lock']
+        
+        req_files = []
+        
+        # Buscar archivos de requirements
+        for pattern in ['requirements*.txt', 'requirements/*.txt']:
+            for file in self.project_path.rglob(pattern):
+                req_files.append(file)
+        
+        # Buscar archivos de configuración
+        config_files = ['pyproject.toml', 'setup.py', 'setup.cfg', 
+                       'Pipfile', 'poetry.lock']
+        
+        for config_file in config_files:
+            file_path = self.project_path / config_file
+            if file_path.exists():
+                req_files.append(file_path)
+        
+        return req_files
+    
+    def extract_imports_from_file(self, file_path: Path) -> Set[str]:
+        """Extrae todos los imports de un archivo Python."""
         try:
-            # Leer contenido
             content = file_path.read_text(encoding='utf-8', errors='ignore')
-            
-            # Determinar contexto basado en nombre y extensión
-            contexts = self._determine_context(file_path, content)
-            
-            # Análisis basado en tipo de archivo
-            if file_path.suffix == '.py':
-                return self._analyze_python_file(file_path, content, contexts)
-            else:
-                return self._analyze_config_file(file_path, content, contexts)
-                
-        except Exception as e:
-            print(f"⚠️  Error en análisis de {file_path.name}: {e}")
-            return None
-    
-    def _determine_context(self, file_path: Path, content: str) -> List[str]:
-        """Determina el contexto del archivo."""
-        contexts = []
-        file_name = file_path.name.lower()
-        
-        # Configuración
-        if file_name.endswith(('.yaml', '.yml', '.json', '.toml', '.ini')):
-            contexts.append('CONFIGURATION')
-        
-        # Python
-        if file_path.suffix == '.py':
-            # Buscar patrones en el contenido
-            if 'class' in content and 'def' in content:
-                if any(keyword in content.lower() for keyword in ['api', 'route', 'endpoint']):
-                    contexts.append('API')
-                elif any(keyword in content.lower() for keyword in ['model', 'schema', 'database']):
-                    contexts.append('DATA_MODEL')
-                else:
-                    contexts.append('BUSINESS_LOGIC')
-            elif 'def' in content:
-                contexts.append('UTILITY')
-        
-        return contexts
-    
-    def _analyze_python_file(self, file_path: Path, content: str, 
-                            contexts: List[str]) -> FileMetrics:
-        """Analiza archivo Python."""
-        # Métricas básicas de líneas
-        lines = content.splitlines()
-        total_lines = len(lines)
-        
-        code_lines = 0
-        comment_lines = 0
-        blank_lines = 0
-        docstring_lines = 0
-        
-        in_docstring = False
-        for line in lines:
-            stripped = line.strip()
-            
-            if stripped.startswith('"""') or stripped.startswith("'''"):
-                in_docstring = not in_docstring
-                docstring_lines += 1
-                continue
-            
-            if in_docstring:
-                docstring_lines += 1
-                continue
-            
-            if not stripped:
-                blank_lines += 1
-            elif stripped.startswith('#'):
-                comment_lines += 1
-            else:
-                code_lines += 1
-        
-        # Análisis AST
-        try:
             tree = ast.parse(content)
-            analyzer = AdvancedASTAnalyzer(file_path)
-            analyzer.visit(tree)
+            
+            extractor = DependencyExtractor()
+            extractor.visit(tree)
+            
+            # También buscar imports con regex (por si falla AST)
+            regex_imports = self._find_imports_with_regex(content)
+            
+            all_imports = extractor.imports.union(regex_imports)
+            
+            # Guardar detalles para reporte
+            for imp in all_imports:
+                self.import_details[imp].append(str(file_path.relative_to(self.project_path)))
+            
+            return all_imports
+            
         except SyntaxError as e:
             print(f"⚠️  Error de sintaxis en {file_path.name}: {e}")
-            analyzer = AdvancedASTAnalyzer(file_path)
+            return set()
         except Exception as e:
-            print(f"⚠️  Error AST en {file_path.name}: {e}")
-            analyzer = AdvancedASTAnalyzer(file_path)
+            print(f"⚠️  Error leyendo {file_path.name}: {e}")
+            return set()
+    
+    def _find_imports_with_regex(self, content: str) -> Set[str]:
+        """Encuentra imports usando regex (backup)."""
+        imports = set()
         
-        # Separar dependencias
-        all_imports = analyzer.imports.union(analyzer.import_from)
-        external_deps = {imp for imp in all_imports 
-                        if imp.split('.')[0] in EXTERNAL_LIBRARIES}
-        internal_deps = all_imports - external_deps
+        # Patrones para import X y from X import Y
+        import_pattern = r'^\s*import\s+([a-zA-Z_][a-zA-Z0-9_.]*)'
+        from_pattern = r'^\s*from\s+([a-zA-Z_][a-zA-Z0-9_.]*)\s+import'
         
-        # Calcular métricas adicionales
-        comment_ratio = comment_lines / max(total_lines, 1)
-        function_density = len(analyzer.functions) / max(code_lines, 1)
-        class_density = len(analyzer.classes) / max(code_lines, 1)
+        for line in content.splitlines():
+            # Buscar import simple
+            import_match = re.match(import_pattern, line)
+            if import_match:
+                module = import_match.group(1).split('.')[0]
+                imports.add(module)
+            
+            # Buscar from ... import
+            from_match = re.match(from_pattern, line)
+            if from_match:
+                module = from_match.group(1).split('.')[0]
+                imports.add(module)
         
-        # Calcular índice de mantenibilidad (simplificado)
-        avg_complexity = (statistics.mean([f.complexity for f in analyzer.functions]) 
-                         if analyzer.functions else 0)
-        maintainability_index = min(100, max(0, 171 - 5.2 * avg_complexity - 0.23 * code_lines / 1000))
+        return imports
+    
+    def parse_requirements_file(self, file_path: Path) -> Dict[str, str]:
+        """Parsea un archivo de requirements y extrae paquetes."""
+        packages = {}
         
-        # Detectar patrones simples
-        design_patterns = []
-        for cls in analyzer.classes:
-            if '_instance' in cls.attributes or 'get_instance' in [m.name for m in cls.methods]:
-                design_patterns.append('SINGLETON')
-            if 'Factory' in cls.name or any('create' in m.name.lower() for m in cls.methods):
-                design_patterns.append('FACTORY')
-        
-        # Obtener módulo
         try:
-            rel_path = file_path.relative_to(file_path.parents[1])
-            module_name = str(rel_path.parent).replace('/', '.').replace('\\', '.')
-        except:
-            module_name = ''
+            content = file_path.read_text(encoding='utf-8', errors='ignore')
+            
+            if file_path.name == 'pyproject.toml':
+                # Parsear toml
+                data = toml.loads(content)
+                if 'tool' in data and 'poetry' in data['tool']:
+                    if 'dependencies' in data['tool']['poetry']:
+                        for pkg, version in data['tool']['poetry']['dependencies'].items():
+                            if pkg != 'python':
+                                packages[pkg] = str(version)
+                elif 'project' in data and 'dependencies' in data['project']:
+                    for dep in data['project']['dependencies']:
+                        # Parsear dependency string
+                        pkg = re.match(r'([a-zA-Z0-9_-]+)', dep).group(1)
+                        packages[pkg] = dep
+                        
+            elif file_path.name in ['setup.py', 'setup.cfg']:
+                # Parsear setup.py o setup.cfg (simplificado)
+                # Usar regex para encontrar install_requires
+                pattern = r'install_requires\s*=\s*\[(.*?)\]'
+                match = re.search(pattern, content, re.DOTALL)
+                if match:
+                    deps_text = match.group(1)
+                    deps = re.findall(r"['\"]([^'\"]+)['\"]", deps_text)
+                    for dep in deps:
+                        pkg = re.match(r'([a-zA-Z0-9_-]+)', dep).group(1)
+                        packages[pkg] = dep
+            
+            elif file_path.suffix == '.txt':
+                # Parsear requirements.txt
+                for line in content.splitlines():
+                    line = line.strip()
+                    
+                    # Ignorar comentarios y líneas vacías
+                    if not line or line.startswith('#') or line.startswith('-'):
+                        continue
+                    
+                    # Extraer nombre del paquete (antes del primer operador)
+                    # Formato: package==1.0.0, package>=1.0.0, etc.
+                    match = re.match(r'([a-zA-Z0-9._-]+)(?:\[.*\])?', line)
+                    if match:
+                        pkg_name = match.group(1)
+                        packages[pkg_name] = line
+            
+        except Exception as e:
+            print(f"⚠️  Error parseando {file_path}: {e}")
         
-        return FileMetrics(
-            path=str(file_path),
-            module=module_name,
-            lines=total_lines,
-            code_lines=code_lines,
-            comment_lines=comment_lines,
-            blank_lines=blank_lines,
-            docstring_lines=docstring_lines,
-            functions=analyzer.functions,
-            classes=analyzer.classes,
-            dependencies=ModuleDependencies(
-                imports=analyzer.imports,
-                import_from=analyzer.import_from,
-                external_deps=external_deps,
-                internal_deps=internal_deps,
-                relative_imports=analyzer.relative_imports,
-                cyclic_dependencies=[]
-            ),
-            file_hash=hashlib.md5(content.encode()).hexdigest(),
-            encoding='utf-8',
-            line_endings='\n' if '\r\n' not in content else '\r\n',
-            comment_ratio=comment_ratio,
-            function_density=function_density,
-            class_density=class_density,
-            maintainability_index=maintainability_index,
-            contexts=contexts,
-            design_patterns=design_patterns,
-            solid_principles=['SINGLE_RESPONSIBILITY']  # Simplificado
-        )
+        return packages
     
-    def _analyze_config_file(self, file_path: Path, content: str,
-                            contexts: List[str]) -> FileMetrics:
-        """Analiza archivo de configuración."""
-        lines = content.splitlines()
-        total_lines = len(lines)
+    def map_import_to_package(self, import_name: str) -> str:
+        """Mapea un nombre de import al nombre del paquete en PyPI."""
+        # Casos especiales
+        if import_name in IMPORT_TO_PACKAGE:
+            return IMPORT_TO_PACKAGE[import_name]
         
-        # Contar líneas significativas
-        code_lines = sum(1 for line in lines if line.strip() and not line.strip().startswith('#'))
-        comment_lines = sum(1 for line in lines if line.strip().startswith('#'))
-        blank_lines = sum(1 for line in lines if not line.strip())
+        # Convertir guiones bajos a guiones
+        if '_' in import_name:
+            return import_name.replace('_', '-')
         
-        # Análisis básico de contenido
-        has_env_vars = bool(re.search(r'\$\{.+?\}|\$[A-Z_][A-Z0-9_]*', content))
-        
-        return FileMetrics(
-            path=str(file_path),
-            module='',
-            lines=total_lines,
-            code_lines=code_lines,
-            comment_lines=comment_lines,
-            blank_lines=blank_lines,
-            docstring_lines=0,
-            functions=[],
-            classes=[],
-            dependencies=ModuleDependencies(
-                imports=set(),
-                import_from=set(),
-                external_deps=set(),
-                internal_deps=set(),
-                relative_imports=set(),
-                cyclic_dependencies=[]
-            ),
-            file_hash=hashlib.md5(content.encode()).hexdigest(),
-            encoding='utf-8',
-            line_endings='\n' if '\r\n' not in content else '\r\n',
-            comment_ratio=comment_lines / max(total_lines, 1),
-            function_density=0,
-            class_density=0,
-            maintainability_index=85,  # Archivos de configuración suelen ser mantenibles
-            contexts=contexts,
-            design_patterns=[],
-            solid_principles=[]
-        )
+        return import_name
     
-    def _calculate_project_metrics(self, file_metrics_list: List[FileMetrics]) -> Dict[str, Any]:
-        """Calcula métricas globales del proyecto."""
-        if not file_metrics_list:
-            return {}
+    def analyze(self) -> Dict[str, Any]:
+        """Ejecuta el análisis completo."""
+        print(f"🔍 Analizando proyecto: {self.project_path}")
+        print("=" * 60)
         
-        # Métricas agregadas
-        total_files = len(file_metrics_list)
-        total_lines = sum(f.lines for f in file_metrics_list)
-        total_functions = sum(len(f.functions) for f in file_metrics_list)
-        total_classes = sum(len(f.classes) for f in file_metrics_list)
+        # 1. Descubrir archivos
+        python_files = self.discover_files()
+        print(f"📁 Encontrados {len(python_files)} archivos Python")
         
-        # Distribución por contexto
-        context_distribution = defaultdict(int)
-        for metrics in file_metrics_list:
-            for context in metrics.contexts:
-                context_distribution[context] += 1
+        if not python_files:
+            return {"error": "No se encontraron archivos Python"}
         
-        # Complejidad promedio
-        all_functions = [func for metrics in file_metrics_list for func in metrics.functions]
-        avg_complexity = (statistics.mean([f.complexity for f in all_functions]) 
-                         if all_functions else 0)
+        # 2. Extraer imports de todos los archivos
+        print("\n📦 Extrayendo imports...")
+        for i, file_path in enumerate(python_files, 1):
+            imports = self.extract_imports_from_file(file_path)
+            self.all_imports.update(imports)
+            
+            if i % 10 == 0:
+                print(f"  📄 Procesados {i}/{len(python_files)} archivos")
         
-        return {
-            'total_files': total_files,
-            'total_lines': total_lines,
-            'total_functions': total_functions,
-            'total_classes': total_classes,
-            'context_distribution': dict(context_distribution),
-            'average_complexity': round(avg_complexity, 2),
-            'file_types': {
-                'python': sum(1 for f in file_metrics_list if f.path.endswith('.py')),
-                'yaml': sum(1 for f in file_metrics_list if f.path.endswith(('.yaml', '.yml'))),
-                'json': sum(1 for f in file_metrics_list if f.path.endswith('.json')),
-                'toml': sum(1 for f in file_metrics_list if f.path.endswith('.toml'))
-            }
+        # 3. Descubrir y parsear requirements
+        self.requirements_files = self.discover_requirements_files()
+        print(f"\n📋 Encontrados {len(self.requirements_files)} archivos de dependencias:")
+        
+        for req_file in self.requirements_files:
+            rel_path = req_file.relative_to(self.project_path)
+            packages = self.parse_requirements_file(req_file)
+            self.parsed_requirements[str(rel_path)] = packages
+            print(f"  • {rel_path}: {len(packages)} paquetes")
+        
+        # 4. Filtrar imports que no son stdlib
+        external_imports = self.all_imports - PYTHON_STDLIB_MODULES
+        
+        # 5. Mapear imports a nombres de paquetes
+        needed_packages = set()
+        import_to_package_map = {}
+        
+        for imp in external_imports:
+            pkg = self.map_import_to_package(imp)
+            needed_packages.add(pkg)
+            import_to_package_map[imp] = pkg
+        
+        # 6. Combinar todos los requirements
+        all_required_packages = set()
+        all_requirements = {}
+        
+        for file_path, packages in self.parsed_requirements.items():
+            for pkg, version in packages.items():
+                all_required_packages.add(pkg)
+                all_requirements[pkg] = {
+                    'version': version,
+                    'source': file_path
+                }
+        
+        # 7. Comparar y encontrar diferencias
+        missing_packages = needed_packages - all_required_packages
+        extra_packages = all_required_packages - needed_packages
+        
+        # 8. Generar reporte
+        report = {
+            'project': str(self.project_path),
+            'timestamp': datetime.now().isoformat(),
+            'files_analyzed': len(python_files),
+            'total_imports_found': len(self.all_imports),
+            'external_imports': sorted(external_imports),
+            'needed_packages': sorted(needed_packages),
+            'requirements_files': list(self.parsed_requirements.keys()),
+            'total_requirements': len(all_required_packages),
+            'missing_packages': sorted(missing_packages),
+            'extra_packages': sorted(extra_packages),
+            'import_details': {
+                imp: files[:5]  # Solo primeros 5 archivos por brevedad
+                for imp, files in self.import_details.items()
+                if imp not in PYTHON_STDLIB_MODULES
+            },
+            'import_to_package_map': import_to_package_map,
+            'all_requirements': all_requirements
         }
+        
+        return report
     
-    def _assess_quality(self, file_metrics_list: List[FileMetrics]) -> Dict[str, Any]:
-        """Evalúa la calidad del proyecto."""
-        if not file_metrics_list:
-            return {}
-        
-        quality_scores = []
-        
-        for metrics in file_metrics_list:
-            # Calcular puntajes individuales
-            technical_score = ContextualScoringSystem.calculate_technical_score(metrics)
-            architectural_score = ContextualScoringSystem.calculate_architectural_score(metrics)
-            security_score = ContextualScoringSystem.calculate_security_score(metrics)
-            
-            # Puntajes adicionales
-            testability_score = 80  # Estimado
-            maintainability_score = metrics.maintainability_index
-            # Calcular correctamente el ratio de documentación
-            documentation_score = (metrics.comment_lines + metrics.docstring_lines) / max(metrics.lines, 1) * 100
-            documentation_score = min(100, documentation_score)  # Cap at 100
-            
-            # Puntaje de rendimiento (simplificado)
-            performance_score = 85  # Estimado base
-            
-            # Puntaje compuesto (ponderado)
-            composite_score = (
-                technical_score * 0.25 +
-                architectural_score * 0.20 +
-                performance_score * 0.15 +
-                security_score * 0.15 +
-                testability_score * 0.10 +
-                maintainability_score * 0.10 +
-                documentation_score * 0.05
-            )
-            
-            quality_score = QualityScore(
-                technical=round(technical_score, 2),
-                architectural=round(architectural_score, 2),
-                performance=round(performance_score, 2),
-                security=round(security_score, 2),
-                testability=round(testability_score, 2),
-                maintainability=round(maintainability_score, 2),
-                documentation=round(documentation_score, 2),
-                composite=round(composite_score, 2)
-            )
-            
-            quality_scores.append({
-                'file': metrics.path,
-                'scores': quality_score.to_dict(),
-                'contexts': metrics.contexts,
-                'design_patterns': metrics.design_patterns,
-                'solid_principles': metrics.solid_principles,
-                'issues': self._identify_issues(metrics)
-            })
-        
-        # Calcular promedios del proyecto
-        avg_scores = {}
-        if quality_scores:
-            for key in ['technical', 'architectural', 'performance', 'security', 
-                       'testability', 'maintainability', 'documentation', 'composite']:
-                values = [qs['scores'][key] for qs in quality_scores]
-                avg_scores[key] = round(statistics.mean(values), 2)
-        
-        # Clasificar archivos por calidad
-        exceptional_files = [qs for qs in quality_scores 
-                           if qs['scores']['composite'] >= 95]
-        problematic_files = [qs for qs in quality_scores 
-                           if qs['scores']['composite'] < 50]
-        
-        return {
-            'file_assessments': quality_scores,
-            'project_averages': avg_scores,
-            'exceptional_files': len(exceptional_files),
-            'problematic_files': len(problematic_files),
-            'quality_tier': self._determine_quality_tier(avg_scores.get('composite', 0))
-        }
-    
-    def _identify_issues(self, metrics: FileMetrics) -> List[str]:
-        """Identifica problemas en el archivo."""
-        issues = []
-        
-        # Tamaño excesivo
-        if metrics.lines > 500 and 'CONFIGURATION' not in metrics.contexts:
-            issues.append(f"Archivo muy grande ({metrics.lines} líneas)")
-        
-        # Funciones complejas
-        for func in metrics.functions:
-            if func.complexity > 10:
-                issues.append(f"Función '{func.name}' muy compleja ({func.complexity})")
-            if func.lines > 50:
-                issues.append(f"Función '{func.name}' muy larga ({func.lines} líneas)")
-        
-        # Documentación insuficiente
-        if metrics.comment_ratio < 0.1:
-            issues.append("Documentación insuficiente")
-        
-        return issues
-    
-    def _determine_quality_tier(self, composite_score: float) -> str:
-        """Determina el nivel de calidad."""
-        for tier in CodeQualityTier:
-            if composite_score >= tier.value:
-                return tier.name.replace('_', ' ').title()
-        return "Unknown"
-    
-    def _generate_reports(self, file_metrics_list: List[FileMetrics],
-                         project_metrics: Dict[str, Any],
-                         quality_assessment: Dict[str, Any]) -> Dict[str, str]:
-        """Genera reportes en diferentes formatos."""
-        reports = {}
-        
-        # Reporte ejecutivo
-        reports['executive'] = self._generate_executive_report(
-            project_metrics, quality_assessment
-        )
-        
-        # Reporte técnico
-        reports['technical'] = self._generate_technical_report(
-            file_metrics_list, quality_assessment
-        )
-        
-        # JSON completo (ahora serializable)
-        reports['json'] = json.dumps({
-            'project_metrics': project_metrics,
-            'quality_assessment': quality_assessment,
-            'statistics': self.stats,
-            'timestamp': datetime.now().isoformat()
-        }, indent=2, default=str, ensure_ascii=False)
-        
-        return reports
-    
-    def _generate_executive_report(self, project_metrics: Dict[str, Any],
-                                  quality_assessment: Dict[str, Any]) -> str:
-        """Genera reporte ejecutivo."""
+    def generate_requirements_report(self, report: Dict[str, Any]) -> str:
+        """Genera un reporte legible de dependencias."""
         lines = []
         
         lines.append("=" * 80)
-        lines.append("📊 REPORTE EJECUTIVO - ANÁLISIS DE CÓDIGO")
+        lines.append("📊 REPORTE COMPLETO DE DEPENDENCIAS")
         lines.append("=" * 80)
-        lines.append(f"Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        lines.append(f"Proyecto: {report['project']}")
+        lines.append(f"Fecha: {datetime.fromisoformat(report['timestamp']).strftime('%Y-%m-%d %H:%M:%S')}")
         lines.append("")
         
-        # Resumen del proyecto
-        lines.append("📈 RESUMEN DEL PROYECTO")
+        # Estadísticas
+        lines.append("📈 ESTADÍSTICAS")
         lines.append("-" * 40)
-        lines.append(f"• Archivos analizados: {project_metrics.get('total_files', 0)}")
-        lines.append(f"• Líneas totales: {project_metrics.get('total_lines', 0):,}")
-        lines.append(f"• Funciones: {project_metrics.get('total_functions', 0)}")
-        lines.append(f"• Clases: {project_metrics.get('total_classes', 0)}")
+        lines.append(f"• Archivos Python analizados: {report['files_analyzed']}")
+        lines.append(f"• Imports encontrados: {report['total_imports_found']}")
+        lines.append(f"• Imports externos: {len(report['external_imports'])}")
+        lines.append(f"• Paquetes necesarios: {len(report['needed_packages'])}")
+        lines.append(f"• Requirements encontrados: {len(report['all_requirements'])}")
         lines.append("")
         
-        # Puntajes promedio
-        avg_scores = quality_assessment.get('project_averages', {})
-        lines.append("🏆 PUNTAJES DE CALIDAD")
+        # Imports externos
+        lines.append("📦 IMPORTS EXTERNOS ENCONTRADOS")
         lines.append("-" * 40)
-        
-        for dimension, score in avg_scores.items():
-            tier = self._determine_quality_tier(score)
-            lines.append(f"• {dimension.title()}: {score:.1f} ({tier})")
-        
+        for imp in sorted(report['external_imports']):
+            pkg = report['import_to_package_map'].get(imp, imp)
+            lines.append(f"• {imp} → {pkg}")
         lines.append("")
         
-        # Hallazgos clave
-        lines.append("🔍 HALLAZGOS CLAVE")
+        # Paquetes faltantes
+        if report['missing_packages']:
+            lines.append("❌ PAQUETES FALTANTES (Agregar a requirements)")
+            lines.append("-" * 40)
+            for pkg in sorted(report['missing_packages']):
+                lines.append(f"• {pkg}")
+            lines.append("")
+        else:
+            lines.append("✅ Todos los paquetes necesarios están en requirements")
+            lines.append("")
+        
+        # Paquetes extras (posiblemente innecesarios)
+        if report['extra_packages']:
+            lines.append("⚠️  PAQUETES EXTRA (Revisar si son necesarios)")
+            lines.append("-" * 40)
+            for pkg in sorted(report['extra_packages']):
+                source = report['all_requirements'].get(pkg, {}).get('source', 'desconocido')
+                lines.append(f"• {pkg} (de {source})")
+            lines.append("")
+        
+        # Archivos de requirements
+        lines.append("📋 ARCHIVOS DE REQUIREMENTS")
         lines.append("-" * 40)
-        lines.append(f"• Archivos excepcionales: {quality_assessment.get('exceptional_files', 0)}")
-        lines.append(f"• Archivos problemáticos: {quality_assessment.get('problematic_files', 0)}")
-        lines.append(f"• Nivel de calidad: {quality_assessment.get('quality_tier', 'Unknown')}")
+        for req_file in sorted(report['requirements_files']):
+            lines.append(f"• {req_file}")
         lines.append("")
         
-        # Recomendaciones
-        lines.append("🚀 RECOMENDACIONES PRIORITARIAS")
+        # Recomendaciones para agregar
+        if report['missing_packages']:
+            lines.append("🚀 COMANDOS PARA INSTALAR PAQUETES FALTANTES")
+            lines.append("-" * 40)
+            lines.append("# Agregar estos paquetes a requirements/core.txt o agents.txt:")
+            lines.append("")
+            for pkg in sorted(report['missing_packages']):
+                lines.append(f"{pkg}>=1.0.0  # Versión por determinar")
+            lines.append("")
+            
+            lines.append("# O instalar directamente:")
+            lines.append(f"pip install {' '.join(sorted(report['missing_packages']))}")
+            lines.append("")
+        
+        # Detalles por import
+        lines.append("🔍 DETALLES POR IMPORT (primeros 5 archivos)")
         lines.append("-" * 40)
-        lines.append("1. Revisar archivos problemáticos identificados")
-        lines.append("2. Mejorar documentación en módulos críticos")
-        lines.append("3. Optimizar funciones con alta complejidad")
-        lines.append("4. Implementar pruebas unitarias")
-        lines.append("5. Revisar arquitectura de módulos complejos")
+        for imp, files in sorted(report['import_details'].items()):
+            lines.append(f"\n{imp}:")
+            for file in files[:5]:
+                lines.append(f"  • {file}")
+            if len(files) > 5:
+                lines.append(f"  ... y {len(files) - 5} más")
         
         lines.append("")
         lines.append("=" * 80)
         
         return "\n".join(lines)
     
-    def _generate_technical_report(self, file_metrics_list: List[FileMetrics],
-                                  quality_assessment: Dict[str, Any]) -> str:
-        """Genera reporte técnico detallado."""
-        lines = []
+    def generate_requirements_files(self, report: Dict[str, Any], output_dir: Path):
+        """Genera archivos de requirements actualizados."""
+        output_dir.mkdir(parents=True, exist_ok=True)
         
-        lines.append("=" * 80)
-        lines.append("🔧 REPORTE TÉCNICO DETALLADO")
-        lines.append("=" * 80)
-        lines.append("")
+        # 1. Archivo completo con todas las dependencias
+        all_deps = sorted(report['needed_packages'])
         
-        # Top 5 funciones más complejas
-        all_functions = []
-        for metrics in file_metrics_list:
-            for func in metrics.functions:
-                all_functions.append({
-                    'file': Path(metrics.path).name,
-                    'function': func.name,
-                    'complexity': func.complexity,
-                    'lines': func.lines
-                })
-        
-        if all_functions:
-            lines.append("🔴 TOP 5 FUNCIONES MÁS COMPLEJAS")
-            lines.append("-" * 40)
+        requirements_all = output_dir / "requirements_all.txt"
+        with open(requirements_all, 'w', encoding='utf-8') as f:
+            f.write("# DEPENDENCIAS COMPLETAS DEL PROYECTO\n")
+            f.write("# Generado automáticamente por Dependency Analyzer\n")
+            f.write(f"# Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
             
-            top_complex = sorted(all_functions, key=lambda x: x['complexity'], reverse=True)[:5]
-            for i, func in enumerate(top_complex, 1):
-                lines.append(f"{i}. {func['function']} ({func['file']})")
-                lines.append(f"   Complejidad: {func['complexity']}, Líneas: {func['lines']}")
+            for pkg in all_deps:
+                # Buscar versión si ya existe en algún requirement
+                existing_version = report['all_requirements'].get(pkg, {}).get('version', '>=1.0.0')
+                f.write(f"{pkg}{existing_version}\n")
         
-        lines.append("")
+        # 2. Archivo con solo dependencias faltantes
+        missing_deps = sorted(report['missing_packages'])
         
-        # Archivos problemáticos
-        problematic = quality_assessment.get('file_assessments', [])
-        problematic = [p for p in problematic if p['scores']['composite'] < 70]
+        if missing_deps:
+            requirements_missing = output_dir / "requirements_missing.txt"
+            with open(requirements_missing, 'w', encoding='utf-8') as f:
+                f.write("# DEPENDENCIAS FALTANTES\n")
+                f.write("# Agregar estas dependencias a los requirements existentes\n\n")
+                
+                for pkg in missing_deps:
+                    f.write(f"{pkg}>=1.0.0  # TODO: Especificar versión exacta\n")
         
-        if problematic:
-            lines.append("⚠️  ARCHIVOS QUE NECESITAN ATENCIÓN")
-            lines.append("-" * 40)
-            
-            for i, file_info in enumerate(problematic[:5], 1):
-                file_name = Path(file_info['file']).name
-                score = file_info['scores']['composite']
-                lines.append(f"{i}. {file_name} - Puntaje: {score:.1f}")
-                if file_info['issues']:
-                    lines.append(f"   Problemas: {', '.join(file_info['issues'][:2])}")
+        # 3. Archivo de reporte JSON
+        report_json = output_dir / "dependencies_report.json"
+        with open(report_json, 'w', encoding='utf-8') as f:
+            json.dump(report, f, indent=2, ensure_ascii=False)
         
-        lines.append("")
-        lines.append("=" * 80)
-        
-        return "\n".join(lines)
-
-# ============================================================
-# INTERFAZ DE LÍNEA DE COMANDOS
-# ============================================================
+        return {
+            'all_deps': str(requirements_all),
+            'missing_deps': str(requirements_missing) if missing_deps else None,
+            'json_report': str(report_json)
+        }
 
 def main():
     """Función principal."""
     parser = argparse.ArgumentParser(
-        description='Analizador de Código de Élite - Sistema de análisis inteligente'
+        description='Analizador de Dependencias - Detecta imports y compara con requirements'
     )
     
     parser.add_argument(
         '--path',
-        required=True,
-        help='Ruta del proyecto a analizar'
+        default='.',
+        help='Ruta del proyecto a analizar (default: directorio actual)'
     )
     
     parser.add_argument(
         '--output',
-        default='./code_analysis',
-        help='Directorio de salida para reportes'
+        default='./dependency_reports',
+        help='Directorio de salida para reportes (default: ./dependency_reports)'
     )
     
     parser.add_argument(
-        '--workers',
-        type=int,
-        default=None,
-        help='Número de procesos paralelos (default: CPU count)'
+        '--generate',
+        action='store_true',
+        help='Generar archivos de requirements actualizados'
     )
     
     parser.add_argument(
         '--format',
-        choices=['all', 'executive', 'technical', 'json'],
-        default='all',
-        help='Formatos de salida'
+        choices=['text', 'json', 'all'],
+        default='text',
+        help='Formato de salida (default: text)'
     )
     
     args = parser.parse_args()
     
-    # Validar argumentos
-    root_path = Path(args.path).resolve()
-    if not root_path.exists():
-        print(f"❌ Error: La ruta {args.path} no existe")
+    project_path = Path(args.path).resolve()
+    output_dir = Path(args.output).resolve()
+    
+    if not project_path.exists():
+        print(f"❌ Error: La ruta {project_path} no existe")
         return 1
     
-    # Crear analizador
-    analyzer = EliteCodeAnalyzer()
+    print(f"🚀 Iniciando análisis de dependencias...")
+    print(f"📂 Proyecto: {project_path}")
+    print(f"📁 Salida: {output_dir}")
+    print("=" * 60)
     
     try:
-        # Ejecutar análisis
-        results = analyzer.analyze_project(root_path, max_workers=args.workers)
+        # Crear analizador
+        analyzer = ProjectDependencyAnalyzer(project_path)
         
-        if not results:
-            print("⚠️  No se generaron resultados del análisis")
+        # Ejecutar análisis
+        report = analyzer.analyze()
+        
+        if 'error' in report:
+            print(f"❌ Error: {report['error']}")
             return 1
         
-        # Guardar resultados
-        output_dir = Path(args.output).resolve()
-        output_dir.mkdir(parents=True, exist_ok=True)
+        # Mostrar resumen inmediato
+        print("\n" + "=" * 60)
+        print("📊 RESUMEN RÁPIDO")
+        print("-" * 40)
+        print(f"Paquetes necesarios: {len(report['needed_packages'])}")
+        print(f"Paquetes faltantes: {len(report['missing_packages'])}")
+        print(f"Paquetes extras: {len(report['extra_packages'])}")
         
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        if report['missing_packages']:
+            print("\n❌ PAQUETES FALTANTES:")
+            for pkg in sorted(report['missing_packages'])[:10]:  # Mostrar primeros 10
+                print(f"  • {pkg}")
+            if len(report['missing_packages']) > 10:
+                print(f"  ... y {len(report['missing_packages']) - 10} más")
         
-        # Guardar reportes según formato solicitado
-        reports = results.get('reports', {})
+        # Generar reportes según formato
+        if args.format in ['text', 'all']:
+            text_report = analyzer.generate_requirements_report(report)
+            
+            # Guardar reporte de texto
+            report_file = output_dir / "dependencies_report.txt"
+            report_file.parent.mkdir(parents=True, exist_ok=True)
+            report_file.write_text(text_report, encoding='utf-8')
+            
+            # Mostrar en consola
+            print("\n" + "=" * 60)
+            print(text_report)
         
-        if args.format in ['all', 'executive'] and 'executive' in reports:
-            exec_file = output_dir / f"executive_report_{timestamp}.txt"
-            exec_file.write_text(reports['executive'], encoding='utf-8')
-            print(f"📄 Reporte ejecutivo: {exec_file}")
+        if args.format in ['json', 'all']:
+            # Guardar reporte JSON
+            json_file = output_dir / "dependencies_report.json"
+            json_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(json_file, 'w', encoding='utf-8') as f:
+                json.dump(report, f, indent=2, ensure_ascii=False)
+            print(f"\n✅ Reporte JSON guardado en: {json_file}")
         
-        if args.format in ['all', 'technical'] and 'technical' in reports:
-            tech_file = output_dir / f"technical_report_{timestamp}.txt"
-            tech_file.write_text(reports['technical'], encoding='utf-8')
-            print(f"📄 Reporte técnico: {tech_file}")
+        # Generar archivos de requirements si se solicita
+        if args.generate:
+            generated_files = analyzer.generate_requirements_files(report, output_dir)
+            print(f"\n📄 Archivos generados:")
+            print(f"  • {generated_files['all_deps']}")
+            if generated_files['missing_deps']:
+                print(f"  • {generated_files['missing_deps']}")
+            print(f"  • {generated_files['json_report']}")
         
-        if args.format in ['all', 'json'] and 'json' in reports:
-            json_file = output_dir / f"full_analysis_{timestamp}.json"
-            json_file.write_text(reports['json'], encoding='utf-8')
-            print(f"📄 JSON completo: {json_file}")
+        print(f"\n✅ Análisis completado exitosamente!")
         
-        # Imprimir resumen ejecutivo en consola
-        print("\n" + "=" * 80)
-        if 'executive' in reports:
-            print(reports['executive'])
-        
-        # Estadísticas finales
-        stats = results.get('statistics', {})
-        elapsed = stats.get('end_time', 0) - stats.get('start_time', 0)
-        
-        print(f"\n🎉 Análisis completado exitosamente!")
-        print(f"⏱️  Tiempo total: {elapsed:.2f} segundos")
-        print(f"📊 Archivos analizados: {stats.get('files_analyzed', 0)}")
-        print(f"📂 Resultados guardados en: {output_dir}")
+        # Sugerencia final
+        if report['missing_packages']:
+            print(f"\n💡 SUGERENCIA: Agrega estos paquetes a tus requirements:")
+            for pkg in sorted(report['missing_packages']):
+                print(f"  - {pkg}")
         
     except KeyboardInterrupt:
         print("\n⏹️  Análisis interrumpido por el usuario")
@@ -1228,10 +649,6 @@ def main():
         return 1
     
     return 0
-
-# ============================================================
-# EJECUCIÓN
-# ============================================================
 
 if __name__ == "__main__":
     sys.exit(main())
