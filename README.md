@@ -1,418 +1,355 @@
-# 🧠 Project Brain - AnalyzerBrain
-
-**Sistema de Inteligencia Artificial para Comprensión y Gestión Evolutiva de Proyectos de Software**
-
-> Un cerebro colectivo persistente que supera las limitaciones de contexto de los LLMs tradicionales
-
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Architecture](https://img.shields.io/badge/Architecture-Microkernel%2BAgents-orange.svg)](#arquitectura)
-[![Documentation](https://img.shields.io/badge/Docs-Comprehensive-brightgreen.svg)](#documentación)
-
-## 🌟 Características Principales
-
-### 🧠 **Memoria Infinita**
-- Almacenamiento persistente de análisis históricos sin pérdida por límites de contexto
-- Retención del 100% del conocimiento adquirido
-- Versionado completo y seguimiento de cambios
-
-### 🔍 **Comprensión Profunda Multi-Lenguaje**
-- Análisis a nivel de archivos, funciones, clases, dependencias y patrones
-- Soporte para 10+ lenguajes (Python, JavaScript, Java, C++, Go, Rust, etc.)
-- Precisión > 90% en identificación de entidades
-
-### 📚 **Aprendizaje Continuo**
-- Mejora de comprensión con cada interacción sin sobrescribir conocimiento
-- Incremento del 5% mensual en precisión
-- Adaptación al estilo del equipo
-
-### 🏗️ **Razonamiento Estructural Avanzado**
-- Entendimiento de arquitecturas, dependencias y patrones de diseño
-- Detección del 95% de dependencias críticas
-- Análisis predictivo de problemas
-
-### ⚡ **Rendimiento Optimizado**
-- Análisis de 1000 archivos en < 30 segundos
-- Respuestas a preguntas en < 2 segundos (p95)
-- Soporte para 50+ consultas concurrentes por segundo
-
-## 🚀 Comenzando Rápidamente
-
-### Prerrequisitos
-- Python 3.10 o superior
-- PostgreSQL 15+
-- Redis 7+
-- Neo4j 5+
-- 8GB+ RAM, 4+ núcleos CPU
-
-### Instalación en 5 minutos
-
-```bash
-# 1. Clonar el repositorio
-git clone https://github.com/yourusername/project-brain.git
-cd project-brain
-
-# 2. Configurar entorno
-cp .env.example .env
-# Editar .env con tus configuraciones
-
-# 3. Instalar dependencias
-pip install -r requirements/base.txt
-
-# 4. Iniciar con Docker Compose (recomendado para desarrollo)
-docker-compose up -d
-
-# 5. Inicializar el sistema
-python scripts/init_system.py
-
-# 6. Ejecutar análisis de ejemplo
-python scripts/analyze_project.py examples/sample-python-project
-
-# 7. Probar con una pregunta
-python scripts/query_project.py "¿Qué hace la función main?"
-
-Arquitectura del Sistema
-
-📐 Arquitectura Híbrida: Microkernel + Sistema de Agentes + Base de Conocimiento Centralizada
-
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                             CAPA DE PRESENTACIÓN                            │
-├─────────────┬──────────────┬──────────────┬──────────────┬─────────────────┤
-│    CLI      │   API REST   │  WebSocket   │    gRPC      │   Web UI        │
-│  (click)    │  (FastAPI)   │ (real-time)  │ (high-perf)  │  (Streamlit)    │
-└─────────────┴──────────────┴──────────────┴──────────────┴─────────────────┘
-                                      │
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          CAPA DE ORQUESTACIÓN                               │
-├─────────────┬──────────────┬──────────────┬─────────────────────────────────┤
-│Workflow Mng │ Task Scheduler│Pipeline Orch.│         Event Bus               │
-│(Prefect)    │ (Celery)     │ (Kedro)      │ (Redis Pub/Sub)                 │
-└─────────────┴──────────────┴──────────────┴─────────────────────────────────┘
-                                      │
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      SISTEMA DE AGENTES ESPECIALIZADOS                      │
-├─────────────┬──────────────┬──────────────┬──────────────┬─────────────────┤
-│ Arquitecto  │  Detective   │  Analista    │   Curador    │     Q&A         │
-│ (patrones)  │ (problemas)  │ (métricas)   │(conocimiento)│ (respuestas)    │
-└─────────────┴──────────────┴──────────────┴──────────────┴─────────────────┘
-                                      │
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          NÚCLEO DE INTELIGENCIA                             │
-├─────────────┬──────────────┬──────────────┬─────────────────────────────────┤
-│ Red Neuronal│  Memoria     │  Análisis    │         Aprendizaje             │
-│ (GNN)       │(vector+grafo)│ (profundo)   │     (incremental+RL)            │
-└─────────────┴──────────────┴──────────────┴─────────────────────────────────┘
-                                      │
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          PIPELINE DE DATOS                                  │
-├─────────────┬──────────────┬──────────────┬─────────────────────────────────┤
-│  Ingestión  │Procesamiento │Almacenamiento│            Cache                │
-│ (scanner)   │(parsing+emb) │  (multi-DB)  │        (Redis+Memcached)        │
-└─────────────┴──────────────┴──────────────┴─────────────────────────────────┘
-                                      │
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          SISTEMA DE CONSULTAS                               │
-├─────────────┬──────────────┬──────────────┬─────────────────────────────────┤
-│     NLP     │ Recuperación │ Razonamiento │           Respuesta             │
-│(intent+NER) │(vector+grafo)│(chain+agents)│      (synthesis+formatting)     │
-└─────────────┴──────────────┴──────────────┴─────────────────────────────────┘
-
-
-Módulos Principales
-
-Módulo	Responsabilidad	% Sistema	Estado
-core/	Orquestación principal, gestión de estado	15%	✅
-indexer/	Indexación, parsing multi-lenguaje	25%	✅
-embeddings/	Representación vectorial, búsqueda semántica	15%	✅
-graph/	Grafo de conocimiento, consultas	10%	✅
-memory/	Sistemas de memoria persistente	10%	✅
-agents/	Agentes IA especializados	15%	✅
-api/	Interfaces externas (REST, WebSocket, etc.)	5%	✅
-learning/	Aprendizaje incremental	3%	✅
-utils/	Utilidades compartidas	2%	✅
-📊 Métricas de Rendimiento
-
-⚡ Análisis de Código
-
-Escenario	Tiempo Objetivo	Límite Aceptable
-Archivo Python 1000 líneas	< 500ms	< 1s
-Archivo JavaScript	< 300ms	< 500ms
-Lote 100 archivos	< 30s	< 60s
-🧮 Generación de Embeddings
-
-Escenario	Tiempo Objetivo	Límite Aceptable
-Texto 512 tokens	< 100ms	< 200ms
-Código embedding	< 200ms	< 400ms
-Lote 1000 embeddings	< 10s	< 20s
-🔍 Consultas
-
-Escenario	Tiempo Objetivo	Límite Aceptable
-Pregunta simple	< 2s p95	< 5s p95
-Análisis complejo	< 10s p95	< 20s p95
-Traversal grafo profundidad 5	< 500ms	< 1s
-🛠️ Uso del Sistema
-
-Comandos CLI Principales
-
-# Inicializar sistema
-project-brain init
-
-# Analizar proyecto
-project-brain analyze /ruta/al/proyecto
-
-# Consultar sobre proyecto
-project-brain query --project-id PROJ_123 "¿Qué hace esta función?"
-
-# Exportar conocimiento
-project-brain export --format json --output conocimiento.json
-
-# Monitorear sistema
-project-brain monitor --metrics --live
-
-# Administrar agentes
-project-brain agents list
-project-brain agents enable code_analyzer
-project-brain agents status
-
-API REST Ejemplos
-
-import requests
-
-# Crear proyecto
-response = requests.post(
-    "http://localhost:8000/v1/projects",
-    json={
-        "name": "Mi Proyecto Python",
-        "path": "/ruta/al/proyecto",
-        "language": "python"
-    },
-    headers={"X-API-Key": "tu-api-key"}
-)
-
-# Consultar
-response = requests.post(
-    "http://localhost:8000/v1/query",
-    json={
-        "question": "¿Dónde se define la función process_data?",
-        "project_id": "proj_123"
-    }
-)
-
-# Stream de análisis via WebSocket
-import websocket
-ws = websocket.WebSocket()
-ws.connect("ws://localhost:8001")
-ws.send(json.dumps({
-    "type": "subscribe",
-    "data": {"topics": ["analysis_progress"]}
-}))
-
-Integración con IDEs
-
-VSCode Extension disponible en Marketplace
-
-PyCharm Plugin disponible en JetBrains Marketplace
-
-📈 Impacto Esperado
-
-Para Desarrolladores Individuales
-
-✅ Reducción del 50% en tiempo de onboarding
-✅ Disminución del 40% en bugs introducidos
-✅ Aumento del 60% en reutilización de código
-✅ Mejora del 70% en documentación actualizada
-Para Equipos
-
-✅ Consistencia en patrones y estándares
-✅ Conocimiento compartido accesible
-✅ Calidad sostenida con detección proactiva
-✅ Colaboración mejorada con contexto compartido
-Para Organizaciones
-
-✅ ROI positivo en 6 meses (equipos >10 devs)
-✅ Reducción de deuda técnica gestionable
-✅ Mejora en seguridad con detección temprana
-✅ Escalabilidad para nuevos equipos
-🧪 Ejemplos de Uso
-
-Ejemplo 1: Análisis Completo de Proyecto
-
-from project_brain import BrainOrchestrator
-
-# Inicializar orquestador
-orchestrator = BrainOrchestrator()
-orchestrator.initialize()
-
-# Analizar proyecto
-result = await orchestrator.analyze_project(
-    "/ruta/al/proyecto",
-    options={
-        "mode": "comprehensive",
-        "languages": ["python", "javascript"],
-        "include_tests": True,
-        "max_file_size_mb": 10
-    }
-)
-
-print(f"Archivos analizados: {result['summary']['files_analyzed']}")
-print(f"Entidades extraídas: {result['summary']['entities_extracted']}")
-print(f"Problemas encontrados: {result['summary']['issues_found']}")
-
-Ejemplo 2: Consulta Inteligente
-
-# Hacer una pregunta sobre el proyecto
-answer = await orchestrator.ask_question(
-    question="¿Por qué la función calculate_total es tan lenta?",
-    project_id="proj_123",
-    context={
-        "current_file": "src/utils/calculations.py",
-        "technical_level": "advanced"
-    }
-)
-
-print(f"Respuesta: {answer['answer']['text']}")
-print(f"Confianza: {answer['confidence']}")
-print(f"Fuentes: {len(answer['sources'])}")
-
-Ejemplo 3: Detección de Cambios Automática
-
-# Detectar cambios desde último análisis
-changes = await orchestrator.detect_changes({
-    "project_id": "proj_123",
-    "since": "2024-01-01T00:00:00Z"
-})
-
-print(f"Archivos modificados: {changes['files_modified']}")
-print(f"Impacto en dependencias: {changes['impact_analysis']}")
-
-Configuración Avanzada
-
-Configuración de Agentes
-
-yaml
-# config/agents.yaml
-agents:
-  enabled:
-    - code_analyzer
-    - qa_agent
-    - architect
-    - detective
-    - curator
-  
-  code_analyzer:
-    confidence_threshold: 0.7
-    capabilities:
-      - code_analysis
-      - pattern_detection
-      - quality_assessment
-  
-  qa_agent:
-    max_processing_time: 10
-    stream_responses: true
-Configuración de Caché Multi-Nivel
-
-yaml
-# config/system.yaml
-cache:
-  hierarchy:
-    level1:
-      type: "memory"
-      max_size: 1000
-      ttl_seconds: 300
-      
-    level2:
-      type: "redis"
-      max_size: 10000
-      ttl_seconds: 3600
-      
-    level3:
-      type: "disk"
-      max_size: 100000
-      ttl_seconds: 86400
-📚 Documentación Adicional
-
-📖 Guías Detalladas
-
-📘 Guía de Arquitectura - Diseño detallado del sistema
-🔌 Guía de Integración - Cómo integrar con otras herramientas
-🚀 Guía de Despliegue - Producción, Kubernetes, etc.
-🧪 Guía de Testing - Pruebas, CI/CD, calidad
-🎓 Tutoriales
-
-Tutorial 1: Primer Proyecto
-Tutorial 2: Agentes Personalizados
-Tutorial 3: Análisis a Escala
-Tutorial 4: Integración con CI/CD
-📊 Referencias de API
-
-API REST Completa - Todos los endpoints
-WebSocket Protocol - Protocolo en tiempo real
-gRPC API - API de alta performance
-CLI Reference - Todos los comandos CLI
-🚢 Despliegue
-
-Docker (Recomendado para desarrollo)
-
-bash
-docker-compose up -d
-Kubernetes (Producción)
-
-bash
-# Instalar con Helm
-helm install project-brain ./deployments/helm/
-
-# O con manifests directos
-kubectl apply -f ./deployments/kubernetes/
-Nube (AWS, GCP, Azure)
-
-bash
-# Terraform para AWS
-cd deployments/terraform/aws
-terraform init
-terraform apply
-🤝 Contribuir
-
-¡Contribuciones son bienvenidas! Por favor lee nuestras guías de contribución.
-
-Estructura del Proyecto
+Distribución de archivos:
+
+ANALYZERBRAIN/
+├── 📁 .github/                  # CI/CD y automatización
+├── 📁 .vscode/                  # Configuración de IDE
+├── 📁 architecture/             # Documentación arquitectónica
+├── 📁 config/                  # Configuraciones YAML del sistema
+├── 📁 data/                    # Datos persistentes (SOLO datos, NO código)
+├── 📁 deployments/             # Configuraciones de despliegue
+├── 📁 docs/                    # Documentación completa
+├── 📁 logs/                    # Logs del sistema
+├── 📁 monitoring/              # Monitoreo y métricas
+├── 📁 requirements/            # Dependencias categorizadas
+├── 📁 scripts/                 # Scripts de utilidad
+├── 📁 src/                     # CÓDIGO FUENTE PRINCIPAL
+├── 📁 tests/                   # Pruebas y fixtures
+├── 📁 venv/                    # Entorno virtual
+├── 📄 .env                     # Variables de entorno
+├── 📄 .env.example             # Plantilla variables de entorno
+├── 📄 .gitignore               # Archivos ignorados por git
+├── 📄 Dockerfile               # Imagen Docker
+├── 📄 LICENSE                  # Licencia MIT
+├── 📄 pyproject.toml          # Configuración de paquete Python moderno
+└── 📄 README.md               # Documentación principal
+🔧 SRC/ - ESTRUCTURA DETALLADA DEL CÓDIGO FUENTE
 
 text
-project_brain/
-├── src/                    # Código fuente
-│   ├── core/              # Núcleo del sistema
-│   ├── indexer/           # Indexación y parsing
-│   ├── embeddings/        # Representación vectorial
-│   ├── agents/            # Agentes IA
-│   └── ...                # Otros módulos
-├── tests/                 # Pruebas
-├── docs/                  # Documentación
-├── deployments/           # Configuraciones de despliegue
-└── scripts/              # Scripts de utilidad
-Pruebas
+src/
+├── __init__.py                 # Paquete raíz
+├── main.py                     # Punto de entrada principal
+│
+├── 📁 api/                     # CAPA DE PRESENTACIÓN
+│   ├── __init__.py
+│   ├── authentication.py       # Autenticación JWT/API Key
+│   ├── cli_interface.py       # Interfaz línea de comandos
+│   ├── grpc_api.py            # API gRPC (alta performance)
+│   ├── rate_limiter.py        # Limitación de tasa
+│   ├── request_validator.py   # Validación de peticiones
+│   ├── rest_api.py            # Endpoints REST
+│   ├── server.py              # Servidor principal FastAPI
+│   ├── web_ui.py              # Interfaz web (Streamlit)
+│   └── websocket_api.py       # WebSockets (tiempo real)
+│
+├── 📁 agents/                  # SISTEMA DE AGENTES
+│   ├── __init__.py
+│   ├── agent_factory.py       # Fábrica de agentes
+│   ├── agent_orchestrator.py  # Orquestación de agentes
+│   ├── analyst_agent.py       # Análisis de métricas
+│   ├── architect_agent.py     # Análisis arquitectónico
+│   ├── base_agent.py          # Clase base abstracta
+│   ├── code_analyzer_agent.py # Análisis de código
+│   ├── collaboration_protocol.py # Protocolo colaborativo
+│   ├── curator_agent.py       # Curación de conocimiento
+│   ├── detective_agent.py     # Investigación de problemas
+│   ├── learning_agent.py      # Agente de aprendizaje
+│   ├── qa_agent.py           # Preguntas y respuestas
+│   └── security_agent.py     # Análisis de seguridad
+│
+├── 📁 core/                   # NÚCLEO DEL SISTEMA
+│   ├── __init__.py
+│   ├── config_manager.py     # Gestión de configuración
+│   ├── dependency_injector.py # Inyección de dependencias
+│   ├── event_bus.py          # Bus de eventos
+│   ├── exceptions.py         # Excepciones personalizadas
+│   ├── health_check.py       # Verificación de salud
+│   ├── orchestrator.py       # BrainOrchestrator principal
+│   ├── plugin_manager.py     # Gestión de plugins
+│   ├── system_state.py       # Gestión de estado del sistema
+│   └── workflow_manager.py   # Orquestación de flujos
+│
+├── 📁 embeddings/            # REPRESENTACIÓN VECTORIAL
+│   ├── __init__.py
+│   ├── dimensionality_reducer.py # Reducción dimensional
+│   ├── embedding_cache.py    # Caché de embeddings
+│   ├── embedding_generator.py # Generación de embeddings
+│   ├── embedding_models.py   # Modelos de embeddings
+│   ├── semantic_search.py    # Búsqueda semántica
+│   ├── similarity_calculator.py # Cálculo de similitudes
+│   └── vector_store.py       # Almacenamiento vectorial
+│
+├── 📁 graph/                 # GRAFO DE CONOCIMIENTO
+│   ├── __init__.py
+│   ├── consistency_checker.py # Verificación de consistencia
+│   ├── graph_analytics.py    # Análisis de grafos
+│   ├── graph_builder.py      # Construcción de grafos
+│   ├── graph_exporter.py     # Exportación de grafos
+│   ├── graph_query_engine.py # Motor de consultas
+│   ├── graph_traverser.py    # Navegación de grafos
+│   ├── knowledge_graph.py    # Grafo de conocimiento principal
+│   └── schema_manager.py     # Gestión de esquemas
+│
+├── 📁 indexer/               # INDEXACIÓN Y PARSING
+│   ├── __init__.py
+│   ├── change_detector.py    # Detección de cambios
+│   ├── dependency_mapper.py  # Mapeo de dependencias
+│   ├── entity_extractor.py   # Extracción de entidades
+│   ├── file_processor.py     # Procesamiento de archivos
+│   ├── multi_language_parser.py # Parser multi-lenguaje
+│   ├── pattern_detector.py   # Detección de patrones
+│   ├── project_scanner.py    # Escaneo de proyectos
+│   ├── quality_analyzer.py   # Análisis de calidad
+│   └── version_tracker.py    # Seguimiento de versiones
+│
+├── 📁 learning/              # APRENDIZAJE AUTOMÁTICO
+│   ├── __init__.py
+│   ├── adaptation_engine.py  # Adaptación a nuevos dominios
+│   ├── feedback_loop.py      # Bucle de retroalimentación
+│   ├── forgetting_mechanism.py # Mecanismo de olvido
+│   ├── incremental_learner.py # Aprendizaje incremental
+│   ├── knowledge_refiner.py  # Refinamiento de conocimiento
+│   ├── learning_evaluator.py # Evaluación de aprendizaje
+│   └── reinforcement_learner.py # Aprendizaje por refuerzo
+│
+├── 📁 memory/               # SISTEMA DE MEMORIA
+│   ├── __init__.py
+│   ├── cache_manager.py     # Gestión de caché
+│   ├── episodic_memory.py   # Memoria episódica
+│   ├── memory_cleaner.py    # Limpieza de memoria
+│   ├── memory_consolidator.py # Consolidación de memoria
+│   ├── memory_hierarchy.py  # Jerarquía de memoria
+│   ├── memory_retriever.py  # Recuperación de memoria
+│   ├── semantic_memory.py   # Memoria semántica
+│   └── working_memory.py    # Memoria de trabajo
+│
+└── 📁 utils/                # UTILIDADES COMPARTIDAS
+    ├── __init__.py
+    ├── file_utils.py        # Operaciones de archivos
+    ├── logging_config.py    # Configuración de logging
+    ├── metrics_collector.py # Colección de métricas
+    ├── parallel_processing.py # Procesamiento paralelo
+    ├── security_utils.py    # Utilidades de seguridad
+    ├── serialization.py     # Serialización de datos
+    ├── text_processing.py   # Procesamiento de texto
+    └── validation.py        # Validación de datos
+📁 DATA/ - ESTRUCTURA DE DATOS PERSISTENTES
 
-bash
-# Ejecutar todas las pruebas
-pytest tests/
+text
+data/
+├── .gitkeep                  # Mantener carpeta en git
+├── init_data_structure.py    # Script de inicialización de estructura
+│
+├── 📁 backups/              # Backups automáticos
+│   ├── .gitkeep
+│   ├── backups_manifest.json # Metadatos de backups
+│   └── README.md
+│
+├── 📁 cache/               # Caché persistente (L3)
+│   ├── .gitkeep
+│   ├── L3_cache_config.json # Configuración de caché en disco
+│   └── README.md
+│
+├── 📁 embeddings/          # Base vectorial ChromaDB
+│   ├── .gitkeep
+│   ├── chroma.json        # Configuración ChromaDB
+│   ├── chromadb_config.yaml # Configuración avanzada
+│   └── README.md
+│
+├── 📁 graph_exports/      # Exportaciones de grafos
+│   ├── .gitkeep
+│   ├── export_template.cypher   # Plantilla Cypher
+│   ├── export_template.graphml  # Plantilla GraphML
+│   └── README.md
+│
+├── 📁 projects/           # Proyectos analizados
+│   ├── .gitkeep
+│   ├── project_template.json # Plantilla de proyecto
+│   └── README.md
+│
+└── 📁 state/             # Estado del sistema
+    ├── .gitkeep
+    ├── agents_state_template.json # Plantilla estado agentes
+    ├── system_state.json          # Estado del sistema
+    └── README.md
+📁 DEPLOYMENTS/ - CONFIGURACIÓN DE DESPLIEGUE
 
-# Pruebas específicas
-pytest tests/unit/core/
-pytest tests/integration/
+text
+deployments/
+│
+├── 📁 docker/            # Configuración Docker
+│   ├── Dockerfile        # Para producción
+│   ├── Dockerfile.dev    # Para desarrollo
+│   ├── .dockerignore
+│   ├── backup.sh         # Scripts de backup
+│   ├── health-check.sh   # Health checks
+│   ├── init-db.sh        # Inicialización de BD
+│   └── nginx.conf        # Configuración nginx
+│
+├── 📁 helm/             # Charts Helm para Kubernetes
+│   ├── Chart.yaml
+│   ├── values.yaml
+│   └── 📁 templates/    # Plantillas Kubernetes
+│       ├── 📁 api/      # Despliegue API
+│       │   ├── deployment.yaml
+│       │   ├── ingress.yaml
+│       │   └── service.yaml
+│       └── _helpers.tpl # Helpers
+│
+├── 📁 kubernetes/       # Configuraciones K8s nativas
+│   ├── api-deployment.yaml
+│   ├── configmap.yaml
+│   ├── hpa.yaml         # Auto-scaling
+│   ├── kustomization.yaml
+│   ├── monitoring.yaml
+│   ├── namespace.yaml
+│   ├── neo4j.yaml
+│   ├── nginx-ingress.yaml
+│   ├── postgresql.yaml
+│   ├── redis.yaml
+│   ├── secrets.yaml
+│   └── serviceaccount.yaml
+│
+├── docker-compose.yml        # Desarrollo local
+└── docker-compose.prod.yml   # Producción
+📁 SCRIPTS/ - UTILIDADES DE SISTEMA
 
-# Con cobertura
-pytest --cov=src --cov-report=html
-📄 Licencia
+text
+scripts/
+├── analyze_project.py        # Análisis de proyectos
+├── backup_restore.py         # Backup y restauración
+├── exhaustive_project_analyzer.py # Análisis exhaustivo
+├── export_knowledge.py       # Exportación de conocimiento
+├── init_data_system.py       # Inicialización de sistema de datos
+├── init_db.sql              # SQL inicial para PostgreSQL
+├── init_project.py          # Inicialización de proyecto
+├── migrate_data.py          # Migración de datos
+├── monitor_system.py        # Monitoreo del sistema
+├── query_project.py         # Consulta de proyectos
+├── setup_data_permissions.sh # Permisos de datos
+└── verify_data_integrity.py  # Verificación de integridad
+📁 REQUIREMENTS/ - DEPENDENCIAS
 
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo LICENSE para más detalles.
+text
+requirements/
+├── agents.txt       # Dependencias para agentes
+├── api.txt          # Dependencias para API
+├── base.txt         # Dependencias base obligatorias
+├── core.txt         # Dependencias del núcleo
+├── databases.txt    # Bases de datos (PostgreSQL, Neo4j, Redis)
+├── dev.txt          # Desarrollo (testing, debugging)
+├── ml.txt           # Machine Learning (transformers, embeddings)
+├── nlp.txt          # Procesamiento de lenguaje natural
+└── prod.txt         # Producción (optimizaciones, seguridad)
+📁 GITHUB/ - CI/CD
 
-📞 Soporte y Contacto
+text
+.github/
+├── dependabot.yml           # Actualizaciones automáticas
+│
+└── 📁 workflows/
+    ├── ci.yml              # Integración continua
+    ├── cd.yml              # Despliegue continuo
+    ├── tests.yml           # Ejecución de tests
+    └── security.yml        # Escaneo de seguridad
+📁 TESTS/ - PRUEBAS
 
-📧 Email: support@projectbrain.dev
-🐛 Issues: GitHub Issues
-💬 Discord: Únete a nuestro Discord
-📖 Documentación: docs.projectbrain.dev
-🙏 Agradecimientos
+text
+tests/
+├── conftest.py             # Configuración pytest
+│
+├── 📁 analyzer_code/       # Utilidades de análisis (¿Mover a scripts/?)
+│   ├── analyzer_completo.py
+│   ├── config_analyzer.yaml
+│   ├── requerements.txt
+│   ├── run_analyzer.txt
+│   └── workflow_discovery.txt
+│
+├── 📁 e2e/                # Pruebas end-to-end
+│   ├── test_analysis_workflow.py
+│   ├── test_query_workflow.py
+│   └── test_system_workflow.py
+│
+├── 📁 fixtures/           # Datos de prueba
+│   ├── sample_code/      # Código de ejemplo
+│   ├── sample_project/   # Proyecto de prueba
+│   └── test_data.json    # Datos estructurados
+│
+├── 📁 integration/        # Pruebas de integración
+│   └── test_core_integration.py
+│
+├── 📁 performance/        # Pruebas de rendimiento
+│   ├── test_analysis_performance.py
+│   ├── test_concurrent_performance.py
+│   └── test_query_performance.py
+│
+└── 📁 unit/              # Pruebas unitarias
+    ├── test_agents_base.py
+    ├── test_embeddings_generator.py
+    └── test_indexer_parser.py
+📁 DOCS/ - DOCUMENTACIÓN
 
-Gracias a todos los contribuidores
-Basado en investigaciones de OpenAI, Google Research, y Microsoft Research
-Utiliza tree-sitter para parsing multi-lenguaje
-Embeddings con Sentence Transformers
+text
+docs/
+│
+├── 📁 api/                # Documentación de API
+│   ├── cli_reference.md
+│   ├── grpc_api.md
+│   ├── README.md
+│   ├── rest_api.md
+│   └── websocket_api.md
+│
+├── 📁 architecture/       # Arquitectura del sistema
+│   ├── architecture_overview.md
+│   ├── cohesion_coupling.md
+│   ├── implementation_plan.md
+│   ├── modules_details.md
+│   ├── performance_analysis.md
+│   ├── README.md
+│   └── system_vision.md
+│
+├── 📁 deployment/        # Despliegue
+│   ├── docker_deployment.md
+│   ├── kubernetes_deployment.md
+│   ├── local_deployment.md
+│   ├── monitoring.md
+│   ├── production_configuration.md
+│   └── README.md
+│
+├── 📁 developer/         # Desarrolladores
+│   ├── adding_parsers.md
+│   ├── contributing.md
+│   ├── extending_agents.md
+│   ├── README.md
+│   ├── setup_development.md
+│   └── testing.md
+│
+├── 📁 examples/          # Ejemplos de uso
+│   └── README.md
+│
+└── 📁 user_guide/       # Guía de usuario
+    ├── advanced_features.md
+    ├── asking_questions.md
+    ├── getting_started.md
+    ├── project_analysis.md
+    ├── README.md
+    └── Troubleshooting.md
+📁 MONITORING/ - MONITOREO
+
+text
+monitoring/
+│
+├── 📁 alerts/            # Reglas de alertas
+│   └── alerts.yml
+│
+├── 📁 grafana/          # Dashboards Grafana
+│   ├── 📁 dashboards/
+│   │   ├── dashboards.yaml
+│   │   └── project_brain.json
+│   └── 📁 datasources/
+│       └── prometheus.yml
+│
+├── 📁 loki/            # Log aggregation
+│   └── loki-config.yaml
+│
+└── 📁 prometheus/      # Métricas
+    └── prometheus.yaml
