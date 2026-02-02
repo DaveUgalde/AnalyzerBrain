@@ -173,7 +173,7 @@ data/
     └── README.md
 📁 DEPLOYMENTS/ - CONFIGURACIÓN DE DESPLIEGUE
 
-text
+
 deployments/
 │
 ├── 📁 docker/            # Configuración Docker

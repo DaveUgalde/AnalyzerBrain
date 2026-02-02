@@ -1,0 +1,167 @@
+# ==========================================================
+# Archivo: requirements/dev.txt
+#
+# Descripción:
+#   Dependencias para DESARROLLO LOCAL de ANALYZERBRAIN.
+#   Incluye testing, linting, formateo, debugging, docs.
+#   SOLO para desarrolladores, NO para producción.
+#
+# Uso:
+#   pip install -r requirements/dev.txt
+#
+# Notas:
+#   - Incluye automáticamente base.txt (-r base.txt)
+#   - Herramientas específicas para VS Code/PyCharm
+#   - NO instalar en producción
+#
+# ==========================================================
+
+
+# ----------------------------------------------------------
+# Dependencias base del proyecto (NECESARIAS)
+# ----------------------------------------------------------
+-r base.txt
+
+
+# ----------------------------------------------------------
+# TESTING Framework
+# ----------------------------------------------------------
+
+# Core testing
+pytest>=7.4.3
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.1
+pytest-xdist>=3.5.0          # Tests paralelos (más rápido)
+pytest-randomly>=3.12.0      # Tests en orden aleatorio
+
+# Coverage y reporting
+coverage>=7.3.0
+pytest-html>=4.0.2           # Reportes HTML de tests
+
+# Fixtures y datos de prueba
+factory-boy>=3.3.0
+Faker>=19.0.0
+
+# Testing de APIs (para futura API)
+requests-mock>=1.11.0
+httpx>=0.25.0
+
+
+# ----------------------------------------------------------
+# LINTING & FORMATTING
+# ----------------------------------------------------------
+
+# Formateo automático
+black>=23.11.0
+isort>=5.12.0                # ✅ CRÍTICO: Organiza imports
+
+# Linting moderno (más rápido que flake8)
+ruff>=0.1.0
+
+# Type checking estricto
+mypy>=1.7.0
+
+# Linters tradicionales (para compatibilidad)
+pylint>=3.0.0
+flake8>=6.1.0
+flake8-docstrings>=1.7.0
+flake8-import-order>=0.18.2
+
+# Pre-commit hooks
+pre-commit>=3.5.0
+
+
+# ----------------------------------------------------------
+# TYPE STUBS (para mejor autocompletado)
+# ----------------------------------------------------------
+
+# Stubs para dependencias base
+types-PyYAML>=6.0.12
+types-redis>=4.6.0
+types-requests>=2.31.0
+types-setuptools>=68.2.0
+
+# Stubs para desarrollo/testing
+types-mock>=5.0.0
+
+# Stubs para utilidades
+types-toml>=0.10.0
+
+
+# ----------------------------------------------------------
+# DEBUGGING & DESARROLLO
+# ----------------------------------------------------------
+
+# REPL mejorado
+ipython>=8.18.0
+
+# Debugging interactivo
+ipdb>=0.13.13
+debugpy>=1.8.0              # Para VS Code debugging
+
+# Profiling y performance
+pyinstrument>=4.6.0          # Profiler
+memory-profiler>=0.61.0      # Análisis de memoria
+
+
+# ----------------------------------------------------------
+# DOCUMENTACIÓN
+# ----------------------------------------------------------
+
+# Documentación automática
+mkdocs>=1.5.0
+mkdocs-material>=9.4.0
+mkdocstrings[python]>=0.23.0
+mkdocs-autorefs>=0.5.0
+
+# Diagramas en docs
+graphviz>=0.20.0
+
+# Live reload para docs
+livereload>=2.6.0
+
+
+# ----------------------------------------------------------
+# HERRAMIENTAS ESPECÍFICAS PARA ANALYZERBRAIN
+# ----------------------------------------------------------
+
+# Análisis de código (para probar nuestro propio sistema)
+radon>=6.0.0                 # Métricas de código
+bandit>=1.7.5                # Análisis de seguridad
+safety>=2.3.0                # Vulnerabilidades en dependencias
+
+# Testing de rendimiento
+locust>=2.20.0               # Load testing (para futura API)
+
+# Utilidades de sistema
+psutil>=5.9.0                # Monitoreo de recursos
+
+
+# ----------------------------------------------------------
+# PARA IDEs (VS Code, PyCharm)
+# ----------------------------------------------------------
+
+# Language Server Protocol
+python-lsp-server>=1.7.0
+pylsp-mypy>=0.6.0
+
+# Para Jupyter (si usas notebooks)
+jupyter>=1.0.0
+ipykernel>=6.25.0
+
+
+# ----------------------------------------------------------
+# DESARROLLO LOCAL & CI/CD
+# ----------------------------------------------------------
+
+# Entornos aislados
+tox>=4.11.0                  # Testing en múltiples entornos
+nox>=2023.4.22               # Automatización de tareas
+
+# Package management
+pip-tools>=7.3.0             # Gestionar requirements
+pip-audit>=2.6.0             # Auditoría de seguridad
+
+# Utilidades de shell
+invoke>=2.2.0                # Tasks automation

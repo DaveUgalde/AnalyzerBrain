@@ -1,0 +1,79 @@
+__meta__:
+  file: system_config.yaml
+  description: >
+    Configuración principal del sistema ANALYZERBRAIN.
+    Define parámetros globales del sistema, logging,
+    almacenamiento, bases de datos, indexación y API.
+  version: "1.0"
+  owner: "ANALYZERBRAIN Team"
+  last_updated: "2026-02-01"
+  environment: "development"
+  notes:
+    - Las credenciales aquí son valores por defecto
+    - En producción deben inyectarse por variables de entorno
+    - Los paths relativos se resuelven desde la raíz del proyecto
+
+system:
+  name: "ANALYZERBRAIN"
+  version: "0.1.0"
+  max_workers: 4
+  timeout_seconds: 300
+
+logging:
+  level: "INFO"
+  format: "detailed"
+  rotation: "1 day"
+  retention: "30 days"
+
+storage:
+  data_dir: "./data"
+  cache_dir: "./data/cache"
+  log_dir: "./logs"
+  max_cache_size_mb: 1024
+
+database:
+  postgres:
+    host: "localhost"
+    port: 5432
+    db: "analyzerbrain"
+    user: "postgres"
+    password: "password"
+
+  redis:
+    host: "localhost"
+    port: 6379
+
+  neo4j:
+    uri: "bolt://localhost:7687"
+    user: "neo4j"
+    password: "password"
+
+indexer:
+  max_file_size_mb: 10
+  excluded_dirs:
+    - ".git"
+    - ".venv"
+    - "venv"
+    - "node_modules"
+    - "__pycache__"
+    - ".pytest_cache"
+    - "dist"
+    - "build"
+  excluded_extensions:
+    - ".pyc"
+    - ".pyo"
+    - ".pyd"
+    - ".so"
+    - ".dll"
+    - ".exe"
+    - ".bin"
+    - ".class"
+    - ".jar"
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 2
+  cors_origins:
+    - "http://localhost:3000"
+    - "http://localhost:8000"

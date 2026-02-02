@@ -1,0 +1,38 @@
+__meta__:
+  file: agent_config.yaml
+  description: >
+    Configuración de los agentes del sistema AnalyzerBrain.
+    Define qué agentes están disponibles, si están habilitados
+    y las capacidades que exponen.
+  version: "1.0"
+  owner: "ANALYZERBRAIN Team"
+  last_updated: "2026-02-01"
+  notes:
+    - Los agentes deshabilitados no se inicializan
+    - Las capacidades se usan para enrutar tareas
+
+agents:
+  enabled: true
+  default_workers: 2
+
+  analyst:
+    enabled: true
+    capabilities:
+      - code_metrics
+      - complexity_analysis
+      - technical_debt
+      - code_smells
+
+  architect:
+    enabled: false
+    capabilities:
+      - architecture_analysis
+      - design_patterns
+      - dependency_graph
+
+  security:
+    enabled: false
+    capabilities:
+      - vulnerability_scan
+      - security_analysis
+      - dependency_check

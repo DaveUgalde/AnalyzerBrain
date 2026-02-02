@@ -1,0 +1,68 @@
+# ==========================================================
+# Archivo: requirements/base.txt
+#
+# Descripción:
+#   Dependencias base compartidas por todos los módulos
+#   del sistema ANALYZERBRAIN.
+#
+# Uso:
+#   pip install -r requirements/base.txt
+#
+# Notas:
+#   - Este archivo contiene SOLO dependencias comunes
+#   - Dependencias específicas deben ir en archivos separados
+#     (agents.txt, api.txt, dev.txt, etc.)
+#   - Los rangos de versiones están fijados por compatibilidad
+#
+# ==========================================================
+
+
+# ----------------------------------------------------------
+# Configuración y utilidades base
+# ----------------------------------------------------------
+
+python-dotenv>=1.0.0,<2.0.0
+pyyaml>=6.0,<7.0
+loguru>=0.7.0,<0.8.0
+
+
+# ----------------------------------------------------------
+# Tipado y validación
+# ----------------------------------------------------------
+
+pydantic>=2.0.0,<3.0.0
+pydantic-settings>=2.0.0,<3.0.0
+typing-extensions>=4.8.0,<5.0.0
+
+
+# ----------------------------------------------------------
+# Async y concurrencia
+# ----------------------------------------------------------
+
+aiofiles>=23.2.0,<24.0.0
+anyio>=3.7.0,<4.0.0
+
+
+# ----------------------------------------------------------
+# Serialización
+# ----------------------------------------------------------
+
+orjson>=3.9.0,<4.0.0
+msgpack>=1.0.0,<2.0.0
+
+
+# ----------------------------------------------------------
+# Utilidades CLI y UX
+# ----------------------------------------------------------
+
+rich>=13.0.0,<14.0.0
+click>=8.1.0,<9.0.0
+tqdm>=4.65.0,<5.0.0
+cachetools>=5.3.0,<6.0.0
+
+
+# ----------------------------------------------------------
+# Validaciones específicas
+# ----------------------------------------------------------
+
+email-validator>=2.0.0,<3.0.0
