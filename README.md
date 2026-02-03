@@ -353,3 +353,28 @@ monitoring/
 │
 └── 📁 prometheus/      # Métricas
     └── prometheus.yaml
+
+
+1. Ejecutar la instalacion
+# Dale permisos de ejecución
+chmod +x setup.sh
+
+# Ejecutar instalación
+./setup.sh
+
+2. Probar el sistema
+
+# Inicializar el sistema
+python -m src.main init
+
+# Ver estado
+python -m src.main status
+
+# Probar health check
+python -m src.main health
+
+# Analizar un proyecto (ejemplo)
+python -m src.main analyze /ruta/a/tu/proyecto
+
+# Hacer una consulta
+python -m src.main query "¿Qué hace este proyecto?"

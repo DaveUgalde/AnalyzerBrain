@@ -129,38 +129,40 @@ class ConfigManager:
         if self._settings is None:
             self._load_settings()
     
-    def _load_settings(self) -> None:
-        """Carga la configuración desde múltiples fuentes."""
-        try:
-            # 1. Cargar desde .env y variables de entorno
-            self._settings = AnalyzerBrainSettings()
-            
-            # 2. Cargar configuración YAML personalizada si existe
-            config_paths = [
-                Path("config/system_config.yaml"),
-                Path("config/agent_config.yaml"),
-            ]
-            
-            for path in config_paths:
-                if path.exists():
-                    with open(path, 'r', encoding='utf-8') as f:
-                        yaml_config: Dict[str, Any] = yaml.safe_load(f) or {}
-                        self._update_settings(yaml_config)
-            
-            # 3. Crear directorios necesarios
-            self._create_directories()
-            
-            logger.info(f"Configuración cargada para entorno: {self._settings.environment}")
-            
-        except ValidationError as e:
-            logger.error(f"Error de validación en configuración: {e}")
-            raise
-        except Exception as e:
-            logger.error(f"Error cargando configuración: {e}")
-            raise
+    # ------------------------------------------------------------------
+    # MÉTODOS PÚBLICOS PARA TESTING (NUEVOS)
+    # ------------------------------------------------------------------
     
-    def _update_settings(self, config_dict: Dict[str, Any]) -> None:
-        """Actualiza settings con configuración personalizada."""
+    @classmethod
+    def reset_for_tests(cls) -> None:
+        """
+        Resetea el singleton para tests.
+        
+        USO EXCLUSIVO PARA TESTS. No usar en producción.
+        """
+        cls._instance = None
+        cls._settings = None
+        cls._custom_config = {}
+    
+    def get_internal_state(self) -> Dict[str, Any]:
+        """
+        Retorna el estado interno para inspección en tests.
+        
+        Returns:
+            Dict con: {'settings': ..., 'custom_config': ...}
+        """
+        return {
+            'settings': self._settings,
+            'custom_config': self._custom_config
+        }
+    
+    def update_settings_for_test(self, config_dict: Dict[str, Any]) -> None:
+        """
+        Actualiza configuración para tests.
+        
+        Args:
+            config_dict: Diccionario con configuración a actualizar
+        """
         if not self._settings:
             return
 
@@ -178,27 +180,104 @@ class ConfigManager:
                 setattr(self._settings, key, updated)
             else:
                 setattr(self._settings, key, value)
+    
+    # ------------------------------------------------------------------
+    # MÉTODOS PRIVADOS (EXISTENTES)
+    # ------------------------------------------------------------------
+    
+    def _load_settings(self) -> None:
+        """Carga la configuración desde múltiples fuentes."""
+        try:
+            # 1. Cargar desde .env y variables de entorno
+            self._settings = AnalyzerBrainSettings()
             
+            # 2. Cargar configuración YAML personalizada si existe
+            config_paths = [
+                Path("config/system_config.yaml"),
+                Path("config/agent_config.yaml"),
+            ]
+            
+            for path in config_paths:
+                if path.exists():
+                    with open(path, 'r', encoding='utf-8') as f:
+                        yaml_config: Dict[str, Any] = yaml.safe_load(f) or {}
+                        # Esto lanzará ValidationError si hay datos inválidos
+                        self._update_settings(yaml_config)
+            
+            # 3. Crear directorios necesarios
+            self._create_directories()
+            
+            logger.info(f"Configuración cargada para entorno: {self._settings.environment}")
+            
+        except Exception as e:
+            logger.error(f"Error cargando configuración: {e}")
+            raise
+        
+    def _update_settings(self, config_dict: Dict[str, Any]) -> None:
+        """Actualiza settings con configuración personalizada."""
+        if not self._settings:
+            return
+
+        for key, value in config_dict.items():
+            if not hasattr(self._settings, key):
+                self._custom_config[key] = value
+                continue
+
+            current_value = getattr(self._settings, key)
+            
+            if isinstance(current_value, BaseModel) and isinstance(value, dict):
+                # Usar model_validate para validación explícita
+                model_type = type(current_value)
+                # Obtener los valores actuales como dict
+                current_dict = current_value.model_dump()
+                # Actualizar con nuevos valores
+                current_dict.update(value)
+                # Crear nueva instancia validada
+                updated = model_type(**current_dict)
+                setattr(self._settings, key, updated)
+            else:
+                setattr(self._settings, key, value)
     
     def _create_directories(self) -> None:
         """Crea los directorios necesarios."""
         if not self._settings:
             return
         
+        storage = self._settings.storage
+        data_dir = Path(storage.data_dir)
+        
         directories = [
-            self._settings.storage.data_dir,
-            self._settings.storage.cache_dir,
-            self._settings.storage.log_dir,
-            self._settings.storage.data_dir / "backups",
-            self._settings.storage.data_dir / "embeddings",
-            self._settings.storage.data_dir / "graph_exports",
-            self._settings.storage.data_dir / "projects",
-            self._settings.storage.data_dir / "state",
+            data_dir,
+            Path(storage.cache_dir),
+            Path(storage.log_dir),
+            data_dir / "backups",
+            data_dir / "embeddings",
+            data_dir / "graph_exports",
+            data_dir / "projects",
+            data_dir / "state",
         ]
         
+        errors = []
         for directory in directories:
-            directory.mkdir(parents=True, exist_ok=True)
-            logger.debug(f"Directorio creado/verificado: {directory}")
+            try:
+                directory.mkdir(parents=True, exist_ok=True)
+                logger.debug(f"Directorio creado/verificado: {directory}")
+            except Exception as e:
+                error_msg = f"No se pudo crear el directorio {directory}: {e}"
+                logger.error(error_msg)
+                errors.append(error_msg)
+                # Continuamos intentando crear los demás directorios
+        
+        # Si hay errores y estamos en producción, lanzamos excepción
+        if errors and self._settings.environment == "production":
+            raise RuntimeError(f"Errores creando directorios: {', '.join(errors[:1])}")  # Mostrar solo el primer error
+        elif errors:
+            # En desarrollo/testing, solo logueamos los errores
+            logger.warning(f"{len(errors)} directorios no se pudieron crear")
+    
+    # ------------------------------------------------------------------
+    # PROPIEDADES PÚBLICAS (EXISTENTES)
+    # ------------------------------------------------------------------
     
     @property
     def settings(self) -> AnalyzerBrainSettings:
@@ -221,7 +300,27 @@ class ConfigManager:
         return self.environment == "production"
     
     def get(self, key: str, default: Any = None) -> Any:
-        """Obtiene un valor de configuración por clave."""
+        """Obtiene un valor de configuración por clave, con soporte para custom_config."""
+        # Primero buscar en _custom_config (para tests/overrides)
+        if hasattr(self, '_custom_config') and self._custom_config:
+            # Manejar claves anidadas en _custom_config
+            if '.' in key:
+                parts = key.split('.')
+                current = self._custom_config
+                for part in parts:
+                    if isinstance(current, dict) and part in current:
+                        current = current[part]
+                    else:
+                        # No encontrado en _custom_config, romper y buscar en settings
+                        break
+                else:
+                    # Si recorrió todas las partes exitosamente
+                    return current
+            elif key in self._custom_config:
+                # Clave simple en _custom_config
+                return self._custom_config[key]
+        
+        # Si no se encontró en _custom_config, buscar en settings
         try:
             keys = key.split('.')
             value = self.settings.model_dump()
@@ -234,7 +333,7 @@ class ConfigManager:
             
             return value
         except (AttributeError, KeyError):
-            return self._custom_config.get(key, default)
+            return default
     
     def reload(self) -> None:
         """Recarga la configuración."""

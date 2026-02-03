@@ -106,6 +106,8 @@ class AnalyzerBrainError(Exception):
         if cause:
             full_message += f" | Causa: {type(cause).__name__}: {str(cause)}"
         
+        # Guardar el mensaje completo
+        self.full_message = full_message
         super().__init__(full_message)
     
     def to_dict(self) -> Dict[str, Any]:
@@ -127,7 +129,8 @@ class AnalyzerBrainError(Exception):
         return result
     
     def __str__(self) -> str:
-        return self.message
+        """Devuelve la representación completa del error."""
+        return self.full_message
 
 
 class ConfigurationError(AnalyzerBrainError):
@@ -167,8 +170,8 @@ class ValidationError(AnalyzerBrainError):
             error_details["value"] = value
         if value_type:
             error_details["value_type"] = value_type
-        if actual_length:
-            error_details["actual_length"] = value_type
+        if actual_length is not None:  # CORRECCIÓN: Verificar por None, no por truthiness
+            error_details["actual_length"] = actual_length  # CORRECCIÓN: Asignar actual_length, no value_type
         if suggestion:
             error_details["suggestion"] = suggestion
         

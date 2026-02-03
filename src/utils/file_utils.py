@@ -258,7 +258,7 @@ class FileUtils:
         
         stat = path.stat()
         
-        return {
+        result = {
             "path": str(path.absolute()),
             "name": path.name,
             "stem": path.stem,
@@ -271,8 +271,15 @@ class FileUtils:
             "accessed": datetime.fromtimestamp(stat.st_atime).isoformat(),
             "is_file": path.is_file(),
             "is_dir": path.is_dir(),
-            "hash_sha256": FileUtils.calculate_hash(path, "sha256")
         }
+        
+        # Solo calcular hash para archivos regulares, no para directorios
+        if path.is_file():
+            result["hash_sha256"] = FileUtils.calculate_hash(path, "sha256")
+        else:
+            result["hash_sha256"] = None
+        
+        return result
     
     @staticmethod
     def _humanize_bytes(bytes_count: int | float) -> str:

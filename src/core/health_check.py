@@ -343,8 +343,8 @@ class SystemHealthChecker:
     async def _check_file_system(self) -> HealthCheckResult:
         """Verifica el sistema de archivos y permisos."""
         required_dirs: List[Path] = [
-           Path(self.config.get("storage.data_dir", Path("./data"))),
-            Path(self.config.get("storage.log_dir", Path("./logs"))),
+           Path(self.config.get("storage.data_dir", "./data")),  # Changed from Path("./data") to "./data"
+            Path(self.config.get("storage.log_dir", "./logs")),  # Changed from Path("./logs") to "./logs"
         ]
         
         dirs_status: Dict[str, Dict[str, Any]] = {}
@@ -601,13 +601,13 @@ class SystemHealthChecker:
             return HealthCheckResult(
                 name="dependencies",
                 status=HealthStatus.UNHEALTHY,
-                message="Dependencias faltantes: {', '.join(missing)}",
+                message=f"Dependencias faltantes: {', '.join(missing)}",  # Fixed: removed extra { }
                 details={"missing": missing},
             )
         return HealthCheckResult(
                 name="dependencies",
                 status=HealthStatus.HEALTHY,
-                message=f"Dependencias basic:as instaladae",
+                message="Dependencias básicas instaladas",  # Fixed typo
                 details={"checked": deps}
             )
     
