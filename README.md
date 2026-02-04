@@ -1,35 +1,40 @@
 Distribución de archivos:
 
+(N-I) = No Implementado
+(I) = Incompleto
+(C) = Completo
+(R) = Revision
+
 ANALYZERBRAIN/
-├── 📁 .github/                  # CI/CD y automatización
-├── 📁 .vscode/                  # Configuración de IDE
-├── 📁 architecture/             # Documentación arquitectónica
-├── 📁 config/                  # Configuraciones YAML del sistema
-├── 📁 data/                    # Datos persistentes (SOLO datos, NO código)
-├── 📁 deployments/             # Configuraciones de despliegue
-├── 📁 docs/                    # Documentación completa
-├── 📁 logs/                    # Logs del sistema
-├── 📁 monitoring/              # Monitoreo y métricas
-├── 📁 requirements/            # Dependencias categorizadas
-├── 📁 scripts/                 # Scripts de utilidad
-├── 📁 src/                     # CÓDIGO FUENTE PRINCIPAL
-├── 📁 tests/                   # Pruebas y fixtures
-├── 📁 venv/                    # Entorno virtual
-├── 📄 .env                     # Variables de entorno
-├── 📄 .env.example             # Plantilla variables de entorno
-├── 📄 .gitignore               # Archivos ignorados por git
-├── 📄 Dockerfile               # Imagen Docker
-├── 📄 LICENSE                  # Licencia MIT
-├── 📄 pyproject.toml          # Configuración de paquete Python moderno
-└── 📄 README.md               # Documentación principal
+├── 📁 .github/ # CI/CD y automatización (N-I)
+├── 📁 .vscode/ # Configuración de IDE
+├── 📁 architecture/ # Documentación arquitectónica
+├── 📁 config/ # Configuraciones YAML del sistema
+├── 📁 data/# Datos persistentes (SOLO datos, (N-I))
+├── 📁 deployments/ # Configuraciones de despliegue (N-I)
+├── 📁 docs/ # Documentación completa (N-I)
+├── 📁 logs/ # Logs del sistema (N-I)
+├── 📁 monitoring/# Monitoreo y métricas (N-I)
+├── 📁 requirements/ # Dependencias categorizadas
+├── 📁 scripts/ # Scripts de utilidad
+├── 📁 src/ # CÓDIGO FUENTE PRINCIPAL
+├── 📁 tests/# Pruebas y fixtures
+├── 📁 venv/# Entorno virtual
+├── 📄 .env# Variables de entorno
+├── 📄 .env.example # Plantilla variables de entorno
+├── 📄 .gitignore  # Archivos ignorados por git
+├── 📄 Dockerfile # Imagen Docker (N-I)
+├── 📄 LICENSE  # Licencia MIT (N-I)
+├── 📄 pyproject.toml # Configuración de paquete Python 
+└── 📄 README.md # Documentación principal 
 🔧 SRC/ - ESTRUCTURA DETALLADA DEL CÓDIGO FUENTE
 
 text
 src/
-├── __init__.py                 # Paquete raíz
-├── main.py                     # Punto de entrada principal
+├── __init__.py  (I)             # Paquete raíz
+├── main.py   (I)              # Punto de entrada principal
 │
-├── 📁 api/                     # CAPA DE PRESENTACIÓN
+├── 📁 api/      (N-I)         # CAPA DE PRESENTACIÓN
 │   ├── __init__.py
 │   ├── authentication.py       # Autenticación JWT/API Key
 │   ├── cli_interface.py       # Interfaz línea de comandos
@@ -41,7 +46,7 @@ src/
 │   ├── web_ui.py              # Interfaz web (Streamlit)
 │   └── websocket_api.py       # WebSockets (tiempo real)
 │
-├── 📁 agents/                  # SISTEMA DE AGENTES
+├── 📁 agents/  # SISTEMA DE AGENTES (N-I)
 │   ├── __init__.py
 │   ├── agent_factory.py       # Fábrica de agentes
 │   ├── agent_orchestrator.py  # Orquestación de agentes
@@ -56,19 +61,19 @@ src/
 │   ├── qa_agent.py           # Preguntas y respuestas
 │   └── security_agent.py     # Análisis de seguridad
 │
-├── 📁 core/                   # NÚCLEO DEL SISTEMA
+├── 📁 core/ # NÚCLEO DEL SISTEMA (I)
 │   ├── __init__.py
-│   ├── config_manager.py     # Gestión de configuración
-│   ├── dependency_injector.py # Inyección de dependencias
-│   ├── event_bus.py          # Bus de eventos
-│   ├── exceptions.py         # Excepciones personalizadas
-│   ├── health_check.py       # Verificación de salud
-│   ├── orchestrator.py       # BrainOrchestrator principal
-│   ├── plugin_manager.py     # Gestión de plugins
-│   ├── system_state.py       # Gestión de estado del sistema
+│   ├── config_manager.py  (C)  # Gestión de configuración
+│   ├── dependency_injector.py (N-I)
+│   ├── event_bus.py          (C)
+│   ├── exceptions.py         (C)
+│   ├── health_check.py       (C)
+│   ├── orchestrator.py       (N-I)
+│   ├── plugin_manager.py     (N-I)
+│   ├── system_state.py       (C)
 │   └── workflow_manager.py   # Orquestación de flujos
 │
-├── 📁 embeddings/            # REPRESENTACIÓN VECTORIAL
+├── 📁 embeddings/     (N-I)  # REPRESENTACIÓN VECTORIAL
 │   ├── __init__.py
 │   ├── dimensionality_reducer.py # Reducción dimensional
 │   ├── embedding_cache.py    # Caché de embeddings
@@ -78,9 +83,9 @@ src/
 │   ├── similarity_calculator.py # Cálculo de similitudes
 │   └── vector_store.py       # Almacenamiento vectorial
 │
-├── 📁 graph/                 # GRAFO DE CONOCIMIENTO
+├── 📁 graph/       (N-I)     # GRAFO DE CONOCIMIENTO
 │   ├── __init__.py
-│   ├── consistency_checker.py # Verificación de consistencia
+│   ├── consistency_checker.py 
 │   ├── graph_analytics.py    # Análisis de grafos
 │   ├── graph_builder.py      # Construcción de grafos
 │   ├── graph_exporter.py     # Exportación de grafos
@@ -89,7 +94,7 @@ src/
 │   ├── knowledge_graph.py    # Grafo de conocimiento principal
 │   └── schema_manager.py     # Gestión de esquemas
 │
-├── 📁 indexer/               # INDEXACIÓN Y PARSING
+├── 📁 indexer/   (N-I)            # INDEXACIÓN Y PARSING
 │   ├── __init__.py
 │   ├── change_detector.py    # Detección de cambios
 │   ├── dependency_mapper.py  # Mapeo de dependencias
@@ -101,7 +106,7 @@ src/
 │   ├── quality_analyzer.py   # Análisis de calidad
 │   └── version_tracker.py    # Seguimiento de versiones
 │
-├── 📁 learning/              # APRENDIZAJE AUTOMÁTICO
+├── 📁 learning/  (N-I)       # APRENDIZAJE AUTOMÁTICO
 │   ├── __init__.py
 │   ├── adaptation_engine.py  # Adaptación a nuevos dominios
 │   ├── feedback_loop.py      # Bucle de retroalimentación
@@ -111,7 +116,7 @@ src/
 │   ├── learning_evaluator.py # Evaluación de aprendizaje
 │   └── reinforcement_learner.py # Aprendizaje por refuerzo
 │
-├── 📁 memory/               # SISTEMA DE MEMORIA
+├── 📁 memory/  (N-I)       # SISTEMA DE MEMORIA
 │   ├── __init__.py
 │   ├── cache_manager.py     # Gestión de caché
 │   ├── episodic_memory.py   # Memoria episódica
@@ -122,7 +127,7 @@ src/
 │   ├── semantic_memory.py   # Memoria semántica
 │   └── working_memory.py    # Memoria de trabajo
 │
-└── 📁 utils/                # UTILIDADES COMPARTIDAS
+└── 📁 utils/   (N-I)        # UTILIDADES COMPARTIDAS
     ├── __init__.py
     ├── file_utils.py        # Operaciones de archivos
     ├── logging_config.py    # Configuración de logging
@@ -135,7 +140,7 @@ src/
 📁 DATA/ - ESTRUCTURA DE DATOS PERSISTENTES
 
 text
-data/
+data/ (N-I)
 ├── .gitkeep                  # Mantener carpeta en git
 ├── init_data_structure.py    # Script de inicialización de estructura
 │
@@ -174,7 +179,7 @@ data/
 📁 DEPLOYMENTS/ - CONFIGURACIÓN DE DESPLIEGUE
 
 
-deployments/
+deployments/ (N-I)
 │
 ├── 📁 docker/            # Configuración Docker
 │   ├── Dockerfile        # Para producción
@@ -214,7 +219,7 @@ deployments/
 📁 SCRIPTS/ - UTILIDADES DE SISTEMA
 
 text
-scripts/
+scripts/ (N-I)
 ├── analyze_project.py        # Análisis de proyectos
 ├── backup_restore.py         # Backup y restauración
 ├── exhaustive_project_analyzer.py # Análisis exhaustivo
@@ -230,7 +235,7 @@ scripts/
 📁 REQUIREMENTS/ - DEPENDENCIAS
 
 text
-requirements/
+requirements/ (I)
 ├── agents.txt       # Dependencias para agentes
 ├── api.txt          # Dependencias para API
 ├── base.txt         # Dependencias base obligatorias
@@ -251,41 +256,46 @@ text
     ├── cd.yml              # Despliegue continuo
     ├── tests.yml           # Ejecución de tests
     └── security.yml        # Escaneo de seguridad
+
+
+
 📁 TESTS/ - PRUEBAS
 
-text
 tests/
-├── conftest.py             # Configuración pytest
-│
-├── 📁 analyzer_code/       # Utilidades de análisis (¿Mover a scripts/?)
-│   ├── analyzer_completo.py
-│   ├── config_analyzer.yaml
-│   ├── requerements.txt
-│   ├── run_analyzer.txt
-│   └── workflow_discovery.txt
+├── conftest.py    (Revision)        # Configuración pytest
 │
 ├── 📁 e2e/                # Pruebas end-to-end
-│   ├── test_analysis_workflow.py
-│   ├── test_query_workflow.py
-│   └── test_system_workflow.py
+│   ├── test_analysis_workflow.py (Vacio)
+│   ├── test_query_workflow.py (Vacio)
+│   └── test_system_workflow.py (Vacio)
 │
 ├── 📁 fixtures/           # Datos de prueba
-│   ├── sample_code/      # Código de ejemplo
-│   ├── sample_project/   # Proyecto de prueba
-│   └── test_data.json    # Datos estructurados
+│   ├── sample_code/      # Código de ejemplo (vacio)
+│   ├── sample_project/   # Proyecto de prueba (vacio)
+│   └── test_data.json    # Datos estructurados (vacio)
 │
 ├── 📁 integration/        # Pruebas de integración
-│   └── test_core_integration.py
+│   └── test_core_integration.py (vacio)
 │
 ├── 📁 performance/        # Pruebas de rendimiento
-│   ├── test_analysis_performance.py
-│   ├── test_concurrent_performance.py
-│   └── test_query_performance.py
+│   ├── test_analysis_performance.py (vacio)
+│   ├── test_concurrent_performance.py (vacio)
+│   └── test_query_performance.py (vacio)
 │
-└── 📁 unit/              # Pruebas unitarias
-    ├── test_agents_base.py
-    ├── test_embeddings_generator.py
-    └── test_indexer_parser.py
+└── 📁 unit/              # Pruebas unitarias (C)
+    ├── __init__.py
+    ├── .gitkeep
+    └── main.py
+    └── test_config_manager.py
+    └── test_event_bus.py
+    └── test_exceptions.py
+    └── test_file_utils.py
+    └── test_health_check.py
+    └── test_logging_config.py
+    └── test_system_state.py
+    └── test_validation.py
+
+
 📁 DOCS/ - DOCUMENTACIÓN
 
 text
@@ -378,3 +388,16 @@ python -m src.main analyze /ruta/a/tu/proyecto
 
 # Hacer una consulta
 python -m src.main query "¿Qué hace este proyecto?"
+
+PLAN DE IMPLEMENTACIÓN INMEDIATO (3-4 días)
+
+Día 1: Configuración y ProjectScanner
+
+Crear src/indexer/__init__.py (5 min)
+Implementar project_scanner.py con:
+
+Escaneo recursivo
+Exclusión de .git, node_modules, etc.
+Filtrado por tamaño y tipo
+Integración con file_utils
+Crear tests correspondientes

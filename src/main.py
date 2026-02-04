@@ -44,7 +44,8 @@ from rich.progress import (
     BarColumn,
     TimeElapsedColumn,
 )
-#from rich.tree import Tree
+
+# from rich.tree import Tree
 from rich import box
 
 from importlib.util import find_spec
@@ -62,9 +63,10 @@ console = Console()
 # Enums
 # ─────────────────────────────────────────────────────────────
 
+
 class SystemStatus(Enum):
     """Estado del sistema ANALYZERBRAIN."""
-    
+
     UNINITIALIZED = "uninitialized"
     INITIALIZING = "initiaizing"
     READY = "ready"
@@ -77,12 +79,13 @@ class SystemStatus(Enum):
 # Sistema principal
 # ─────────────────────────────────────────────────────────────
 
+
 class AnalyzerBrainSystem:
     """Sistema principal de ANALYZERBRAIN.
-    
+
     Esta clase maneja el ciclo de vida completo del sistema, incluyendo
     inicialización, análisis de proyectos, consultas y apagado controlado.
-    
+
     Atributos:
         status (SystemStatus): Estado actual del sistema
         start_time (Optional[datetime]): Hora de inicio del sistema
@@ -90,10 +93,10 @@ class AnalyzerBrainSystem:
         _shutdown_flag (bool): Bandera de apagado
         components (Dict[str, Any]): Componentes del sistema registrados
     """
-    
+
     def __init__(self) -> None:
         """Inicializa una nueva instancia del sistema.
-        
+
         Configura el estado inicial y prepara los componentes del sistema.
         """
         self.status = SystemStatus.UNINITIALIZED
@@ -107,17 +110,18 @@ class AnalyzerBrainSystem:
     @staticmethod
     def _run_async(coro: Any) -> Any:
         """Ejecuta una coroutine de forma segura.
-        
+
         Args:
             coro: Coroutine a ejecutar
-            
+
         Returns:
             Resultado de la coroutine o tarea creada
-            
+
         Note:
             Esta función maneja automáticamente diferentes escenarios de event loop.
         """
         import asyncio
+
         # Verificar si ya hay un loop en ejecución
         try:
             loop = asyncio.get_event_loop()
@@ -135,7 +139,7 @@ class AnalyzerBrainSystem:
 
     def print_banner(self) -> None:
         """Imprime el banner de presentación del sistema.
-        
+
         Muestra el logo de ANALYZERBRAIN junto con información de versión
         y entorno en un panel visualmente atractivo.
         """
@@ -151,8 +155,7 @@ class AnalyzerBrainSystem:
 ╚══════════════════════════════════════════════════════════╝
         """
         version_info = (
-            f"Versión: {config.get('system.version', '0.1.0')} | "
-            f"Entorno: {config.environment}"
+            f"Versión: {config.get('system.version', '0.1.0')} | " f"Entorno: {config.environment}"
         )
         env_color = "green" if config.is_development else "yellow"
 
@@ -169,7 +172,7 @@ class AnalyzerBrainSystem:
 
     def check_system_requirements(self) -> Dict[str, bool]:
         """Verifica requisitos básicos del sistema.
-        
+
         Returns:
             Dict[str, bool]: Diccionario con el estado de cada requisito:
                 - python_version: Versión de Python >= 3.9
@@ -177,7 +180,7 @@ class AnalyzerBrainSystem:
                 - write_permissions: Permisos de escritura
                 - configuration: Configuración crítica presente
                 - dependencies: Dependencias Python instaladas
-                
+
         Raises:
             RuntimeError: Si hay problemas críticos con los requisitos
         """
@@ -203,20 +206,20 @@ class AnalyzerBrainSystem:
                 # Obtener directorios desde configuración
                 data_dir_str = config.get('storage.data_dir', './data')
                 log_dir_str = config.get('storage.log_dir', './logs')
-                
+
                 data_dir = Path(data_dir_str)
                 log_dir = Path(log_dir_str)
-                
+
                 data_dir.mkdir(parents=True, exist_ok=True)
                 log_dir.mkdir(parents=True, exist_ok=True)
                 requirements["directories"] = True
-                
+
                 # Ahora podemos usar data_dir aquí porque está definido
                 test_file = data_dir / ".write_test"
                 test_file.touch()
                 test_file.unlink()
                 requirements["write_permissions"] = True
-                
+
             except Exception as e:
                 logger.error(f"Error con directorios: {e}")
                 requirements["directories"] = False
@@ -237,8 +240,7 @@ class AnalyzerBrainSystem:
             # Dependencias Python
             progress.update(task, advance=30)
             requirements["dependencies"] = all(
-                find_spec(pkg) is not None
-                for pkg in ("pydantic", "loguru", "rich")
+                find_spec(pkg) is not None for pkg in ("pydantic", "loguru", "rich")
             )
 
         return requirements
@@ -247,10 +249,10 @@ class AnalyzerBrainSystem:
 
     async def initialize(self) -> bool:
         """Inicializa el sistema completo.
-        
+
         Returns:
             bool: True si la inicialización fue exitosa, False en caso contrario
-            
+
         Raises:
             RuntimeError: Si el sistema ya está en un estado incompatible
         """
@@ -267,7 +269,7 @@ class AnalyzerBrainSystem:
             # 1. Verificación de requisitos
             console.print("\n[bold]1. Verificación de requisitos[/bold]")
             requirements = self.check_system_requirements()
-            
+
             if not all(requirements.values()):
                 console.print("\n[bold red]❌ Requisitos del sistema no cumplidos:[/bold red]")
                 for req, status in requirements.items():
@@ -275,20 +277,22 @@ class AnalyzerBrainSystem:
                     console.print(f"  {status_icon} {req}")
                 self.status = SystemStatus.ERROR
                 return False
-            
+
             console.print("[bold green]✅ Requisitos verificados[/bold green]")
 
             # 2. Inicialización de componentes
             console.print("\n[bold]2. Inicialización de componentes[/bold]")
-            
+
             # Health Checker
             console.print("  • Inicializando Health Checker...")
             self.health_checker = SystemHealthChecker()
-            
+
             try:
                 health = await self.health_checker.check_all()
                 if not health.get("overall", False):
-                    console.print(f"[bold red]❌ Health Check falló: {health.get('status')}[/bold red]")
+                    console.print(
+                        f"[bold red]❌ Health Check falló: {health.get('status')}[/bold red]"
+                    )
                     self._print_health_report(health)
                     self.status = SystemStatus.ERROR
                     return False
@@ -300,21 +304,21 @@ class AnalyzerBrainSystem:
 
             # 3. Configurar componentes restantes
             self._setup_signal_handlers()
-            
+
             # 4. Registrar componentes
             self.components = {
                 "config_manager": config,
                 "health_checker": self.health_checker,
                 "logging": "configured",
                 "file_utils": FileUtils(),
-                "event_bus": "pending",        # Para Fase 1
-                "system_state": "pending",     # Para Fase 1
-                "orchestrator": "pending",     # Para Fase 2
-                "indexer": "pending",          # Para Fase 2
-                "graph": "pending",            # Para Fase 3
-                "agents": "pending",           # Para Fase 4
-                "embeddings": "pending",       # Para Fase 5
-                "api": "pending",              # Para Fase 6
+                "event_bus": "pending",  # Para Fase 1
+                "system_state": "pending",  # Para Fase 1
+                "orchestrator": "pending",  # Para Fase 2
+                "indexer": "pending",  # Para Fase 2
+                "graph": "pending",  # Para Fase 3
+                "agents": "pending",  # Para Fase 4
+                "embeddings": "pending",  # Para Fase 5
+                "api": "pending",  # Para Fase 6
             }
 
             self.status = SystemStatus.READY
@@ -333,34 +337,36 @@ class AnalyzerBrainSystem:
 
     def _print_system_summary(self) -> None:
         """Imprime un resumen del estado del sistema.
-        
+
         Muestra información clave como versión, entorno, directorios
         y estado de los componentes en una tabla formateada.
         """
         console.print("\n" + "=" * 60)
         console.print("[bold cyan]RESUMEN DEL SISTEMA[/bold cyan]")
         console.print("=" * 60)
-        
+
         table = Table(show_header=False, box=box.SIMPLE)
         table.add_column("", style="cyan", width=20)
         table.add_column("", style="white")
-        
+
         table.add_row("Estado", f"[green]{self.status.value}[/green]")
         table.add_row("Versión", config.get('system.version', '0.1.0'))
         table.add_row("Entorno", config.environment)
         table.add_row("Directorio Datos", str(config.get('storage.data_dir', './data')))
         table.add_row("Directorio Logs", str(config.get('storage.log_dir', './logs')))
-        
+
         if self.health_checker:
             health_status = self.health_checker.get_status()
-            table.add_row("Health Check", f"[green]{health_status.get('status', 'unknown')}[/green]")
-        
+            table.add_row(
+                "Health Check", f"[green]{health_status.get('status', 'unknown')}[/green]"
+            )
+
         console.print(table)
         console.print("=" * 60)
 
     def _print_health_report(self, health_result: Dict[str, Any]) -> None:
         """Imprime un reporte detallado del health check.
-        
+
         Args:
             health_result: Resultados del health check con estructura:
                 {
@@ -371,30 +377,30 @@ class AnalyzerBrainSystem:
         """
         console.print("\n[bold red]REPORTE DE SALUD - FALLAS DETECTADAS[/bold red]")
         console.print("=" * 60)
-        
+
         for check in health_result.get("checks", []):
             if check.get("status") != "healthy":
                 status_icon = {
                     "healthy": "✅",
                     "warning": "⚠️",
                     "unhealthy": "❌",
-                    "error": "💥"
+                    "error": "💥",
                 }.get(check.get("status"), "❓")
-                
+
                 console.print(f"{status_icon} [bold]{check.get('name')}[/bold]")
                 console.print(f"  Mensaje: {check.get('message')}")
-                
+
                 details = check.get("details", {})
                 if "error" in details:
                     console.print(f"  Error: {details['error']}")
-        
+
         console.print("=" * 60)
 
     # ───────────── Señales ─────────────
 
     def _setup_signal_handlers(self) -> None:
         """Configura handlers para señales del sistema.
-        
+
         Establece manejadores para SIGINT y SIGTERM para permitir
         un apagado controlado del sistema.
         """
@@ -407,7 +413,7 @@ class AnalyzerBrainSystem:
 
     def _signal_handler(self, signum: int, frame: Any) -> None:
         """Handler para señales de terminación.
-        
+
         Args:
             signum: Número de la señal recibida
             frame: Marco de ejecución actual
@@ -420,10 +426,10 @@ class AnalyzerBrainSystem:
 
     async def analyze_project(self, project_path: Path) -> Dict[str, Any]:
         """Analiza un proyecto de código.
-        
+
         Args:
             project_path: Ruta al directorio del proyecto a analizar
-            
+
         Returns:
             Dict con resultados del análisis:
                 - project: Ruta del proyecto
@@ -434,7 +440,7 @@ class AnalyzerBrainSystem:
                 - analysis_time: Tiempo de análisis
                 - warnings: Lista de advertencias
                 - errors: Lista de errores
-                
+
         Raises:
             AnalyzerBrainError: Si el sistema no está listo o el proyecto no existe
         """
@@ -445,15 +451,16 @@ class AnalyzerBrainSystem:
             raise AnalyzerBrainError(f"Proyecto no encontrado: {project_path}")
 
         console.print(f"\n[bold]🔍 Analizando proyecto: {project_path}[/bold]")
-        
+
         # Simulación de análisis (será implementado en Fase 2)
         import time
+
         with Progress(
             SpinnerColumn(),
             TextColumn("[bold blue]Analizando..."),
             BarColumn(),
             TimeElapsedColumn(),
-            console=console
+            console=console,
         ) as progress:
             task = progress.add_task("", total=100)
             for _ in range(10):
@@ -473,16 +480,16 @@ class AnalyzerBrainSystem:
             "next_steps": [
                 "Implementar src/indexer/project_scanner.py",
                 "Implementar src/indexer/multi_language_parser.py",
-                "Conectar con grafo de conocimiento"
-            ]
+                "Conectar con grafo de conocimiento",
+            ],
         }
 
     async def query_system(self, query: str) -> Dict[str, Any]:
         """Consulta el sistema de conocimiento.
-        
+
         Args:
             query: Consulta a realizar al sistema
-            
+
         Returns:
             Dict con resultados de la consulta:
                 - query: Consulta original
@@ -490,13 +497,13 @@ class AnalyzerBrainSystem:
                 - results: Lista de resultados
                 - sources: Fuentes consultadas
                 - timestamp: Marca de tiempo
-                
+
         Raises:
             AnalyzerBrainError: Si el sistema no está listo
         """
         if self.status != SystemStatus.READY:
             raise AnalyzerBrainError("Sistema no está listo")
-        
+
         return {
             "query": query,
             "status": "success",
@@ -506,17 +513,17 @@ class AnalyzerBrainSystem:
                     "content": f"Consulta: '{query}'",
                     "confidence": 0.8,
                     "source": "sistema_de_conocimiento",
-                    "phase": "Fase 3 - Graph (pendiente de implementación)"
+                    "phase": "Fase 3 - Graph (pendiente de implementación)",
                 }
             ],
             "sources": ["knowledge_graph_pending"],
             "timestamp": datetime.now().isoformat(),
-            "note": "La funcionalidad de consulta será implementada en Fase 3"
+            "note": "La funcionalidad de consulta será implementada en Fase 3",
         }
 
     def shutdown(self) -> None:
         """Apaga el sistema de manera controlada.
-        
+
         Libera recursos, cambia el estado y notifica a los componentes
         del apagado inminente.
         """
@@ -525,18 +532,18 @@ class AnalyzerBrainSystem:
 
         self.status = SystemStatus.SHUTTING_DOWN
         logger.info("Apagando sistema…")
-        
+
         console.print("\n[bold yellow]🔌 Apagando ANALYZERBRAIN...[/bold yellow]")
-        
+
         # Limpiar recursos
         self._shutdown_flag = True
-        
+
         console.print("[bold green]✅ Sistema apagado correctamente[/bold green]")
         self.status = SystemStatus.UNINITIALIZED
 
     def get_status(self) -> Dict[str, Any]:
         """Obtiene el estado actual del sistema.
-        
+
         Returns:
             Dict con información completa del estado:
                 - status: Estado actual
@@ -547,11 +554,7 @@ class AnalyzerBrainSystem:
                 - components_ready: Estado de componentes
                 - health: Estado de salud (si disponible)
         """
-        uptime = (
-            (datetime.now() - self.start_time).total_seconds()
-            if self.start_time
-            else 0
-        )
+        uptime = (datetime.now() - self.start_time).total_seconds() if self.start_time else 0
 
         status_dict: Dict[str, Any] = {
             "status": self.status.value,
@@ -560,14 +563,13 @@ class AnalyzerBrainSystem:
             "version": config.get("system.version", "0.1.0"),
             "start_time": self.start_time.isoformat() if self.start_time else None,
             "components_ready": {
-                name: status != "pending"
-                for name, status in self.components.items()
-            }
+                name: status != "pending" for name, status in self.components.items()
+            },
         }
-        
+
         if self.health_checker:
             status_dict["health"] = self.health_checker.get_status()
-        
+
         return status_dict
 
 
@@ -577,12 +579,13 @@ class AnalyzerBrainSystem:
 
 system = AnalyzerBrainSystem()
 
+
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.version_option(version="0.1.0", prog_name="ANALYZERBRAIN")
 @click.pass_context
 def cli(ctx: click.Context) -> None:
     """ANALYZERBRAIN - Sistema inteligente de análisis de código.
-    
+
     Comandos disponibles:
         init    - Inicializa el sistema
         analyze - Analiza un proyecto
@@ -597,15 +600,16 @@ def cli(ctx: click.Context) -> None:
 @cli.command()
 def init() -> None:
     """Inicializa el sistema ANALYZERBRAIN.
-    
+
     Realiza todas las verificaciones y configura los componentes
     necesarios para el funcionamiento del sistema.
     """
     import asyncio
+
     try:
         # Usar asyncio.run directamente
         success = asyncio.run(system.initialize())
-        
+
         if not success:
             console.print("[bold red]❌ Falló la inicialización del sistema[/bold red]")
             sys.exit(1)
@@ -618,11 +622,12 @@ def init() -> None:
 @click.argument("project_path", type=click.Path(exists=True, path_type=Path))
 def analyze(project_path: Path) -> None:
     """Analiza un proyecto de código.
-    
+
     Args:
         project_path: Ruta al directorio del proyecto a analizar
     """
     import asyncio
+
     try:
         # Inicializar si no está listo
         if system.status != SystemStatus.READY:
@@ -630,16 +635,16 @@ def analyze(project_path: Path) -> None:
             if not asyncio.run(system.initialize()):
                 console.print("[bold red]❌ No se pudo inicializar el sistema[/bold red]")
                 sys.exit(1)
-        
+
         # Ejecutar análisis
         result: dict[str, Union[str, int, bool, list[str]]]
         result = asyncio.run(system.analyze_project(project_path))
-        
+
         # Mostrar resultados
         console.print("\n" + "=" * 60)
         console.print("[bold green]📊 RESULTADOS DEL ANÁLISIS[/bold green]")
         console.print("=" * 60)
-        
+
         for key, value in result.items():
             if isinstance(value, list):
                 console.print(f"[cyan]{key}:[/cyan]")
@@ -647,9 +652,9 @@ def analyze(project_path: Path) -> None:
                     console.print(f"  • {item}")
             else:
                 console.print(f"[cyan]{key}:[/cyan] {value}")
-        
+
         console.print("=" * 60)
-        
+
     except Exception as e:
         console.print(f"[bold red]❌ Error durante análisis: {e}[/bold red]")
         sys.exit(1)
@@ -659,32 +664,33 @@ def analyze(project_path: Path) -> None:
 @click.argument("query", type=str)
 def query(query: str) -> None:
     """Consulta el sistema de conocimiento.
-    
+
     Args:
         query: Consulta a realizar al sistema
     """
     import asyncio
+
     try:
         if system.status != SystemStatus.READY:
             console.print("[yellow]⚠️  Sistema no inicializado, inicializando...[/yellow]")
             if not asyncio.run(system.initialize()):
                 console.print("[bold red]❌ No se pudo inicializar el sistema[/bold red]")
                 sys.exit(1)
-        
+
         result = asyncio.run(system.query_system(query))
-        
+
         console.print("\n" + "=" * 60)
         console.print("[bold green]🤖 RESPUESTA DEL SISTEMA[/bold green]")
         console.print("=" * 60)
         console.print(f"[cyan]Consulta:[/cyan] {result['query']}")
-        
+
         for res in result.get("results", []):
             console.print(f"\n[bold]{res['type'].upper()}:[/bold] {res['content']}")
             console.print(f"  Confianza: {res['confidence']}")
             console.print(f"  Fuente: {res['source']}")
-        
+
         console.print("=" * 60)
-        
+
     except Exception as e:
         console.print(f"[bold red]❌ Error durante consulta: {e}[/bold red]")
         sys.exit(1)
@@ -695,11 +701,11 @@ def status() -> None:
     """Muestra el estado del sistema."""
     try:
         status_info = system.get_status()
-        
+
         console.print("\n" + "=" * 60)
         console.print("[bold cyan]📈 ESTADO DEL SISTEMA[/bold cyan]")
         console.print("=" * 60)
-        
+
         for key, value in status_info.items():
             if key == "components_ready":
                 console.print(f"[cyan]{key}:[/cyan]")
@@ -712,9 +718,9 @@ def status() -> None:
                     console.print(f"  {hkey}: {hvalue}")
             else:
                 console.print(f"[cyan]{key}:[/cyan] {value}")
-        
+
         console.print("=" * 60)
-        
+
     except Exception as e:
         console.print(f"[bold red]❌ Error obteniendo estado: {e}[/bold red]")
         sys.exit(1)
@@ -724,22 +730,23 @@ def status() -> None:
 def health() -> None:
     """Ejecuta un health check del sistema."""
     import asyncio
+
     try:
         if system.health_checker is None:
             system.health_checker = SystemHealthChecker()
-        
+
         console.print("\n[bold]🧪 Ejecutando Health Check...[/bold]")
         result = asyncio.run(system.health_checker.check_all())
-        
+
         console.print("\n" + "=" * 60)
-        
+
         if result.get("overall", False):
             console.print("[bold green]✅ HEALTH CHECK: PASSED[/bold green]")
         else:
             console.print("[bold red]❌ HEALTH CHECK: FAILED[/bold red]")
-        
+
         console.print("=" * 60)
-        
+
         summary = result.get("summary", {})
         console.print(f"Total checks: {summary.get('total_checks', 0)}")
         console.print(f"✅ Saludables: {summary.get('healthy', 0)}")
@@ -747,9 +754,9 @@ def health() -> None:
         console.print(f"❌ No saludables: {summary.get('unhealthy', 0)}")
         console.print(f"💥 Errores: {summary.get('errors', 0)}")
         console.print(f"Tasa éxito: {summary.get('success_rate', 0)}%")
-        
+
         console.print("=" * 60)
-        
+
     except Exception as e:
         console.print(f"[bold red]❌ Error en health check: {e}[/bold red]")
         sys.exit(1)

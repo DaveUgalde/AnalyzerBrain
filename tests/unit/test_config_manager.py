@@ -13,10 +13,10 @@ from pydantic import ValidationError as PydanticValidationError
 
 from src.core.config_manager import ConfigManager
 
-
 # -------------------------------------------------------------------
 # Fixtures simplificadas
 # -------------------------------------------------------------------
+
 
 @pytest.fixture(autouse=True)
 def reset_config_before_each_test():
@@ -30,11 +30,12 @@ def reset_config_before_each_test():
 # Tests del Singleton
 # -------------------------------------------------------------------
 
+
 def test_singleton_instance():
     """Verifica que ConfigManager sea un singleton."""
     instance1 = ConfigManager()
     instance2 = ConfigManager()
-    
+
     assert instance1 is instance2
 
 
@@ -42,13 +43,13 @@ def test_singleton_reset_works():
     """Verifica que el reset funcione correctamente."""
     instance1 = ConfigManager()
     instance1_id = id(instance1)
-    
+
     # Resetear
     ConfigManager.reset_for_tests()
-    
+
     # Nueva instancia después del reset
     instance2 = ConfigManager()
-    
+
     # Deben ser diferentes objetos (porque se reseteó)
     assert instance1 is not instance2
     assert id(instance2) != instance1_id
@@ -58,10 +59,11 @@ def test_singleton_reset_works():
 # Tests de inicialización básica
 # -------------------------------------------------------------------
 
+
 def test_settings_loaded_on_init():
     """Verifica que los settings se cargan al inicializar."""
     config = ConfigManager()
-    
+
     # Usar API pública para verificar
     state = config.get_internal_state()
     assert state['settings'] is not None
@@ -71,7 +73,7 @@ def test_settings_loaded_on_init():
 def test_default_values_are_set():
     """Verifica que los valores por defecto estén configurados."""
     config = ConfigManager()
-    
+
     assert config.settings.system.name == "ANALYZERBRAIN"
     assert config.settings.system.max_workers == 4
     assert config.settings.api.port == 8000
@@ -82,15 +84,19 @@ def test_default_values_are_set():
 # Tests de carga desde variables de entorno
 # -------------------------------------------------------------------
 
+
 def test_load_from_environment_variables():
     """Verifica la carga desde variables de entorno."""
-    with patch.dict(os.environ, {
-        "ENVIRONMENT": "testing",
-        "LOG_LEVEL": "DEBUG",
-    }):
+    with patch.dict(
+        os.environ,
+        {
+            "ENVIRONMENT": "testing",
+            "LOG_LEVEL": "DEBUG",
+        },
+    ):
         ConfigManager.reset_for_tests()
         config = ConfigManager()
-        
+
         assert config.settings.environment == "testing"
         assert config.settings.log_level == "DEBUG"
 
@@ -98,7 +104,7 @@ def test_load_from_environment_variables():
 def test_environment_variables_priority():
     """Verifica que las variables de entorno tengan prioridad."""
     yaml_content = {"system": {"max_workers": 5}}
-    
+
     with patch("pathlib.Path.exists", return_value=True):
         with patch("builtins.open", mock_open()):
             with patch("yaml.safe_load", return_value=yaml_content):
@@ -111,25 +117,20 @@ def test_environment_variables_priority():
 # Tests de carga desde archivos YAML
 # -------------------------------------------------------------------
 
+
 def test_load_from_yaml_files():
     """Verifica la carga desde archivos YAML."""
     yaml_content: Dict[str, Any] = {
-        "system": {
-            "name": "TEST_SYSTEM",
-            "max_workers": 15
-        },
-        "api": {
-            "port": 9000,
-            "cors_origins": ["http://test.local"]
-        }
+        "system": {"name": "TEST_SYSTEM", "max_workers": 15},
+        "api": {"port": 9000, "cors_origins": ["http://test.local"]},
     }
-    
+
     with patch("pathlib.Path.exists", return_value=True):
         with patch("builtins.open", mock_open()):
             with patch("yaml.safe_load", return_value=yaml_content):
                 ConfigManager.reset_for_tests()
                 config = ConfigManager()
-                
+
                 assert config.settings.system.name == "TEST_SYSTEM"
                 assert config.settings.system.max_workers == 15
                 assert config.settings.api.port == 9000
@@ -148,14 +149,15 @@ def test_missing_yaml_files_no_error():
 # Tests del método get()
 # -------------------------------------------------------------------
 
+
 def test_get_with_dot_notation():
     """Verifica que get() funcione con notación de puntos."""
     config = ConfigManager()
-    
+
     assert config.get("system.name") == "ANALYZERBRAIN"
     assert config.get("system.max_workers") == 4
     assert config.get("api.port") == 8000
-    
+
     origins = config.get("api.cors_origins")
     assert isinstance(origins, list)
     assert "http://localhost:3000" in origins
@@ -164,7 +166,7 @@ def test_get_with_dot_notation():
 def test_get_with_default_value():
     """Verifica que get() retorne valores por defecto cuando la clave no existe."""
     config = ConfigManager()
-    
+
     assert config.get("non.existent.key", "default_value") == "default_value"
     assert config.get("system.non_existent", 999) == 999
     assert config.get("", "empty_default") == "empty_default"
@@ -172,14 +174,13 @@ def test_get_with_default_value():
 
 def test_get_custom_config_values():
     config = ConfigManager()
-    config.update_settings_for_test({
-        "custom_setting": "custom_value",
-        "another_custom": {"nested": "value"}
-    })
-    
+    config.update_settings_for_test(
+        {"custom_setting": "custom_value", "another_custom": {"nested": "value"}}
+    )
+
     assert config._custom_config["custom_setting"] == "custom_value"
     assert config._custom_config["another_custom"]["nested"] == "value"
-    
+
     # Ahora estas aserciones deberían pasar
     assert config.get("custom_setting") == "custom_value"
     assert config.get("another_custom.nested") == "value"
@@ -189,10 +190,11 @@ def test_get_custom_config_values():
 # Tests de propiedades
 # -------------------------------------------------------------------
 
+
 def test_environment_property():
     """Verifica la propiedad environment."""
     config = ConfigManager()
-    
+
     assert config.environment == "development"
     assert config.is_development is True
     assert config.is_production is False
@@ -203,7 +205,7 @@ def test_environment_change():
     with patch.dict(os.environ, {"ENVIRONMENT": "production"}):
         ConfigManager.reset_for_tests()
         config = ConfigManager()
-        
+
         assert config.environment == "production"
         assert config.is_development is False
         assert config.is_production is True
@@ -213,13 +215,14 @@ def test_environment_change():
 # Tests del método reload()
 # -------------------------------------------------------------------
 
+
 def test_reload_resets_settings():
     """Verifica que reload() cargue nueva configuración."""
     config = ConfigManager()
     original_name = config.settings.system.name
-    
+
     yaml_content = {"system": {"name": "RELOADED_NAME"}}
-    
+
     with patch("pathlib.Path.exists", return_value=True):
         with patch("builtins.open", mock_open()):
             with patch("yaml.safe_load", return_value=yaml_content):
@@ -232,7 +235,7 @@ def test_reload_with_different_environment():
     """Verifica que reload() cargue un entorno diferente."""
     config = ConfigManager()
     assert config.environment == "development"
-    
+
     with patch.dict(os.environ, {"ENVIRONMENT": "testing"}):
         config.reload()
         assert config.environment == "testing"
@@ -241,6 +244,7 @@ def test_reload_with_different_environment():
 # -------------------------------------------------------------------
 # Tests de manejo de errores
 # -------------------------------------------------------------------
+
 
 def test_invalid_yaml_raises_error():
     """Verifica que YAML inválido lance error."""
@@ -255,17 +259,17 @@ def test_validation_error_on_invalid_data():
     """Verifica que datos inválidos en YAML lancen ValidationError de Pydantic."""
     # max_workers negativo no es válido (debe ser >= 1)
     invalid_yaml = {"system": {"max_workers": -1}}
-    
+
     with patch("pathlib.Path.exists", return_value=True):
         with patch("builtins.open", mock_open()):
             with patch("yaml.safe_load", return_value=invalid_yaml):
                 # Capturamos la excepción de Pydantic
                 ConfigManager.reset_for_tests()
-                
+
                 # Usar la excepción de Pydantic importada correctamente
                 with pytest.raises(PydanticValidationError) as exc_info:
                     ConfigManager()
-                
+
                 # Verificar que el error es por max_workers
                 error_str = str(exc_info.value)
                 assert "max_workers" in error_str or "greater than or equal to 1" in error_str
@@ -275,12 +279,13 @@ def test_validation_error_on_invalid_data():
 # Tests de directorios
 # -------------------------------------------------------------------
 
+
 def test_directories_are_created():
     """Verifica que se creen los directorios necesarios."""
     with patch("pathlib.Path.mkdir") as mock_mkdir:
         ConfigManager.reset_for_tests()
         ConfigManager()
-        
+
         assert mock_mkdir.called
         call_args = mock_mkdir.call_args
         assert call_args.kwargs.get("parents") is True
@@ -311,11 +316,12 @@ def test_directory_creation_failure_in_production():
 # Tests de estado interno (para debugging)
 # -------------------------------------------------------------------
 
+
 def test_internal_state_inspection():
     """Verifica que se pueda inspeccionar el estado interno."""
     config = ConfigManager()
     state = config.get_internal_state()
-    
+
     assert isinstance(state, dict)
     assert "settings" in state
     assert "custom_config" in state
@@ -326,19 +332,15 @@ def test_internal_state_inspection():
 # Test de actualización de configuración
 # -------------------------------------------------------------------
 
+
 def test_update_settings_for_test():
     """Verifica que se pueda actualizar configuración para tests."""
     config = ConfigManager()
-    
+
     original_workers = config.settings.system.max_workers
-    
-    config.update_settings_for_test({
-        "system": {
-            "max_workers": 99,
-            "timeout_seconds": 999
-        }
-    })
-    
+
+    config.update_settings_for_test({"system": {"max_workers": 99, "timeout_seconds": 999}})
+
     assert config.settings.system.max_workers == 99
     assert config.settings.system.timeout_seconds == 999
     assert config.settings.system.max_workers != original_workers
@@ -355,7 +357,7 @@ def test_boundary_values():
                 ConfigManager.reset_for_tests()
                 with pytest.raises(PydanticValidationError):
                     ConfigManager()
-            
+
             # Límite superior
             ConfigManager.reset_for_tests()
             with patch("yaml.safe_load", return_value={"system": {"max_workers": 33}}):
@@ -367,7 +369,7 @@ def test_boundary_values():
 def test_complex_nested_configuration():
     """Verifica configuración anidada compleja."""
     config = ConfigManager()
-    
+
     complex_yaml = {
         "custom_config": {
             "system": {
@@ -375,13 +377,13 @@ def test_complex_nested_configuration():
                 "settings": {
                     "advanced": {
                         "feature_flags": ["flag1", "flag2"],
-                        "thresholds": {"low": 0.1, "high": 0.9}
+                        "thresholds": {"low": 0.1, "high": 0.9},
                     }
-                }
+                },
             }
         }
     }
-    
+
     config.update_settings_for_test(complex_yaml)
     assert config.get("custom_config.system.settings.advanced.feature_flags") == ["flag1", "flag2"]
 

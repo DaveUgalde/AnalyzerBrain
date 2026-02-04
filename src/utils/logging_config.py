@@ -46,16 +46,16 @@ from src.core.config_manager import config
 
 class StructuredLogger:
     """Logger estructurado para ANALYZERBRAIN."""
-    
+
     @staticmethod
     def setup_logging(
         log_level: Optional[str] = None,
         log_dir: Optional[Path] | None = None,
-        json_format: bool | None = False
+        json_format: bool | None = False,
     ) -> None:
         """
         Configura el sistema de logging.
-        
+
         Args:
             log_level: Nivel de logging (DEBUG, INFO, WARNING, ERROR)
             log_dir: Directorio para archivos de log
@@ -66,13 +66,13 @@ class StructuredLogger:
         log_dir = log_dir or Path("logs")
 
         log_dir.mkdir(parents=True, exist_ok=True)
-        
+
         if json_format is None:
             json_format = not config.is_development
-        
+
         # Remover handlers por defecto
         logger.remove()
-        
+
         # Configuración para consola
         console_format = (
             "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
@@ -80,16 +80,16 @@ class StructuredLogger:
             "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | "
             "<level>{message}</level>"
         )
-        
+
         logger.add(
             sys.stderr,
             level=log_level,
             format=console_format,
             colorize=True,
             backtrace=True,
-            diagnose=config.is_development
+            diagnose=config.is_development,
         )
-        
+
         # Configuración para archivo (formato estructurado)
         if json_format:
             file_format = (
@@ -106,10 +106,10 @@ class StructuredLogger:
                 "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | "
                 "{name}:{function}:{line} | {message} | {extra}"
             )
-        
+
         # Asegurar que el directorio de logs exista
         log_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Archivo de log principal
         logger.add(
             log_dir / "analyzerbrain_{time:YYYY-MM-DD}.log",
@@ -120,9 +120,9 @@ class StructuredLogger:
             compression="zip",
             backtrace=True,
             diagnose=config.is_development,
-            enqueue=True  # Thread-safe
+            enqueue=True,  # Thread-safe
         )
-        
+
         # Archivo de errores separado
         logger.add(
             log_dir / "errors_{time:YYYY-MM-DD}.log",
@@ -132,22 +132,22 @@ class StructuredLogger:
             retention="90 days",
             compression="zip",
             backtrace=True,
-            diagnose=False
+            diagnose=False,
         )
-        
+
         logger.info("Sistema de logging configurado correctamente")
         logger.debug(f"Nivel de log: {log_level}")
         logger.debug(f"Directorio de logs: {log_dir}")
         logger.debug(f"Formato JSON: {json_format}")
-    
+
     @staticmethod
     def get_logger(name: str):
         """
         Obtiene un logger con un nombre específico.
-        
+
         Args:
             name: Nombre del logger (generalmente __name__)
-            
+
         Returns:
             Logger configurado
         """

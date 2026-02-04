@@ -29,13 +29,14 @@ from .utils.logging_config import setup_default_logging
 
 # Configura logging solo si no está ya configurado
 import sys
+
 if "loguru" not in sys.modules:
     setup_default_logging()
-    
-#Archivo: src/init.py
-#Propósito: Inicialización del paquete y configuración del logging por defecto.
-#Número de funciones: 0 (solo código de inicialización).
-#Lista de funciones por nombre: No aplica.
-#Número de líneas de código: 22 líneas.
-#Dependencias: logging_config (del mismo paquete).
-#Instalaciones necesarias: loguru>=0.7.0,<0.8.0.
+
+# Archivo: src/init.py
+# Propósito: Inicialización del paquete y configuración del logging por defecto.
+# Número de funciones: 0 (solo código de inicialización).
+# Lista de funciones por nombre: No aplica.
+# Número de líneas de código: 22 líneas.
+# Dependencias: logging_config (del mismo paquete).
+# Instalaciones necesarias: loguru>=0.7.0,<0.8.0.

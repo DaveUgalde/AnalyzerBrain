@@ -4,7 +4,8 @@ Módulo core de ANALYZERBRAIN.
 
 from .config_manager import ConfigManager, config
 from .exceptions import *
-#from .system_state import SystemState
+
+# from .system_state import SystemState
 
 
 __all__ = [
@@ -18,6 +19,5 @@ __all__ = [
     'APIError',
     'ValidationError',
     'SystemState',
+    'EventBusError',
 ]
-
-
