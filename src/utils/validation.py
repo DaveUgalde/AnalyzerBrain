@@ -313,5 +313,22 @@ class Validator(Generic[T]):
             )
 
 
-# Instancia global para uso convenientae
+# Instancia global para uso conveniente
 validator = Validator[Any]()
+
+# Funciones de conveniencia para compatibilidad
+def validate_type(value: Any, expected_type: ExpectedType, field_name: str = "value") -> Any:
+    """Valida que un valor sea del tipo esperado."""
+    return Validator.validate_type(value, expected_type, field_name)
+
+
+def validate_not_none(value: Any, field_name: str = "value") -> Any:
+    """Valida que un valor no sea None."""
+    if value is None:
+        raise ValidationError(
+            message=f"{field_name} no puede ser nulo",
+            field=field_name,
+            value=value,
+            suggestion="Proporcione un valor no nulo",
+        )
+    return value

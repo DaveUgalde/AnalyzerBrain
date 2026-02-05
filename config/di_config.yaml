@@ -1,0 +1,31 @@
+# Configuración del inyector de dependencias
+dependency_injection:
+  # Nivel de logging
+  log_level: "DEBUG"
+  
+  # Auto-registro de módulos
+  auto_register:
+    enabled: true
+    modules:
+      - "src.core"
+      - "src.utils"
+      - "src.api"
+  
+  # Configuración de ámbitos
+  scopes:
+    default_ttl: 3600  # Tiempo de vida por defecto en segundos
+    cleanup_interval: 300  # Intervalo de limpieza en segundos
+  
+  # Validación de dependencias al iniciar
+  validate_on_startup: true
+  
+  # Ciclos de dependencia
+  max_depth: 10  # Profundidad máxima de resolución
+  
+  # Caché
+  cache:
+    enabled: true
+    max_size: 1000
+    ttl: 300
+
+    

@@ -7,42 +7,62 @@ Distribución de archivos:
 
 ANALYZERBRAIN/
 ├── 📁 .github/ # CI/CD y automatización (N-I)
+
 ├── 📁 .vscode/ # Configuración de IDE
+
 ├── 📁 architecture/ # Documentación arquitectónica
+
 ├── 📁 config/ # Configuraciones YAML del sistema
+
 ├── 📁 data/# Datos persistentes (SOLO datos, (N-I))
+
 ├── 📁 deployments/ # Configuraciones de despliegue (N-I)
+
 ├── 📁 docs/ # Documentación completa (N-I)
+
 ├── 📁 logs/ # Logs del sistema (N-I)
+
 ├── 📁 monitoring/# Monitoreo y métricas (N-I)
+
 ├── 📁 requirements/ # Dependencias categorizadas
+
 ├── 📁 scripts/ # Scripts de utilidad
+
 ├── 📁 src/ # CÓDIGO FUENTE PRINCIPAL
+
 ├── 📁 tests/# Pruebas y fixtures
+
 ├── 📁 venv/# Entorno virtual
+
 ├── 📄 .env# Variables de entorno
+
 ├── 📄 .env.example # Plantilla variables de entorno
+
 ├── 📄 .gitignore  # Archivos ignorados por git
+
 ├── 📄 Dockerfile # Imagen Docker (N-I)
+
 ├── 📄 LICENSE  # Licencia MIT (N-I)
+
 ├── 📄 pyproject.toml # Configuración de paquete Python 
+
 └── 📄 README.md # Documentación principal 
 🔧 SRC/ - ESTRUCTURA DETALLADA DEL CÓDIGO FUENTE
 
 text
 src/
 ├── __init__.py  (I)             # Paquete raíz
-├── main.py   (I)              # Punto de entrada principal
+├── main.py   (I)              # Punto de entrada
 │
 ├── 📁 api/      (N-I)         # CAPA DE PRESENTACIÓN
 │   ├── __init__.py
-│   ├── authentication.py       # Autenticación JWT/API Key
-│   ├── cli_interface.py       # Interfaz línea de comandos
-│   ├── grpc_api.py            # API gRPC (alta performance)
+│   ├── authentication.py       # Autenticación JWT/API
+│   ├── cli_interface.py  
+│   ├── grpc_api.py            # API gRPC performanceAlto
 │   ├── rate_limiter.py        # Limitación de tasa
 │   ├── request_validator.py   # Validación de peticiones
 │   ├── rest_api.py            # Endpoints REST
-│   ├── server.py              # Servidor principal FastAPI
+│   ├── server.py       # Servidor principal FastApi
 │   ├── web_ui.py              # Interfaz web (Streamlit)
 │   └── websocket_api.py       # WebSockets (tiempo real)
 │
@@ -56,7 +76,7 @@ src/
 │   ├── code_analyzer_agent.py # Análisis de código
 │   ├── collaboration_protocol.py # Protocolo colaborativo
 │   ├── curator_agent.py       # Curación de conocimiento
-│   ├── detective_agent.py     # Investigación de problemas
+│   ├── detective_agent.py     # Investigación
 │   ├── learning_agent.py      # Agente de aprendizaje
 │   ├── qa_agent.py           # Preguntas y respuestas
 │   └── security_agent.py     # Análisis de seguridad
@@ -64,14 +84,14 @@ src/
 ├── 📁 core/ # NÚCLEO DEL SISTEMA (I)
 │   ├── __init__.py
 │   ├── config_manager.py  (C)  # Gestión de configuración
-│   ├── dependency_injector.py (N-I)
+│   ├── dependency_injector.py (C)
 │   ├── event_bus.py          (C)
 │   ├── exceptions.py         (C)
 │   ├── health_check.py       (C)
 │   ├── orchestrator.py       (N-I)
 │   ├── plugin_manager.py     (N-I)
 │   ├── system_state.py       (C)
-│   └── workflow_manager.py   # Orquestación de flujos
+│   └── workflow_manager.py   (I)
 │
 ├── 📁 embeddings/     (N-I)  # REPRESENTACIÓN VECTORIAL
 │   ├── __init__.py
@@ -108,13 +128,13 @@ src/
 │
 ├── 📁 learning/  (N-I)       # APRENDIZAJE AUTOMÁTICO
 │   ├── __init__.py
-│   ├── adaptation_engine.py  # Adaptación a nuevos dominios
+│   ├── adaptation_engine.py  # Adaptación de dominios
 │   ├── feedback_loop.py      # Bucle de retroalimentación
 │   ├── forgetting_mechanism.py # Mecanismo de olvido
 │   ├── incremental_learner.py # Aprendizaje incremental
-│   ├── knowledge_refiner.py  # Refinamiento de conocimiento
+│   ├── knowledge_refiner.py  # Refinamiento 
 │   ├── learning_evaluator.py # Evaluación de aprendizaje
-│   └── reinforcement_learner.py # Aprendizaje por refuerzo
+│   └── reinforcement_learner.py # Aprendizaje 
 │
 ├── 📁 memory/  (N-I)       # SISTEMA DE MEMORIA
 │   ├── __init__.py
@@ -137,6 +157,11 @@ src/
     ├── serialization.py     # Serialización de datos
     ├── text_processing.py   # Procesamiento de texto
     └── validation.py        # Validación de datos
+
+
+
+
+
 📁 DATA/ - ESTRUCTURA DE DATOS PERSISTENTES
 
 text
